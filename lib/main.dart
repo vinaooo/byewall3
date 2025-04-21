@@ -1,6 +1,6 @@
-import 'package:byewall3/app_localizations.dart';
-import 'package:byewall3/main_screen.dart';
-import 'package:byewall3/settings_screen.dart';
+import 'package:byewall3/l10n/app_localizations.dart';
+import 'package:byewall3/screens/main_screen.dart';
+import 'package:byewall3/screens/settings_screen.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';

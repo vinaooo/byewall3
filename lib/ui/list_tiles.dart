@@ -1,4 +1,4 @@
-import 'package:byewall3/app_colors.dart';
+import 'package:byewall3/ui/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class SettingsTiles extends StatelessWidget {

@@ -1,4 +1,4 @@
-import 'package:byewall3/app_localizations.dart';
+import 'package:byewall3/l10n/app_localizations.dart';
 import 'package:byewall3/ui/list_tiles.dart';
 import 'package:flutter/material.dart';
 
