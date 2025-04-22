@@ -1,5 +1,4 @@
 import 'package:byewall3/l10n/app_localizations.dart';
-import 'package:byewall3/l10n/known_locations.dart';
 import 'package:byewall3/ui/language_provider.dart';
 import 'package:byewall3/ui/list_tiles.dart';
 import 'package:byewall3/ui/theme_provider.dart';
