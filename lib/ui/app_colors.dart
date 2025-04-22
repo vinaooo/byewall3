@@ -2,38 +2,43 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   static Color getTileColor(BuildContext context) {
-    final bool isDarkTheme = Theme.of(context).brightness == Brightness.dark;
-
-    final double lightness = isDarkTheme ? 0.15 : 0.91;
-    final double saturation = isDarkTheme ? 0.01 : 0.25;
-    final double alpha = isDarkTheme ? 0.4 : 0.5;
-
     return HSLColor.fromColor(Theme.of(context).colorScheme.primaryContainer)
-        .withLightness(lightness)
-        .withSaturation(saturation)
+        .withLightness(_getLightness(context))
+        .withSaturation(_getSaturation(context))
         .toColor()
-        .withAlpha((alpha * 255).toInt());
+        .withAlpha((_getAlpha(context)).toInt());
   }
 
-  static Color getAlertBoxColor(BuildContext context) {
-    final bool isDarkTheme = Theme.of(context).brightness == Brightness.dark;
-
-    final double lightness = isDarkTheme ? 0.15 : 0.91;
-    final double saturation = isDarkTheme ? 0.01 : 0.25;
-
-    return HSLColor.fromColor(
-      Theme.of(context).colorScheme.primaryContainer,
-    ).withLightness(lightness).withSaturation(saturation).toColor();
+  static Color getDialogBoxColor(BuildContext context) {
+    return HSLColor.fromColor(Theme.of(context).colorScheme.primaryContainer)
+        .withLightness(_getLightness(context))
+        .withSaturation(_getSaturation(context))
+        .toColor();
   }
 
-  static Color getAlertTileColor(BuildContext context) {
-    final bool isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+  static Color getDialogTileColor(BuildContext context) {
+    return HSLColor.fromColor(Theme.of(context).colorScheme.primaryContainer)
+        .withLightness(_getLightness(context))
+        .toColor()
+        .withAlpha((_getAlpha(context)).toInt());
+  }
 
-    final double lightness = isDarkTheme ? 0.01 : 0.91;
-    final double alpha = isDarkTheme ? 0.4 : 0.5;
+  static bool _getIsDarkTheme(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark;
+  }
 
-    return HSLColor.fromColor(
-      Theme.of(context).colorScheme.primaryContainer,
-    ).withLightness(lightness).toColor().withAlpha((alpha * 255).toInt());
+  static double _getLightness(BuildContext context) {
+    bool isDarkTheme = _getIsDarkTheme(context);
+    return isDarkTheme ? 0.01 : 0.91;
+  }
+
+  static double _getSaturation(BuildContext context) {
+    bool isDarkTheme = _getIsDarkTheme(context);
+    return isDarkTheme ? 0.01 : 0.25;
+  }
+
+  static double _getAlpha(BuildContext context) {
+    bool isDarkTheme = _getIsDarkTheme(context);
+    return (isDarkTheme ? 0.4 : 0.5) * 255;
   }
 }

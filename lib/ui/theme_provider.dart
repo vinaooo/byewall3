@@ -21,7 +21,7 @@ class ThemeProvider extends ChangeNotifier {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: AppColors.getAlertBoxColor(context),
+          backgroundColor: AppColors.getDialogBoxColor(context),
           title: Column(
             children: [
               Icon(Icons.brightness_6),
@@ -36,7 +36,7 @@ class ThemeProvider extends ChangeNotifier {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: AppColors.getAlertTileColor(
+                  color: AppColors.getDialogTileColor(
                     context,
                   ), // Adicione uma cor de fundo
                   borderRadius: BorderRadius.only(
@@ -68,7 +68,7 @@ class ThemeProvider extends ChangeNotifier {
               ),
               Container(
                 decoration: BoxDecoration(
-                  color: AppColors.getAlertTileColor(
+                  color: AppColors.getDialogTileColor(
                     context,
                   ), // Adicione uma cor de fundo
                 ),
@@ -96,7 +96,7 @@ class ThemeProvider extends ChangeNotifier {
               ),
               Container(
                 decoration: BoxDecoration(
-                  color: AppColors.getAlertTileColor(
+                  color: AppColors.getDialogTileColor(
                     context,
                   ), // Adicione uma cor de fundo
                   borderRadius: BorderRadius.only(
