@@ -1,6 +1,7 @@
 import 'package:byewall3/l10n/app_localizations.dart';
 import 'package:byewall3/screens/main_screen.dart';
 import 'package:byewall3/screens/settings_screen.dart';
+import 'package:byewall3/ui/language_provider.dart';
 import 'package:byewall3/ui/theme_provider.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
@@ -9,22 +10,25 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => ThemeProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
+        ChangeNotifierProvider(create: (context) => LanguageProvider()),
+      ],
       child: MyApp(),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key}); //
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return DynamicColorBuilder(
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-        return Consumer<ThemeProvider>(
-          builder: (context, themeProvider, child) {
+        return Consumer2<ThemeProvider, LanguageProvider>(
+          builder: (context, themeProvider, languageProvider, child) {
             final lightColorScheme =
                 lightDynamic ??
                 ColorScheme.fromSeed(seedColor: Colors.green.shade800);
@@ -36,15 +40,9 @@ class MyApp extends StatelessWidget {
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
               ],
-              supportedLocales: const [
-                Locale('en', 'US'),
-                Locale('es', 'ES'),
-                Locale('pt', 'BR'), // Alterado para Português do Brasil
-              ],
-              locale: const Locale(
-                'en',
-                'US',
-              ), // Alterado para Português do Brasil
+              debugShowCheckedModeBanner: false,
+              supportedLocales: AppLocalizations.supportedLocales,
+              locale: languageProvider.locale, // Idioma atual
               title: 'Byewall',
               themeMode: themeProvider.themeMode, // Aplica o tema atual
               theme: ThemeData(

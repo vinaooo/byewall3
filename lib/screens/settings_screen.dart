@@ -1,5 +1,6 @@
 import 'package:byewall3/l10n/app_localizations.dart';
 import 'package:byewall3/l10n/known_locations.dart';
+import 'package:byewall3/ui/language_provider.dart';
 import 'package:byewall3/ui/list_tiles.dart';
 import 'package:byewall3/ui/theme_provider.dart';
 import 'package:flutter/material.dart';
@@ -154,45 +155,7 @@ class SettingsScreen extends StatelessWidget {
                         )?.translate('language_subtitle') ??
                         "Select your language",
                     onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: const Text('Select Language'),
-                            content: SizedBox(
-                              width: double.maxFinite,
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                itemCount:
-                                    AppLocalizations.supportedLocales.length,
-                                itemBuilder: (context, index) {
-                                  final locale =
-                                      AppLocalizations.supportedLocales[index];
-                                  final key = _localeKey(locale);
-                                  final name = Locales.knownLocales[key] ?? key;
-                                  return ListTile(
-                                    leading: const Icon(Icons.language),
-                                    title: Text(name),
-                                    subtitle: Text(key),
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            'Language changed to $name',
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                      );
+                      LanguageProvider.selectLanguage(context, _localeKey);
                     },
                   ),
                 ],
