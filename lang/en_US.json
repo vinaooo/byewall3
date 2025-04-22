@@ -6,5 +6,6 @@
   "theme_mode": "Theme Mode",
   "theme_mode_light": "Light",
   "theme_mode_dark": "Dark",
-  "theme_mode_system": "System"
+  "theme_mode_system": "System",
+  "app_language": "Select app language"
 }

@@ -1,4 +1,5 @@
 import 'package:byewall3/l10n/app_localizations.dart';
+import 'package:byewall3/l10n/known_locations.dart';
 import 'package:byewall3/ui/list_tiles.dart';
 import 'package:byewall3/ui/theme_provider.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,14 @@ import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
+
+  String _localeKey(Locale locale) {
+    // Ex: Locale('en', 'US') => 'en_US'
+    if (locale.countryCode != null && locale.countryCode!.isNotEmpty) {
+      return '${locale.languageCode}_${locale.countryCode}';
+    }
+    return locale.languageCode;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,8 +107,8 @@ class SettingsScreen extends StatelessWidget {
                     topRight: 0,
                     bottomLeft: 0,
                     bottomRight: 0,
-                    title: 'Idioma',
-                    subtitle: 'Escolha o idioma',
+                    title: 'cor',
+                    subtitle: 'cor',
                     onPressed: () {},
                   ),
                   SizedBox(height: 5),
@@ -108,8 +117,8 @@ class SettingsScreen extends StatelessWidget {
                     topRight: 0,
                     bottomLeft: 0,
                     bottomRight: 0,
-                    title: 'Sobre',
-                    subtitle: 'Sobre o aplicativo',
+                    title: 'Amoled',
+                    subtitle: 'amoled',
                     onPressed: () {},
                   ),
                   SizedBox(height: 5),
@@ -121,6 +130,70 @@ class SettingsScreen extends StatelessWidget {
                     title: 'Ajuda',
                     subtitle: 'Ajuda e suporte',
                     onPressed: () {},
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  SettingsTiles(
+                    topLeft: 20,
+                    topRight: 20,
+                    bottomLeft: 0,
+                    bottomRight: 0,
+                    title:
+                        AppLocalizations.of(context)?.translate('language') ??
+                        "Language",
+                    subtitle:
+                        AppLocalizations.of(
+                          context,
+                        )?.translate('language_subtitle') ??
+                        "Select your language",
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text('Select Language'),
+                            content: SizedBox(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount:
+                                    AppLocalizations.supportedLocales.length,
+                                itemBuilder: (context, index) {
+                                  final locale =
+                                      AppLocalizations.supportedLocales[index];
+                                  final key = _localeKey(locale);
+                                  final name = Locales.knownLocales[key] ?? key;
+                                  return ListTile(
+                                    leading: const Icon(Icons.language),
+                                    title: Text(name),
+                                    subtitle: Text(key),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Language changed to $name',
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
                   ),
                 ],
               ),

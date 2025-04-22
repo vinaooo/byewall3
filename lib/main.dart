@@ -37,10 +37,14 @@ class MyApp extends StatelessWidget {
                 GlobalCupertinoLocalizations.delegate,
               ],
               supportedLocales: const [
-                Locale('en'),
-                Locale('es'),
-                Locale('pt'),
+                Locale('en', 'US'),
+                Locale('es', 'ES'),
+                Locale('pt', 'BR'), // Alterado para Português do Brasil
               ],
+              locale: const Locale(
+                'en',
+                'US',
+              ), // Alterado para Português do Brasil
               title: 'Byewall',
               themeMode: themeProvider.themeMode, // Aplica o tema atual
               theme: ThemeData(
@@ -55,33 +59,6 @@ class MyApp extends StatelessWidget {
             );
           },
         );
-        // final ColorScheme lightColorScheme =
-        //     lightDynamic ??
-        //     ColorScheme.fromSeed(seedColor: Colors.green.shade800);
-        // final ColorScheme darkColorScheme =
-        //     darkDynamic ??
-        //     ColorScheme.fromSeed(
-        //       seedColor: Colors.green.shade800,
-        //       brightness: Brightness.dark,
-        //     );
-
-        // return MaterialApp(
-        //   localizationsDelegates: const [
-        //     AppLocalizations.delegate,
-        //     GlobalMaterialLocalizations.delegate,
-        //     GlobalWidgetsLocalizations.delegate,
-        //     GlobalCupertinoLocalizations.delegate,
-        //   ],
-        //   supportedLocales: const [Locale('en'), Locale('es'), Locale('pt')],
-        //   title: 'Byewall',
-        //   theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
-        //   darkTheme: ThemeData(
-        //     useMaterial3: true,
-        //     colorScheme: darkColorScheme,
-        //   ),
-        //   themeMode: ThemeMode.system,
-        //   home: const MyHomePage(),
-        // );
       },
     );
   }
