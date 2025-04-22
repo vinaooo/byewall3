@@ -8,6 +8,7 @@ class SettingsTiles extends StatelessWidget {
   final int bottomLeft;
   final String title;
   final String subtitle;
+  final VoidCallback onPressed;
 
   const SettingsTiles({
     super.key,
@@ -17,15 +18,16 @@ class SettingsTiles extends StatelessWidget {
     required this.bottomLeft,
     required this.title,
     required this.subtitle,
+    required this.onPressed,
   });
+
+  get onTap => null;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.getAdjustedSecondaryContainer(
-          context,
-        ), // Adicione uma cor de fundo
+        color: AppColors.getTileColor(context), // Adicione uma cor de fundo
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(topLeft.toDouble()),
           topRight: Radius.circular(topRight.toDouble()),
@@ -38,6 +40,7 @@ class SettingsTiles extends StatelessWidget {
         title: Text(title),
         subtitle: Text(subtitle),
         trailing: Icon(Icons.arrow_forward),
+        onTap: onPressed,
       ),
     );
   }
