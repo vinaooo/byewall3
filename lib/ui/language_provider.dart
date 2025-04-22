@@ -49,7 +49,6 @@ class LanguageProvider extends ChangeNotifier {
                     },
                   ),
                   title: Text(name),
-                  subtitle: Text(key),
                   onTap: () {
                     Provider.of<LanguageProvider>(
                       context,
