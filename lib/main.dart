@@ -7,12 +7,17 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Necessário para inicializar SharedPreferences antes do runApp
+  final themeProvider = ThemeProvider();
+  await themeProvider.loadTheme(); // Carrega o tema salvo
+
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => ThemeProvider()),
+        ChangeNotifierProvider(create: (context) => themeProvider),
         ChangeNotifierProvider(create: (context) => LanguageProvider()),
       ],
       child: const MyApp(),
@@ -20,8 +25,19 @@ void main() {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    _loadThemeMode();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,4 +96,8 @@ class MyApp extends StatelessWidget {
       },
     );
   }
+}
+
+Future<void> _loadThemeMode() async {
+  final prefs = await SharedPreferences.getInstance();
 }

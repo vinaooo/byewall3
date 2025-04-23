@@ -1,7 +1,7 @@
 import 'package:byewall3/l10n/app_localizations.dart';
-import 'package:byewall3/ui/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Classe que gerencia o estado do tema
 class ThemeProvider extends ChangeNotifier {
@@ -9,9 +9,22 @@ class ThemeProvider extends ChangeNotifier {
 
   ThemeMode get themeMode => _themeMode;
 
+  Future<void> saveTheme(ThemeMode themeMode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('themeMode', themeMode.index);
+  }
+
+  Future<void> loadTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    final themeIndex = prefs.getInt('themeMode') ?? ThemeMode.system.index;
+    _themeMode = ThemeMode.values[themeIndex];
+    notifyListeners(); // Notifica os widgets que dependem desse estado
+  }
+
   void setThemeMode(ThemeMode themeMode) {
     _themeMode = themeMode;
-    notifyListeners(); // Notifica os widgets que dependem desse estado
+    saveTheme(themeMode);
+    notifyListeners();
   }
 
   static void show(BuildContext context) {
@@ -142,11 +155,19 @@ class ThemeProvider extends ChangeNotifier {
                     bottomRight: Radius.circular(20),
                   ),
                   onTap: () {
-                    themeProvider.setThemeMode(ThemeMode.system);
+                    themeProvider.setThemeMode(
+                      ThemeMode.dark,
+                    ); // Define o tema como escuro
                     Navigator.of(context).pop();
                   },
                   child: ListTile(
                     title: Text(
+                      style: TextStyle(
+                        color:
+                            themeProvider.themeMode == ThemeMode.dark
+                                ? Theme.of(context).colorScheme.onSecondary
+                                : null,
+                      ),
                       AppLocalizations.of(
                             context,
                           )?.translate('theme_mode_dark') ??
