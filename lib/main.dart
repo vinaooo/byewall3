@@ -7,18 +7,20 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Necessário para inicializar SharedPreferences antes do runApp
   final themeProvider = ThemeProvider();
   await themeProvider.loadTheme(); // Carrega o tema salvo
 
+  final languageProvider = LanguageProvider();
+  await languageProvider.loadLanguage(); // Carrega o idioma salvo
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => themeProvider),
-        ChangeNotifierProvider(create: (context) => LanguageProvider()),
+        ChangeNotifierProvider(create: (context) => languageProvider),
       ],
       child: const MyApp(),
     ),
@@ -33,12 +35,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    super.initState();
-    _loadThemeMode();
-  }
-
   @override
   Widget build(BuildContext context) {
     return DynamicColorBuilder(
@@ -58,16 +54,16 @@ class _MyAppState extends State<MyApp> {
               ],
               debugShowCheckedModeBanner: false,
               supportedLocales: AppLocalizations.supportedLocales,
-              locale: languageProvider.locale, // Idioma atual
+              locale: languageProvider.locale, // Aplica o idioma atual
               title: 'Byewall',
               themeMode: themeProvider.themeMode, // Aplica o tema atual
               theme: ThemeData(
                 colorScheme: lightColorScheme,
-                useMaterial3: true, // Ativa o Material 3
+                useMaterial3: true,
               ),
               darkTheme: ThemeData(
                 colorScheme: darkColorScheme,
-                useMaterial3: true, // Ativa o Material 3
+                useMaterial3: true,
               ),
               home: Scaffold(
                 appBar: AppBar(
@@ -96,8 +92,4 @@ class _MyAppState extends State<MyApp> {
       },
     );
   }
-}
-
-Future<void> _loadThemeMode() async {
-  final prefs = await SharedPreferences.getInstance();
 }

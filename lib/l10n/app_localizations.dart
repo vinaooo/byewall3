@@ -17,9 +17,13 @@ class AppLocalizations {
   late Map<String, String> _localizedStrings;
 
   Future<bool> load() async {
-    String jsonString = await rootBundle.loadString(
-      'lang/${locale.languageCode}_${locale.countryCode}.json', // Ajustado para considerar o código completo
-    );
+    // Verifica se o countryCode é nulo e ajusta o caminho do arquivo
+    String localePath =
+        locale.countryCode != null
+            ? 'lang/${locale.languageCode}_${locale.countryCode}.json'
+            : 'lang/${locale.languageCode}.json';
+
+    String jsonString = await rootBundle.loadString(localePath);
     Map<String, dynamic> jsonMap = json.decode(jsonString);
 
     _localizedStrings = jsonMap.map((key, value) {
@@ -38,6 +42,7 @@ class AppLocalizations {
     Locale('en', 'US'),
     Locale('es', 'ES'),
     Locale('pt', 'BR'), // Alterado para Português do Brasil
+    Locale('pl'), // Polonês
   ];
 }
 
