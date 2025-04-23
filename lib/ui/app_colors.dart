@@ -29,12 +29,12 @@ class AppColors {
 
   static double _getLightness(BuildContext context) {
     bool isDarkTheme = _getIsDarkTheme(context);
-    return isDarkTheme ? 0.01 : 0.91;
+    return isDarkTheme ? 0.2 : 0.91;
   }
 
   static double _getSaturation(BuildContext context) {
     bool isDarkTheme = _getIsDarkTheme(context);
-    return isDarkTheme ? 0.01 : 0.25;
+    return isDarkTheme ? 0.1 : 0.25;
   }
 
   static double _getAlpha(BuildContext context) {

@@ -15,7 +15,7 @@ void main() {
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
         ChangeNotifierProvider(create: (context) => LanguageProvider()),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
@@ -53,43 +53,31 @@ class MyApp extends StatelessWidget {
                 colorScheme: darkColorScheme,
                 useMaterial3: true, // Ativa o Material 3
               ),
-              home: MyHomePage(),
+              home: Scaffold(
+                appBar: AppBar(
+                  title: Text('Byewall'),
+                  actions: [
+                    Builder(
+                      builder:
+                          (context) => IconButton(
+                            icon: const Icon(Icons.settings),
+                            onPressed: () {
+                              Navigator.of(context, rootNavigator: true).push(
+                                MaterialPageRoute(
+                                  builder: (context) => const SettingsScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                    ),
+                  ],
+                ),
+                body: MainScreen(),
+              ),
             );
           },
         );
       },
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          AppLocalizations.of(context)?.translate('byewall') ?? "Byewall",
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SettingsScreen()),
-              );
-            },
-          ),
-        ],
-      ),
-      body: MainScreen(),
     );
   }
 }

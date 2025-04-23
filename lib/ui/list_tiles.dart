@@ -9,6 +9,7 @@ class SettingsTiles extends StatelessWidget {
   final String title;
   final String subtitle;
   final VoidCallback onPressed;
+  final IconData trailing;
 
   const SettingsTiles({
     super.key,
@@ -19,6 +20,7 @@ class SettingsTiles extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.onPressed,
+    required this.trailing,
   });
 
   get onTap => null;
@@ -36,10 +38,9 @@ class SettingsTiles extends StatelessWidget {
         ),
       ),
       child: ListTile(
-        leading: Icon(Icons.map),
         title: Text(title),
         subtitle: Text(subtitle),
-        trailing: Icon(Icons.arrow_forward),
+        trailing: Icon(trailing),
         onTap: onPressed,
       ),
     );

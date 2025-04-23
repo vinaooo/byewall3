@@ -21,7 +21,15 @@ class ThemeProvider extends ChangeNotifier {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: AppColors.getDialogBoxColor(context),
+          backgroundColor:
+              themeProvider.themeMode == ThemeMode.dark ||
+                      (themeProvider.themeMode == ThemeMode.system &&
+                          MediaQuery.of(context).platformBrightness ==
+                              Brightness.dark)
+                  ? HSLColor.fromColor(
+                    Theme.of(context).colorScheme.surface,
+                  ).withLightness(0.21).toColor()
+                  : null,
           title: Column(
             children: [
               Icon(Icons.brightness_6),
@@ -36,59 +44,80 @@ class ThemeProvider extends ChangeNotifier {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: AppColors.getDialogTileColor(
-                    context,
-                  ), // Adicione uma cor de fundo
+                  color:
+                      themeProvider.themeMode == ThemeMode.system
+                          ? HSLColor.fromColor(
+                            Theme.of(context).colorScheme.secondary,
+                          ).withSaturation(0.6).withLightness(0.77).toColor()
+                          : null,
+
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20),
                   ),
                 ),
-                child: ListTile(
-                  title: Text(
-                    AppLocalizations.of(
-                          context,
-                        )?.translate('theme_mode_system') ??
-                        "System",
-                  ),
-                  leading: Radio<ThemeMode>(
-                    value: ThemeMode.system,
-                    groupValue: themeProvider.themeMode,
-                    onChanged: (ThemeMode? value) {
-                      themeProvider.setThemeMode(value!);
-                      Navigator.of(context).pop();
-                    },
+                child: InkWell(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
                   ),
                   onTap: () {
-                    // Altera o valor do Radio ao tocar em qualquer parte do ListTile
                     themeProvider.setThemeMode(ThemeMode.system);
                     Navigator.of(context).pop();
                   },
+                  child: ListTile(
+                    title: Text(
+                      style: TextStyle(
+                        color:
+                            themeProvider.themeMode == ThemeMode.system
+                                ? Theme.of(context).colorScheme.onSecondary
+                                : null,
+                      ),
+                      AppLocalizations.of(
+                            context,
+                          )?.translate('theme_mode_system') ??
+                          "System",
+                    ),
+                    leading: Icon(
+                      Icons.check,
+                      color:
+                          themeProvider.themeMode == ThemeMode.system
+                              ? Theme.of(context).colorScheme.onSecondary
+                              : Colors.transparent,
+                    ),
+                  ),
                 ),
               ),
               Container(
                 decoration: BoxDecoration(
-                  color: AppColors.getDialogTileColor(
-                    context,
-                  ), // Adicione uma cor de fundo
+                  color:
+                      themeProvider.themeMode == ThemeMode.light
+                          ? HSLColor.fromColor(
+                            Theme.of(context).colorScheme.secondary,
+                          ).withSaturation(0.6).withLightness(0.77).toColor()
+                          : null,
                 ),
                 child: ListTile(
                   title: Text(
+                    style: TextStyle(
+                      color:
+                          themeProvider.themeMode == ThemeMode.light
+                              ? Theme.of(context).colorScheme.onSecondary
+                              : null,
+                    ),
                     AppLocalizations.of(
                           context,
                         )?.translate('theme_mode_light') ??
                         "Light",
                   ),
-                  leading: Radio<ThemeMode>(
-                    value: ThemeMode.light,
-                    groupValue: themeProvider.themeMode,
-                    onChanged: (ThemeMode? value) {
-                      themeProvider.setThemeMode(value!);
-                      Navigator.of(context).pop();
-                    },
+                  leading: Icon(
+                    Icons.check,
+                    color:
+                        themeProvider.themeMode == ThemeMode.light
+                            ? Theme.of(context).colorScheme.onSecondary
+                            : Colors.transparent,
                   ),
                   onTap: () {
-                    // Altera o valor do Radio ao tocar em qualquer parte do ListTile
                     themeProvider.setThemeMode(ThemeMode.light);
                     Navigator.of(context).pop();
                   },
@@ -96,34 +125,41 @@ class ThemeProvider extends ChangeNotifier {
               ),
               Container(
                 decoration: BoxDecoration(
-                  color: AppColors.getDialogTileColor(
-                    context,
-                  ), // Adicione uma cor de fundo
+                  color:
+                      themeProvider.themeMode == ThemeMode.dark
+                          ? HSLColor.fromColor(
+                            Theme.of(context).colorScheme.secondary,
+                          ).withSaturation(0.6).withLightness(0.77).toColor()
+                          : null,
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(20),
                     bottomRight: Radius.circular(20),
                   ),
                 ),
-                child: ListTile(
-                  title: Text(
-                    AppLocalizations.of(
-                          context,
-                        )?.translate('theme_mode_dark') ??
-                        "Dark",
-                  ),
-                  leading: Radio<ThemeMode>(
-                    value: ThemeMode.dark,
-                    groupValue: themeProvider.themeMode,
-                    onChanged: (ThemeMode? value) {
-                      themeProvider.setThemeMode(value!);
-                      Navigator.of(context).pop();
-                    },
+                child: InkWell(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
                   ),
                   onTap: () {
-                    // Altera o valor do Radio ao tocar em qualquer parte do ListTile
-                    themeProvider.setThemeMode(ThemeMode.dark);
+                    themeProvider.setThemeMode(ThemeMode.system);
                     Navigator.of(context).pop();
                   },
+                  child: ListTile(
+                    title: Text(
+                      AppLocalizations.of(
+                            context,
+                          )?.translate('theme_mode_dark') ??
+                          "Dark",
+                    ),
+                    leading: Icon(
+                      Icons.check,
+                      color:
+                          themeProvider.themeMode == ThemeMode.dark
+                              ? Theme.of(context).colorScheme.onSecondary
+                              : Colors.transparent,
+                    ),
+                  ),
                 ),
               ),
             ],

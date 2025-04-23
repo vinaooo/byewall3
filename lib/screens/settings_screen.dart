@@ -95,13 +95,14 @@ class SettingsScreen extends StatelessWidget {
                             )?.translate('theme_mode') ??
                             "Theme Mode",
                         subtitle: themeSubtitle,
+                        trailing: Icons.arrow_drop_down,
                         onPressed: () {
                           ThemeProvider.show(context);
                         },
                       );
                     },
                   ),
-                  SizedBox(height: 5),
+                  SizedBox(height: 2),
                   SettingsTiles(
                     topLeft: 0,
                     topRight: 0,
@@ -109,9 +110,11 @@ class SettingsScreen extends StatelessWidget {
                     bottomRight: 0,
                     title: 'cor',
                     subtitle: 'cor',
+                    trailing: Icons.arrow_drop_down,
+
                     onPressed: () {},
                   ),
-                  SizedBox(height: 5),
+                  SizedBox(height: 2),
                   SettingsTiles(
                     topLeft: 0,
                     topRight: 0,
@@ -119,16 +122,21 @@ class SettingsScreen extends StatelessWidget {
                     bottomRight: 0,
                     title: 'Amoled',
                     subtitle: 'amoled',
+                    trailing: Icons.arrow_drop_down,
+
                     onPressed: () {},
                   ),
-                  SizedBox(height: 5),
+                  SizedBox(height: 2),
                   SettingsTiles(
                     topLeft: 0,
                     topRight: 0,
-                    bottomLeft: 0,
-                    bottomRight: 0,
+                    bottomLeft: 20,
+                    bottomRight: 20,
                     title: 'Ajuda',
+
                     subtitle: 'Ajuda e suporte',
+                    trailing: Icons.arrow_drop_down,
+
                     onPressed: () {},
                   ),
                 ],
@@ -153,6 +161,8 @@ class SettingsScreen extends StatelessWidget {
                           context,
                         )?.translate('language_subtitle') ??
                         "Select your language",
+                    trailing: Icons.arrow_drop_down,
+
                     onPressed: () {
                       LanguageProvider.selectLanguage(context, _localeKey);
                     },
