@@ -12,6 +12,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Necessário para inicializar SharedPreferences antes do runApp
   final themeProvider = ThemeProvider();
   await themeProvider.loadTheme(); // Carrega o tema salvo
+  await themeProvider.loadBlackBackground(); // Carrega o fundo preto salvo
 
   final languageProvider = LanguageProvider();
   await languageProvider.loadLanguage(); // Carrega o idioma salvo
@@ -62,7 +63,12 @@ class _MyAppState extends State<MyApp> {
                 useMaterial3: true,
               ),
               darkTheme: ThemeData(
-                colorScheme: darkColorScheme,
+                colorScheme: darkColorScheme.copyWith(
+                  surface:
+                      themeProvider.useBlackBackground
+                          ? Colors.black
+                          : darkColorScheme.surface,
+                ),
                 useMaterial3: true,
               ),
               home: Scaffold(

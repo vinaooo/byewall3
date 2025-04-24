@@ -6,8 +6,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 // Classe que gerencia o estado do tema
 class ThemeProvider extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system;
+  bool _useBlackBackground = false;
 
   ThemeMode get themeMode => _themeMode;
+  bool get useBlackBackground => _useBlackBackground;
+
+  Future<void> saveBlackBackground(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('useBlackBackground', value);
+  }
+
+  Future<void> loadBlackBackground() async {
+    final prefs = await SharedPreferences.getInstance();
+    _useBlackBackground = prefs.getBool('useBlackBackground') ?? false;
+    notifyListeners(); // Notifica os widgets que dependem desse estado
+  }
 
   Future<void> saveTheme(ThemeMode themeMode) async {
     final prefs = await SharedPreferences.getInstance();
@@ -19,6 +32,11 @@ class ThemeProvider extends ChangeNotifier {
     final themeIndex = prefs.getInt('themeMode') ?? ThemeMode.system.index;
     _themeMode = ThemeMode.values[themeIndex];
     notifyListeners(); // Notifica os widgets que dependem desse estado
+  }
+
+  void toggleBlackBackground(bool value) {
+    _useBlackBackground = value;
+    notifyListeners();
   }
 
   void setThemeMode(ThemeMode themeMode) {

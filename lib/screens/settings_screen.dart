@@ -95,7 +95,8 @@ class SettingsScreen extends StatelessWidget {
                             )?.translate('theme_mode') ??
                             "Theme Mode",
                         subtitle: themeSubtitle,
-                        trailing: Icons.arrow_drop_down,
+                        icon: Icons.arrow_drop_down,
+                        switchEnable: false,
                         onPressed: () {
                           ThemeProvider.show(context);
                         },
@@ -110,20 +111,8 @@ class SettingsScreen extends StatelessWidget {
                     bottomRight: 0,
                     title: 'cor',
                     subtitle: 'cor',
-                    trailing: Icons.arrow_drop_down,
-
-                    onPressed: () {},
-                  ),
-                  SizedBox(height: 2),
-                  SettingsTiles(
-                    topLeft: 0,
-                    topRight: 0,
-                    bottomLeft: 0,
-                    bottomRight: 0,
-                    title: 'Amoled',
-                    subtitle: 'amoled',
-                    trailing: Icons.arrow_drop_down,
-
+                    icon: Icons.arrow_drop_down,
+                    switchEnable: false,
                     onPressed: () {},
                   ),
                   SizedBox(height: 2),
@@ -132,11 +121,10 @@ class SettingsScreen extends StatelessWidget {
                     topRight: 0,
                     bottomLeft: 20,
                     bottomRight: 20,
-                    title: 'Ajuda',
-
-                    subtitle: 'Ajuda e suporte',
-                    trailing: Icons.arrow_drop_down,
-
+                    title: 'Amoled',
+                    subtitle: 'Use black background for AMOLED screens',
+                    icon: null,
+                    switchEnable: true,
                     onPressed: () {},
                   ),
                 ],
@@ -151,8 +139,8 @@ class SettingsScreen extends StatelessWidget {
                   SettingsTiles(
                     topLeft: 20,
                     topRight: 20,
-                    bottomLeft: 0,
-                    bottomRight: 0,
+                    bottomLeft: 20,
+                    bottomRight: 20,
                     title:
                         AppLocalizations.of(context)?.translate('language') ??
                         "Language",
@@ -161,8 +149,8 @@ class SettingsScreen extends StatelessWidget {
                           context,
                         )?.translate('language_subtitle') ??
                         "Select your language",
-                    trailing: Icons.arrow_drop_down,
-
+                    icon: Icons.arrow_drop_down,
+                    switchEnable: false,
                     onPressed: () {
                       LanguageProvider.selectLanguage(context, _localeKey);
                     },

@@ -47,16 +47,16 @@ class LanguageProvider extends ChangeNotifier {
     notifyListeners(); // Notifica os ouvintes sobre a mudança
   }
 
-  @override
-  bool isSupported(Locale locale) {
-    return AppLocalizations.supportedLocales.any(
-      (supportedLocale) =>
-          supportedLocale.languageCode == locale.languageCode &&
-          (supportedLocale.countryCode == locale.countryCode ||
-              supportedLocale.countryCode == null ||
-              locale.countryCode == null),
-    );
-  }
+  // @override
+  // bool isSupported(Locale locale) {
+  //   return AppLocalizations.supportedLocales.any(
+  //     (supportedLocale) =>
+  //         supportedLocale.languageCode == locale.languageCode &&
+  //         (supportedLocale.countryCode == locale.countryCode ||
+  //             supportedLocale.countryCode == null ||
+  //             locale.countryCode == null),
+  //   );
+  // }
 
   /// Exibe um diálogo para o usuário selecionar o idioma
   static void selectLanguage(
