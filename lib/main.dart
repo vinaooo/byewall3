@@ -82,7 +82,7 @@ class _MyAppState extends State<MyApp> {
                             onPressed: () {
                               Navigator.of(context, rootNavigator: true).push(
                                 MaterialPageRoute(
-                                  builder: (context) => const SettingsScreen(),
+                                  builder: (context) => SettingsScreen(),
                                 ),
                               );
                             },

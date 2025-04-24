@@ -4,9 +4,12 @@ import 'package:byewall3/ui/list_tiles.dart';
 import 'package:byewall3/ui/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:byewall3/utils/settings_manager.dart';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+  SettingsScreen({super.key});
+
+  final SettingsManager _settingsManager = SettingsManager();
 
   String _localeKey(Locale locale) {
     // Ex: Locale('en', 'US') => 'en_US'
@@ -157,6 +160,85 @@ class SettingsScreen extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    SizedBox(
+                      height: 20,
+                      child: Center(
+                        child: Text(
+                          AppLocalizations.of(
+                                context,
+                              )?.translate('appearance') ??
+                              "Appearance",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                SettingsTiles(
+                  topLeft: 20,
+                  topRight: 20,
+                  bottomLeft: 0,
+                  bottomRight: 0,
+                  title: 'Export',
+                  subtitle: 'Export your settings (coming soon)',
+                  icon: Icons.download,
+                  switchEnable: false,
+                  onPressed: () {},
+                ),
+                SizedBox(height: 2),
+                SettingsTiles(
+                  topLeft: 0,
+                  topRight: 0,
+                  bottomLeft: 20,
+                  bottomRight: 20,
+                  title: 'Reset',
+                  subtitle: 'Reset all settings to default',
+                  icon: Icons.restore,
+                  switchEnable: false,
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Reset Settings'),
+                          content: Text(
+                            'Are you sure you want to reset all settings to default?\nThis action cannot be undone.\nThe app will close after this action.',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () async {
+                                final navigator = Navigator.of(context);
+                                await _settingsManager.clearAllKeys();
+                                navigator.pop(); // Fecha o diálogo
+                                _settingsManager
+                                    .closeApp(); // Fecha o aplicativo
+                              },
+                              child: Text('OK'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Fecha o diálogo
+                              },
+                              child: Text('Cancel'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         ],
