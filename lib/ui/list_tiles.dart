@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SettingsTiles extends StatelessWidget {
-  final int topLeft;
-  final int topRight;
-  final int bottomRight;
-  final int bottomLeft;
+  final int top;
+  final int bottom;
   final String title;
   final String subtitle;
   final VoidCallback onPressed;
@@ -16,10 +14,8 @@ class SettingsTiles extends StatelessWidget {
 
   const SettingsTiles({
     super.key,
-    required this.topLeft,
-    required this.topRight,
-    required this.bottomRight,
-    required this.bottomLeft,
+    required this.top,
+    required this.bottom,
     required this.title,
     required this.subtitle,
     required this.onPressed,
@@ -37,10 +33,10 @@ class SettingsTiles extends StatelessWidget {
       color: Colors.transparent, // Necessário para o efeito ripple funcionar
       child: InkWell(
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(topLeft.toDouble()),
-          topRight: Radius.circular(topRight.toDouble()),
-          bottomLeft: Radius.circular(bottomLeft.toDouble()),
-          bottomRight: Radius.circular(bottomRight.toDouble()),
+          topLeft: Radius.circular(top.toDouble()),
+          topRight: Radius.circular(top.toDouble()),
+          bottomLeft: Radius.circular(bottom.toDouble()),
+          bottomRight: Radius.circular(bottom.toDouble()),
         ),
         onTap: () {
           if (switchEnable) {
@@ -55,10 +51,10 @@ class SettingsTiles extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.getTileColor(context), // Adicione uma cor de fundo
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(topLeft.toDouble()),
-              topRight: Radius.circular(topRight.toDouble()),
-              bottomLeft: Radius.circular(bottomLeft.toDouble()),
-              bottomRight: Radius.circular(bottomRight.toDouble()),
+              topLeft: Radius.circular(top.toDouble()),
+              topRight: Radius.circular(top.toDouble()),
+              bottomLeft: Radius.circular(bottom.toDouble()),
+              bottomRight: Radius.circular(bottom.toDouble()),
             ),
           ),
           child: ListTile(

@@ -16,23 +16,14 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   final SettingsManager _settingsManager = SettingsManager();
   int _selectedIndex = 0;
-
+  static const double minTitlePadding = 8.0;
+  static const double maxTitlePadding = 50.0;
+  static const double maxFontSize = 48.0;
   @override
   void initState() {
     super.initState();
     // Inicialize apenas variáveis que não dependem do BuildContext aqui
   }
-
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //   // Inicialize _pages aqui, pois depende do BuildContext
-  //   _pages = <Widget>[
-  //     Center(child: generalSettings(context)),
-  //     Center(child: Text('Pesquisar', style: TextStyle(fontSize: 24))),
-  //     Center(child: Text('Perfil', style: TextStyle(fontSize: 24))),
-  //   ];
-  // }
 
   String _localeKey(Locale locale) {
     // Ex: Locale('en', 'US') => 'en_US'
@@ -46,13 +37,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: NavigationBar(
-        // selectedIconTheme: IconThemeData(
-        //   color: Theme.of(context).colorScheme.primary,
-        // ),
-        // currentIndex: _selectedIndex,
-        // onTap: _onItemTapped,
-        // // selectedItemColor: Colors.blue,
-        // // unselectedItemColor: Colors.grey,
         onDestinationSelected: (int index) {
           setState(() {
             _selectedIndex = index;
@@ -61,15 +45,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
         selectedIndex: _selectedIndex,
         destinations: const <Widget>[
           NavigationDestination(
+            selectedIcon: Icon(Icons.build),
             icon: Icon(Icons.build_outlined),
             label: 'General',
           ),
           NavigationDestination(
-            // icon: Icon(Icons.extension_outlined),
+            selectedIcon: Icon(Icons.list_outlined),
             icon: Icon(Icons.list_rounded),
             label: 'Services',
           ),
           NavigationDestination(
+            selectedIcon: Icon(Icons.info),
             icon: Icon(Icons.info_outlined),
             label: 'About',
           ),
@@ -79,15 +65,80 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body:
           <Widget>[
             generalSettings(context),
-            Center(child: Text('Pesquisar', style: TextStyle(fontSize: 24))),
-            Center(child: Text('Perfil', style: TextStyle(fontSize: 24))),
+            serviceSettings(),
+            aboutSettings(),
           ][_selectedIndex],
     );
   }
 
-  CustomScrollView generalSettings(BuildContext context) {
+  CustomScrollView aboutSettings() {
     return CustomScrollView(
-      slivers: <Widget>[
+      slivers: [
+        SliverAppBar(
+          surfaceTintColor: Colors.transparent,
+          expandedHeight: 160,
+          pinned: true,
+          snap: true,
+          floating: true,
+          flexibleSpace: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              final double minExtent =
+                  kToolbarHeight + MediaQuery.of(context).padding.top;
+              final double maxExtent = 160.0;
+              final double t = ((constraints.maxHeight - minExtent) /
+                      (maxExtent - minExtent))
+                  .clamp(0.0, 1.0);
+
+              // Padding: da esquerda para a direita
+              final double horizontalPadding =
+                  maxTitlePadding - (maxTitlePadding - minTitlePadding) * t;
+
+              // Tamanho da fonte: maior expandido, menor colapsado
+              final double defaultFontSize =
+                  Theme.of(context).textTheme.titleLarge?.fontSize ?? 16.0;
+              final double fontSize =
+                  defaultFontSize + (maxFontSize - defaultFontSize) * t;
+
+              return Stack(
+                fit: StackFit.expand,
+                children: [
+                  Positioned(
+                    left: horizontalPadding,
+                    bottom: 12,
+                    child: Text(
+                      AppLocalizations.of(context)?.translate('about') ??
+                          "About",
+                      style: TextStyle(
+                        fontSize: fontSize,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+        SliverList(
+          delegate: SliverChildBuilderDelegate((
+            BuildContext context,
+            int index,
+          ) {
+            return SizedBox(
+              height: 100.0,
+              child: Center(
+                child: Text('$index', textScaler: const TextScaler.linear(5)),
+              ),
+            );
+          }, childCount: 20),
+        ),
+      ],
+    );
+  }
+
+  CustomScrollView serviceSettings() {
+    return CustomScrollView(
+      slivers: [
         SliverAppBar(
           pinned: true,
           snap: true,
@@ -96,13 +147,84 @@ class _SettingsScreenState extends State<SettingsScreen> {
           expandedHeight: 120.0,
           flexibleSpace: FlexibleSpaceBar(
             title: Text(
-              AppLocalizations.of(context)?.translate('settings') ?? "Settings",
+              AppLocalizations.of(context)?.translate('services') ?? "Services",
             ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  CustomScrollView generalSettings(BuildContext context) {
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverAppBar(
+          surfaceTintColor: Colors.transparent,
+          toolbarHeight: 65,
+          expandedHeight: 200,
+          pinned: true,
+          snap: true,
+          floating: true,
+          flexibleSpace: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              final double minExtent =
+                  kToolbarHeight + MediaQuery.of(context).padding.top;
+              final double maxExtent = 200.0;
+              final double t = ((constraints.maxHeight - minExtent) /
+                      (maxExtent - minExtent))
+                  .clamp(0.0, 1.0);
+
+              // Padding: da esquerda para a direita
+              final double horizontalPadding =
+                  maxTitlePadding - (maxTitlePadding - minTitlePadding) * t;
+
+              // Tamanho da fonte: maior expandido, menor colapsado
+              final double defaultFontSize =
+                  Theme.of(context).textTheme.titleLarge?.fontSize ?? 16.0;
+              final double fontSize =
+                  defaultFontSize + (maxFontSize - defaultFontSize) * t;
+
+              return Stack(
+                fit: StackFit.expand,
+                children: [
+                  Positioned(
+                    left: horizontalPadding,
+                    // Ajusta dinamicamente com base no estado de colapso:
+                    bottom: (kToolbarHeight - fontSize) / 2 + (-10 * (1 - t)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)?.translate('General') ??
+                              "General",
+                          style: TextStyle(
+                            fontSize: fontSize,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Opacity(
+                          opacity: t * t * t,
+                          child: Text(
+                            "Configure tema, idioma e outros",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color:
+                                  Theme.of(context).textTheme.bodyMedium?.color,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            padding: const EdgeInsets.fromLTRB(8, 16, 8, 0),
             child: Row(
               children: [
                 SizedBox(
@@ -151,10 +273,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             'Dark';
                     }
                     return SettingsTiles(
-                      topLeft: 20,
-                      topRight: 20,
-                      bottomLeft: 0,
-                      bottomRight: 0,
+                      top: 20,
+                      bottom: 0,
                       title:
                           AppLocalizations.of(
                             context,
@@ -171,10 +291,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 SizedBox(height: 2),
                 SettingsTiles(
-                  topLeft: 0,
-                  topRight: 0,
-                  bottomLeft: 0,
-                  bottomRight: 0,
+                  top: 0,
+                  bottom: 0,
                   title: 'cor',
                   subtitle: 'cor',
                   icon: Icons.arrow_drop_down,
@@ -183,10 +301,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 SizedBox(height: 2),
                 SettingsTiles(
-                  topLeft: 0,
-                  topRight: 0,
-                  bottomLeft: 20,
-                  bottomRight: 20,
+                  top: 0,
+                  bottom: 20,
                   title: 'Amoled',
                   subtitle: 'Use black background for AMOLED screens',
                   icon: null,
@@ -203,10 +319,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: Column(
               children: [
                 SettingsTiles(
-                  topLeft: 20,
-                  topRight: 20,
-                  bottomLeft: 20,
-                  bottomRight: 20,
+                  top: 20,
+                  bottom: 20,
                   title:
                       AppLocalizations.of(context)?.translate('language') ??
                       "Language",
@@ -234,8 +348,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     height: 20,
                     child: Center(
                       child: Text(
-                        AppLocalizations.of(context)?.translate('appearance') ??
-                            "Appearance",
+                        AppLocalizations.of(context)?.translate('your_data') ??
+                            "Your data",
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                           fontWeight: FontWeight.w600,
@@ -247,10 +361,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
 
               SettingsTiles(
-                topLeft: 20,
-                topRight: 20,
-                bottomLeft: 0,
-                bottomRight: 0,
+                top: 20,
+                bottom: 0,
                 title: 'Export',
                 subtitle: 'Export your settings (coming soon)',
                 icon: Icons.download,
@@ -259,10 +371,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               SizedBox(height: 2),
               SettingsTiles(
-                topLeft: 0,
-                topRight: 0,
-                bottomLeft: 20,
-                bottomRight: 20,
+                top: 0,
+                bottom: 20,
                 title: 'Reset',
                 subtitle: 'Reset all settings to default',
                 icon: Icons.restore,
@@ -300,6 +410,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ],
           ),
+        ),
+        SliverList(
+          delegate: SliverChildBuilderDelegate((
+            BuildContext context,
+            int index,
+          ) {
+            return SizedBox(
+              height: 100.0,
+              child: Center(
+                child: Text('$index', textScaler: const TextScaler.linear(5)),
+              ),
+            );
+          }, childCount: 20),
         ),
       ],
     );

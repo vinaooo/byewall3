@@ -78,7 +78,7 @@ class _MyAppState extends State<MyApp> {
                     Builder(
                       builder:
                           (context) => IconButton(
-                            icon: const Icon(Icons.settings),
+                            icon: const Icon(Icons.settings_outlined),
                             onPressed: () {
                               Navigator.of(context, rootNavigator: true).push(
                                 MaterialPageRoute(
