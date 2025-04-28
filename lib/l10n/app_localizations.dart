@@ -16,33 +16,73 @@ class AppLocalizations {
 
   late Map<String, String> _localizedStrings;
 
+  // Fallback estático para inglês
+  static Map<String, String>? _fallbackStrings;
+
+  // Carrega o fallback apenas uma vez
+  static Future<void> loadFallback() async {
+    if (_fallbackStrings != null) return;
+    try {
+      String jsonString = await rootBundle.loadString('lang/en_US.json');
+      Map<String, dynamic> jsonMap = json.decode(jsonString);
+      _fallbackStrings = jsonMap.map(
+        (key, value) => MapEntry(key, value.toString()),
+      );
+    } catch (e) {
+      _fallbackStrings = {};
+    }
+  }
+
   Future<bool> load() async {
-    // Verifica se o countryCode é nulo e ajusta o caminho do arquivo
-    String localePath =
-        locale.countryCode != null
+    // Carrega o fallback EN uma vez
+    await AppLocalizations.loadFallback();
+
+    // Tenta carregar com countryCode, depois sem
+    String pathWithCountry =
+        locale.countryCode != null && locale.countryCode!.isNotEmpty
             ? 'lang/${locale.languageCode}_${locale.countryCode}.json'
-            : 'lang/${locale.languageCode}.json';
+            : '';
+    String pathWithoutCountry = 'lang/${locale.languageCode}.json';
 
-    String jsonString = await rootBundle.loadString(localePath);
-    Map<String, dynamic> jsonMap = json.decode(jsonString);
+    Map<String, dynamic> jsonMap = {};
+    try {
+      if (pathWithCountry.isNotEmpty) {
+        String jsonString = await rootBundle.loadString(pathWithCountry);
+        jsonMap = json.decode(jsonString);
+      } else {
+        throw Exception('No country code');
+      }
+    } catch (_) {
+      try {
+        String jsonString = await rootBundle.loadString(pathWithoutCountry);
+        jsonMap = json.decode(jsonString);
+      } catch (_) {
+        jsonMap = {};
+      }
+    }
 
-    _localizedStrings = jsonMap.map((key, value) {
-      return MapEntry(key, value.toString());
-    });
+    _localizedStrings = jsonMap.map(
+      (key, value) => MapEntry(key, value.toString()),
+    );
 
     return true;
   }
 
-  String? translate(String key) {
-    return _localizedStrings[key];
+  String translate(String key) {
+    String? result = _localizedStrings[key];
+    if (result == null && _fallbackStrings != null) {
+      result = _fallbackStrings![key];
+    }
+    // Retorne a chave como fallback para facilitar debug
+    return result ?? key;
   }
 
-  /// A list of this localizations delegate's supported locales.
+  /// Lista de idiomas suportados
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en', 'US'),
     Locale('es', 'ES'),
-    Locale('pt', 'BR'), // Alterado para Português do Brasil
-    Locale('pl'), // Polonês
+    Locale('pt', 'BR'),
+    Locale('pl'),
   ];
 }
 
@@ -52,11 +92,9 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) {
+    // Suporte para qualquer variante do idioma suportado
     return AppLocalizations.supportedLocales.any(
-      (supportedLocale) =>
-          supportedLocale.languageCode == locale.languageCode &&
-          supportedLocale.countryCode ==
-              locale.countryCode, // Verifica idioma e região
+      (supportedLocale) => supportedLocale.languageCode == locale.languageCode,
     );
   }
 
