@@ -16,13 +16,28 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   final SettingsManager _settingsManager = SettingsManager();
   int _selectedIndex = 0;
+
+  final ScrollController _generalScrollController = ScrollController();
+  final ScrollController _serviceScrollController = ScrollController();
+  final ScrollController _aboutScrollController = ScrollController();
+
   static const double minTitlePadding = 8.0;
   static const double maxTitlePadding = 50.0;
   static const double maxFontSize = 48.0;
+
   @override
   void initState() {
     super.initState();
     // Inicialize apenas variáveis que não dependem do BuildContext aqui
+  }
+
+  @override
+  void dispose() {
+    // Certifique-se de descartar os controladores ao sair
+    _generalScrollController.dispose();
+    _serviceScrollController.dispose();
+    _aboutScrollController.dispose();
+    super.dispose();
   }
 
   String _localeKey(Locale locale) {
@@ -71,54 +86,68 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  CustomScrollView aboutSettings() {
-    return CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          surfaceTintColor: Colors.transparent,
-          expandedHeight: 160,
-          pinned: true,
-          snap: true,
-          floating: true,
-          flexibleSpace: LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
-              final double minExtent =
-                  kToolbarHeight + MediaQuery.of(context).padding.top;
-              final double maxExtent = 160.0;
-              final double t = ((constraints.maxHeight - minExtent) /
-                      (maxExtent - minExtent))
-                  .clamp(0.0, 1.0);
+  SliverAppBar buildSliverAppBar(
+    String title,
+    double expandedHeight,
+    double minExtent,
+  ) {
+    double calculateT(double currentHeight) {
+      return ((currentHeight - minExtent) / (expandedHeight - minExtent)).clamp(
+        0.0,
+        1.0,
+      );
+    }
 
-              // Padding: da esquerda para a direita
-              final double horizontalPadding =
-                  maxTitlePadding - (maxTitlePadding - minTitlePadding) * t;
+    return SliverAppBar(
+      surfaceTintColor: Colors.transparent,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      expandedHeight: expandedHeight,
+      pinned: true,
+      floating: false,
+      snap: false,
+      flexibleSpace: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          final double t = calculateT(constraints.maxHeight);
 
-              // Tamanho da fonte: maior expandido, menor colapsado
-              final double defaultFontSize =
-                  Theme.of(context).textTheme.titleLarge?.fontSize ?? 16.0;
-              final double fontSize =
-                  defaultFontSize + (maxFontSize - defaultFontSize) * t;
+          final double horizontalPadding =
+              maxTitlePadding - (maxTitlePadding - minTitlePadding) * t;
+          final double defaultFontSize =
+              Theme.of(context).textTheme.titleLarge?.fontSize ?? 16.0;
+          final double fontSize =
+              defaultFontSize + (maxFontSize - defaultFontSize) * t;
 
-              return Stack(
-                fit: StackFit.expand,
-                children: [
-                  Positioned(
-                    left: horizontalPadding,
-                    bottom: 12,
-                    child: Text(
-                      AppLocalizations.of(context)?.translate('about') ??
-                          "About",
-                      style: TextStyle(
-                        fontSize: fontSize,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              Positioned(
+                left: horizontalPadding,
+                bottom: 12,
+                child: Text(
+                  AppLocalizations.of(context)?.translate(title) ?? title,
+                  style: TextStyle(
+                    fontSize: fontSize,
+                    fontWeight: FontWeight.w600,
                   ),
-                ],
-              );
-            },
-          ),
-        ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  CustomScrollView aboutSettings() {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double expandedHeight = screenHeight * 0.25;
+    final double minExtent =
+        kToolbarHeight + MediaQuery.of(context).padding.top;
+
+    return CustomScrollView(
+      key: const PageStorageKey('aboutSettings'),
+      controller: _aboutScrollController,
+      slivers: [
+        buildSliverAppBar('about', expandedHeight, minExtent),
         SliverList(
           delegate: SliverChildBuilderDelegate((
             BuildContext context,
@@ -137,91 +166,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   CustomScrollView serviceSettings() {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double expandedHeight = screenHeight * 0.25;
+    final double minExtent =
+        kToolbarHeight + MediaQuery.of(context).padding.top;
+
     return CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          pinned: true,
-          snap: true,
-          floating: true,
-          surfaceTintColor: Colors.transparent,
-          expandedHeight: 120.0,
-          flexibleSpace: FlexibleSpaceBar(
-            title: Text(
-              AppLocalizations.of(context)?.translate('services') ?? "Services",
-            ),
-          ),
-        ),
-      ],
+      key: const PageStorageKey('serviceSettings'),
+      controller: _serviceScrollController,
+      slivers: [buildSliverAppBar('services', expandedHeight, minExtent)],
     );
   }
 
   CustomScrollView generalSettings(BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double expandedHeight = screenHeight * 0.25;
+    final double minExtent =
+        kToolbarHeight + MediaQuery.of(context).padding.top;
+
     return CustomScrollView(
+      key: const PageStorageKey('generalSettings'),
+      controller: _generalScrollController,
       slivers: <Widget>[
-        SliverAppBar(
-          surfaceTintColor: Colors.transparent,
-          toolbarHeight: 65,
-          expandedHeight: 200,
-          pinned: true,
-          snap: true,
-          floating: true,
-          flexibleSpace: LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
-              final double minExtent =
-                  kToolbarHeight + MediaQuery.of(context).padding.top;
-              final double maxExtent = 200.0;
-              final double t = ((constraints.maxHeight - minExtent) /
-                      (maxExtent - minExtent))
-                  .clamp(0.0, 1.0);
-
-              // Padding: da esquerda para a direita
-              final double horizontalPadding =
-                  maxTitlePadding - (maxTitlePadding - minTitlePadding) * t;
-
-              // Tamanho da fonte: maior expandido, menor colapsado
-              final double defaultFontSize =
-                  Theme.of(context).textTheme.titleLarge?.fontSize ?? 16.0;
-              final double fontSize =
-                  defaultFontSize + (maxFontSize - defaultFontSize) * t;
-
-              return Stack(
-                fit: StackFit.expand,
-                children: [
-                  Positioned(
-                    left: horizontalPadding,
-                    // Ajusta dinamicamente com base no estado de colapso:
-                    bottom: (kToolbarHeight - fontSize) / 2 + (-10 * (1 - t)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)?.translate('General') ??
-                              "General",
-                          style: TextStyle(
-                            fontSize: fontSize,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        Opacity(
-                          opacity: t * t * t,
-                          child: Text(
-                            "Configure tema, idioma e outros",
-                            style: TextStyle(
-                              fontSize: 14,
-                              color:
-                                  Theme.of(context).textTheme.bodyMedium?.color,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
+        buildSliverAppBar('General', expandedHeight, minExtent),
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(8, 16, 8, 0),
