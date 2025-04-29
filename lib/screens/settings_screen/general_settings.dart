@@ -1,6 +1,7 @@
 import 'package:byewall3/l10n/app_localizations.dart';
 import 'package:byewall3/providers/language_provider.dart';
 import 'package:byewall3/providers/theme_provider.dart';
+import 'package:byewall3/ui/app_colors.dart';
 import 'package:byewall3/ui/components/settings_custom_sliverappbar.dart';
 import 'package:byewall3/ui/components/settings_list_tiles.dart';
 import 'package:byewall3/ui/components/settings_title_text.dart';
@@ -12,12 +13,18 @@ class GeneralSettingsView extends StatelessWidget {
   final ScrollController controller;
   final SettingsManager settingsManager;
   final String Function(Locale) localeKey;
+  final AppThemeMode selectedMode;
+  final ValueChanged<AppThemeMode> onThemeSelected;
+  final Map<AppThemeMode, Color> seeds;
 
   const GeneralSettingsView({
     super.key,
     required this.controller,
     required this.settingsManager,
     required this.localeKey,
+    required this.selectedMode,
+    required this.onThemeSelected,
+    required this.seeds,
   });
 
   @override
@@ -72,7 +79,7 @@ class GeneralSettingsView extends StatelessWidget {
                       icon: Icons.arrow_drop_down,
                       switchEnable: false,
                       onPressed: () {
-                        ThemeProvider.show(context);
+                        ThemeProvider.showThemeSelection(context);
                       },
                     );
                   },
@@ -88,7 +95,14 @@ class GeneralSettingsView extends StatelessWidget {
                   )!.translate('choose_theme_color'),
                   icon: Icons.arrow_drop_down,
                   switchEnable: false,
-                  onPressed: () {},
+                  onPressed: () {
+                    ThemeProvider.showColorSelection(
+                      context: context,
+                      selectedMode: selectedMode,
+                      onThemeSelected: onThemeSelected,
+                      seeds: seeds,
+                    );
+                  },
                 ),
                 SizedBox(height: 2),
                 SettingsTiles(

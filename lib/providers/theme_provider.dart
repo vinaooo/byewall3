@@ -1,4 +1,5 @@
 import 'package:byewall3/l10n/app_localizations.dart';
+import 'package:byewall3/ui/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -45,7 +46,7 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  static void show(BuildContext context) {
+  static void showThemeSelection(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
 
     showDialog(
@@ -64,10 +65,7 @@ class ThemeProvider extends ChangeNotifier {
           title: Column(
             children: [
               Icon(Icons.brightness_6),
-              Text(
-                AppLocalizations.of(context)?.translate('theme_mode') ??
-                    "Theme Mode",
-              ),
+              Text(AppLocalizations.of(context)!.translate('theme_mode')),
             ],
           ),
           content: Column(
@@ -105,9 +103,8 @@ class ThemeProvider extends ChangeNotifier {
                                 : null,
                       ),
                       AppLocalizations.of(
-                            context,
-                          )?.translate('theme_mode_system') ??
-                          "System",
+                        context,
+                      )!.translate('theme_mode_system'),
                     ),
                     leading: Icon(
                       Icons.check,
@@ -136,10 +133,7 @@ class ThemeProvider extends ChangeNotifier {
                               ? Theme.of(context).colorScheme.onSecondary
                               : null,
                     ),
-                    AppLocalizations.of(
-                          context,
-                        )?.translate('theme_mode_light') ??
-                        "Light",
+                    AppLocalizations.of(context)!.translate('theme_mode_light'),
                   ),
                   leading: Icon(
                     Icons.check,
@@ -187,9 +181,8 @@ class ThemeProvider extends ChangeNotifier {
                                 : null,
                       ),
                       AppLocalizations.of(
-                            context,
-                          )?.translate('theme_mode_dark') ??
-                          "Dark",
+                        context,
+                      )!.translate('theme_mode_dark'),
                     ),
                     leading: Icon(
                       Icons.check,
@@ -202,6 +195,69 @@ class ThemeProvider extends ChangeNotifier {
                 ),
               ),
             ],
+          ),
+        );
+      },
+    );
+  }
+
+  static Future<dynamic> showColorSelection({
+    required BuildContext context,
+    required AppThemeMode selectedMode,
+    required ValueChanged<AppThemeMode> onThemeSelected,
+    required Map<AppThemeMode, Color> seeds,
+  }) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min, // Ajusta o tamanho do conteúdo
+              children: [
+                ListTile(
+                  trailing: Icon(
+                    Icons.circle,
+                    color:
+                        selectedMode == AppThemeMode.dynamic
+                            ? Theme.of(context).colorScheme.primary
+                            : Colors.grey, // Cor do círculo
+                  ),
+                  leading: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (selectedMode == AppThemeMode.dynamic)
+                        Icon(
+                          Icons.check,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                    ],
+                  ),
+                  title: Text('Dinâmico (Material You)'),
+                  onTap: () {
+                    onThemeSelected(AppThemeMode.dynamic);
+                    Navigator.pop(context); // Fecha o diálogo após a seleção
+                  },
+                ),
+                ...seeds.entries.map((entry) {
+                  return ListTile(
+                    trailing: Icon(Icons.circle, color: entry.value),
+                    leading: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (selectedMode == entry.key)
+                          Icon(Icons.check, color: entry.value),
+                      ],
+                    ),
+                    title: Text(themeModeNames[entry.key] ?? entry.key.name),
+                    onTap: () {
+                      onThemeSelected(entry.key);
+                      Navigator.pop(context); // Fecha o diálogo após a seleção
+                    },
+                  );
+                }),
+              ],
+            ),
           ),
         );
       },

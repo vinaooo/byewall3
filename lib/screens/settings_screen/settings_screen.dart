@@ -2,11 +2,21 @@ import 'package:byewall3/l10n/app_localizations.dart';
 import 'package:byewall3/screens/settings_screen/about_settings.dart';
 import 'package:byewall3/screens/settings_screen/general_settings.dart';
 import 'package:byewall3/screens/settings_screen/services_settings.dart';
+import 'package:byewall3/ui/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:byewall3/utils/settings_manager.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
+  final AppThemeMode selectedMode;
+  final ValueChanged<AppThemeMode> onThemeSelected;
+  final Map<AppThemeMode, Color> seeds;
+
+  const SettingsScreen({
+    super.key,
+    required this.selectedMode,
+    required this.onThemeSelected,
+    required this.seeds,
+  });
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -19,6 +29,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final ScrollController _generalScrollController = ScrollController();
   final ScrollController _serviceScrollController = ScrollController();
   final ScrollController _aboutScrollController = ScrollController();
+
+  get selectedMode => widget.selectedMode;
+  get onThemeSelected => widget.onThemeSelected;
+  get seeds => widget.seeds;
 
   @override
   void dispose() {
@@ -69,6 +83,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               controller: _generalScrollController,
               settingsManager: _settingsManager,
               localeKey: _localeKey,
+              selectedMode: selectedMode,
+              onThemeSelected: onThemeSelected,
+              seeds: seeds,
             ),
             ServiceSettingsView(controller: _serviceScrollController),
             AboutSettingsView(controller: _aboutScrollController),
