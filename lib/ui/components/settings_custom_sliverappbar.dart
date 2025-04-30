@@ -8,9 +8,8 @@ class CustomSliverAppBar {
   SliverAppBar buildSliverAppBar(
     String title,
     double expandedHeight,
-    double minExtent, {
-    Widget? action, // Novo parâmetro opcional
-  }) {
+    double minExtent,
+  ) {
     double calculateT(double currentHeight) {
       return ((currentHeight - minExtent) / (expandedHeight - minExtent)).clamp(
         0.0,
@@ -25,8 +24,6 @@ class CustomSliverAppBar {
       pinned: true,
       floating: false,
       snap: false,
-      actions:
-          action != null ? [action] : null, // Adiciona action se não for nulo
       flexibleSpace: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
           final double t = calculateT(constraints.maxHeight);

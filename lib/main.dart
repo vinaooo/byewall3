@@ -1,5 +1,4 @@
 import 'package:byewall3/l10n/app_localizations.dart';
-import 'package:byewall3/screens/main_screen.dart';
 import 'package:byewall3/screens/settings_screen/settings_screen.dart';
 import 'package:byewall3/providers/language_provider.dart';
 import 'package:byewall3/providers/theme_provider.dart';
