@@ -198,17 +198,23 @@ class HomeScreen extends StatelessWidget {
                       child: TextField(
                         decoration: InputDecoration(
                           filled: true,
-                          // fillColor: Theme.of(context).colorScheme.surface,
+                          fillColor: AppColors.getTileColor(
+                            context,
+                          ), // cor do fundo
                           hintText: 'Pesquisar...',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(16),
                             borderSide: BorderSide.none,
                           ),
                           contentPadding: const EdgeInsets.symmetric(
-                            vertical: 0,
+                            vertical: 16, // mais confortável para Material 3
                             horizontal: 16,
                           ),
+                          prefixIcon: const Icon(
+                            Icons.search,
+                          ), // opcional, para visual mais comum
                         ),
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ),
                   ],
