@@ -9,8 +9,12 @@ class ThemeProvider extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system;
   bool _useBlackBackground = false;
 
+  // Novo campo para armazenar o modo de cor do tema
+  AppThemeMode _appThemeMode = AppThemeMode.dynamic;
+
   ThemeMode get themeMode => _themeMode;
   bool get useBlackBackground => _useBlackBackground;
+  AppThemeMode get appThemeMode => _appThemeMode;
 
   Future<void> saveBlackBackground(bool value) async {
     final prefs = await SharedPreferences.getInstance();
@@ -20,6 +24,12 @@ class ThemeProvider extends ChangeNotifier {
   Future<void> saveTheme(ThemeMode themeMode) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('themeMode', themeMode.index);
+  }
+
+  // Salva o modo de cor do tema
+  Future<void> saveAppThemeMode(AppThemeMode mode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('appThemeMode', mode.index);
   }
 
   Future<void> loadBlackBackground() async {
@@ -35,6 +45,14 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners(); // Notifica os widgets que dependem desse estado
   }
 
+  // Carrega o modo de cor do tema
+  Future<void> loadAppThemeMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    final index = prefs.getInt('appThemeMode') ?? AppThemeMode.dynamic.index;
+    _appThemeMode = AppThemeMode.values[index];
+    notifyListeners();
+  }
+
   void toggleBlackBackground(bool value) {
     _useBlackBackground = value;
     notifyListeners();
@@ -43,6 +61,13 @@ class ThemeProvider extends ChangeNotifier {
   void setThemeMode(ThemeMode themeMode) {
     _themeMode = themeMode;
     saveTheme(themeMode);
+    notifyListeners();
+  }
+
+  // Atualiza e salva o modo de cor do tema
+  void setAppThemeMode(AppThemeMode mode) {
+    _appThemeMode = mode;
+    saveAppThemeMode(mode);
     notifyListeners();
   }
 

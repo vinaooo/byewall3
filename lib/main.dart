@@ -13,8 +13,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final themeProvider = ThemeProvider();
   await themeProvider.loadTheme();
-  await themeProvider
-      .loadBlackBackground(); // Mantemos o carregamento da configuração
+  await themeProvider.loadBlackBackground();
+  await themeProvider.loadAppThemeMode(); // <-- Adicione esta linha
 
   final languageProvider = LanguageProvider();
   await languageProvider.loadLanguage();
@@ -59,7 +59,8 @@ class _MyAppState extends State<MyApp> {
             late ThemeData lightTheme;
             late ThemeData darkTheme;
 
-            if (appThemeMode == AppThemeMode.dynamic &&
+            // Substitua appThemeMode por themeProvider.appThemeMode
+            if (themeProvider.appThemeMode == AppThemeMode.dynamic &&
                 lightDynamic != null &&
                 darkDynamic != null) {
               lightTheme = ThemeData(
@@ -71,7 +72,9 @@ class _MyAppState extends State<MyApp> {
                 useMaterial3: true,
               );
             } else {
-              final seed = AppColors.seeds[appThemeMode] ?? Colors.deepPurple;
+              final seed =
+                  AppColors.seeds[themeProvider.appThemeMode] ??
+                  Colors.deepPurple;
               lightTheme = fixedTheme(Brightness.light, seed);
               darkTheme = fixedTheme(Brightness.dark, seed);
             }
@@ -107,11 +110,12 @@ class _MyAppState extends State<MyApp> {
               theme: lightTheme,
               darkTheme: darkTheme, // Tema escuro modificado
               home: HomeScreen(
-                selectedMode: appThemeMode,
+                selectedMode:
+                    themeProvider.appThemeMode, // use o valor do provider
                 onThemeSelected: (mode) {
-                  setState(() {
-                    appThemeMode = mode;
-                  });
+                  themeProvider.setAppThemeMode(
+                    mode,
+                  ); // Atualize o provider e salve
                 },
                 seeds: AppColors.seeds,
               ),
@@ -123,7 +127,7 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   final AppThemeMode selectedMode;
   final ValueChanged<AppThemeMode> onThemeSelected;
   final Map<AppThemeMode, Color> seeds;
@@ -136,27 +140,8 @@ class HomeScreen extends StatefulWidget {
   });
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  late AppThemeMode _selectedMode;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedMode = widget.selectedMode;
-  }
-
-  void _handleThemeSelected(AppThemeMode mode) {
-    setState(() {
-      _selectedMode = mode;
-    });
-    widget.onThemeSelected(mode);
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Byewall'),
@@ -170,15 +155,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       MaterialPageRoute(
                         builder:
                             (context) => SettingsScreen(
-                              selectedMode: _selectedMode,
-                              onThemeSelected: _handleThemeSelected,
-                              seeds: widget.seeds,
+                              selectedMode:
+                                  themeProvider.appThemeMode, // use o provider
+                              onThemeSelected: onThemeSelected,
+                              seeds: seeds,
                             ),
                       ),
                     );
-                    setState(
-                      () {},
-                    ); // Força rebuild ao voltar das configurações
                   },
                 ),
           ),
