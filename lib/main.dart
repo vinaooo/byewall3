@@ -150,22 +150,34 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double expandedHeight = screenHeight * 0.35;
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Byewall'),
-        actions: [
-          Builder(
-            builder:
-                (context) => IconButton(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            surfaceTintColor: Colors.transparent,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            expandedHeight: expandedHeight,
+            pinned: true,
+            floating: false,
+            snap: false,
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(top: 8, right: 8),
+                child: IconButton(
                   icon: const Icon(Icons.settings_outlined),
                   onPressed: () async {
+                    final themeProvider = Provider.of<ThemeProvider>(
+                      context,
+                      listen: false,
+                    );
                     await Navigator.of(context, rootNavigator: true).push(
                       MaterialPageRoute(
                         builder:
                             (context) => SettingsScreen(
-                              selectedMode:
-                                  themeProvider.appThemeMode, // use o provider
+                              selectedMode: themeProvider.appThemeMode,
                               onThemeSelected: onThemeSelected,
                               seeds: seeds,
                             ),
@@ -173,10 +185,54 @@ class HomeScreen extends StatelessWidget {
                     );
                   },
                 ),
+              ),
+            ],
+            flexibleSpace: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                return Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Positioned(
+                      left: 8, // Remova o uso de horizontalPadding
+                      right: 48,
+                      bottom: 0,
+                      child: TextField(
+                        decoration: InputDecoration(
+                          filled: true,
+                          // fillColor: Theme.of(context).colorScheme.surface,
+                          hintText: 'Pesquisar...',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            borderSide: BorderSide.none,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 0,
+                            horizontal: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+          SliverFillRemaining(child: Column(children: [Text('teste')])),
+          SliverList(
+            delegate: SliverChildBuilderDelegate((
+              BuildContext context,
+              int index,
+            ) {
+              return SizedBox(
+                height: 100.0,
+                child: Center(
+                  child: Text('$index', textScaler: const TextScaler.linear(5)),
+                ),
+              );
+            }, childCount: 20),
           ),
         ],
       ),
-      body: MainScreen(),
     );
   }
 }
