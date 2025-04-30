@@ -41,17 +41,15 @@ class SettingsTiles extends StatelessWidget {
                 ? null
                 : border == 3
                 ? BorderRadius.circular(20.0)
-                : BorderRadius.only(
-                  topLeft: border == 1 ? Radius.circular(20.0) : Radius.zero,
-                  topRight: border == 1 ? Radius.circular(20.0) : Radius.zero,
-                  bottomLeft: border == 2 ? Radius.circular(20.0) : Radius.zero,
-                  bottomRight:
-                      border == 2 ? Radius.circular(20.0) : Radius.zero,
-                ),
+                : border == 1
+                ? const BorderRadius.vertical(top: Radius.circular(20.0))
+                : border == 2
+                ? const BorderRadius.vertical(bottom: Radius.circular(20.0))
+                : BorderRadius.zero,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
         onTap: () {
-          if (switchEnable) {
-            toggleAndSaveBlackBackground(!themeProvider.useBlackBackground);
-          } else {
+          if (!switchEnable) {
             onPressed();
           }
         },
@@ -63,18 +61,34 @@ class SettingsTiles extends StatelessWidget {
                     ? null
                     : border == 3
                     ? BorderRadius.circular(20.0)
-                    : BorderRadius.only(
-                      topLeft:
-                          border == 1 ? Radius.circular(20.0) : Radius.zero,
-                      topRight:
-                          border == 1 ? Radius.circular(20.0) : Radius.zero,
-                      bottomLeft:
-                          border == 2 ? Radius.circular(20.0) : Radius.zero,
-                      bottomRight:
-                          border == 2 ? Radius.circular(20.0) : Radius.zero,
-                    ),
+                    : border == 1
+                    ? const BorderRadius.vertical(top: Radius.circular(20.0))
+                    : border == 2
+                    ? const BorderRadius.vertical(bottom: Radius.circular(20.0))
+                    : BorderRadius.zero,
           ),
           child: ListTile(
+            shape:
+                border == 3
+                    ? RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    )
+                    : border == 1
+                    ? const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(20.0),
+                      ),
+                    )
+                    : border == 2
+                    ? const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        bottom: Radius.circular(20.0),
+                      ),
+                    )
+                    : const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero,
+                    ),
+            hoverColor: Colors.transparent,
             title: Text(title),
             subtitle: Text(subtitle),
             trailing:
@@ -84,7 +98,14 @@ class SettingsTiles extends StatelessWidget {
                       onChanged: toggleAndSaveBlackBackground,
                     )
                     : Icon(icon),
-            onTap: switchEnable ? null : onPressed,
+            onTap:
+                switchEnable
+                    ? () {
+                      toggleAndSaveBlackBackground(
+                        !themeProvider.useBlackBackground,
+                      );
+                    }
+                    : onPressed,
           ),
         ),
       ),

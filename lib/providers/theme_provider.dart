@@ -17,15 +17,15 @@ class ThemeProvider extends ChangeNotifier {
     await prefs.setBool('useBlackBackground', value);
   }
 
+  Future<void> saveTheme(ThemeMode themeMode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('themeMode', themeMode.index);
+  }
+
   Future<void> loadBlackBackground() async {
     final prefs = await SharedPreferences.getInstance();
     _useBlackBackground = prefs.getBool('useBlackBackground') ?? false;
     notifyListeners(); // Notifica os widgets que dependem desse estado
-  }
-
-  Future<void> saveTheme(ThemeMode themeMode) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('themeMode', themeMode.index);
   }
 
   Future<void> loadTheme() async {
@@ -53,6 +53,7 @@ class ThemeProvider extends ChangeNotifier {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          contentPadding: const EdgeInsets.only(top: 16.0, bottom: 30),
           backgroundColor:
               themeProvider.themeMode == ThemeMode.dark ||
                       (themeProvider.themeMode == ThemeMode.system &&
@@ -62,142 +63,192 @@ class ThemeProvider extends ChangeNotifier {
                     Theme.of(context).colorScheme.surface,
                   ).withLightness(0.21).toColor()
                   : null,
-          title: Column(
-            children: [
-              Icon(Icons.brightness_6),
-              Text(AppLocalizations.of(context)!.translate('theme_mode')),
-            ],
-          ),
+          title: dialogTitle(context, Icons.brightness_6, 'theme_mode'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  color:
-                      themeProvider.themeMode == ThemeMode.system
-                          ? HSLColor.fromColor(
-                            Theme.of(context).colorScheme.secondary,
-                          ).withSaturation(0.6).withLightness(0.77).toColor()
-                          : null,
-
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
-                ),
-                child: InkWell(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
-                  onTap: () {
-                    themeProvider.setThemeMode(ThemeMode.system);
-                    Navigator.of(context).pop();
-                  },
-                  child: ListTile(
-                    title: Text(
-                      style: TextStyle(
-                        color:
-                            themeProvider.themeMode == ThemeMode.system
-                                ? Theme.of(context).colorScheme.onSecondary
-                                : null,
+              Stack(
+                children: [
+                  selectionBox(themeProvider, context, ThemeMode.system),
+                  InkWell(
+                    focusColor: transparentIfSelected(
+                      themeProvider,
+                      ThemeMode.system,
+                    ),
+                    hoverColor: transparentIfSelected(
+                      themeProvider,
+                      ThemeMode.system,
+                    ),
+                    highlightColor: transparentIfSelected(
+                      themeProvider,
+                      ThemeMode.system,
+                    ),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      themeProvider.setThemeMode(ThemeMode.system);
+                    },
+                    child: ListTile(
+                      tileColor: Colors.transparent, // Garante transparência
+                      contentPadding: EdgeInsets.symmetric(horizontal: 36),
+                      title: Text(
+                        style: TextStyle(
+                          color:
+                              themeProvider.themeMode == ThemeMode.system
+                                  ? Theme.of(context).colorScheme.onSecondary
+                                  : null,
+                        ),
+                        AppLocalizations.of(
+                          context,
+                        )!.translate('theme_mode_system'),
                       ),
-                      AppLocalizations.of(
-                        context,
-                      )!.translate('theme_mode_system'),
-                    ),
-                    leading: Icon(
-                      Icons.check,
-                      color:
-                          themeProvider.themeMode == ThemeMode.system
-                              ? Theme.of(context).colorScheme.onSecondary
-                              : Colors.transparent,
+                      leading: Padding(
+                        padding: const EdgeInsets.only(left: 13.0),
+                        child: Icon(
+                          Icons.check,
+                          color:
+                              themeProvider.themeMode == ThemeMode.system
+                                  ? Theme.of(context).colorScheme.onSecondary
+                                  : Colors.transparent,
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
-              Container(
-                decoration: BoxDecoration(
-                  color:
-                      themeProvider.themeMode == ThemeMode.light
-                          ? HSLColor.fromColor(
-                            Theme.of(context).colorScheme.secondary,
-                          ).withSaturation(0.6).withLightness(0.77).toColor()
-                          : null,
-                ),
-                child: ListTile(
-                  title: Text(
-                    style: TextStyle(
-                      color:
-                          themeProvider.themeMode == ThemeMode.light
-                              ? Theme.of(context).colorScheme.onSecondary
-                              : null,
+              Stack(
+                children: [
+                  selectionBox(themeProvider, context, ThemeMode.light),
+                  InkWell(
+                    focusColor: transparentIfSelected(
+                      themeProvider,
+                      ThemeMode.light,
                     ),
-                    AppLocalizations.of(context)!.translate('theme_mode_light'),
+                    hoverColor: transparentIfSelected(
+                      themeProvider,
+                      ThemeMode.light,
+                    ),
+                    highlightColor: transparentIfSelected(
+                      themeProvider,
+                      ThemeMode.light,
+                    ),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      themeProvider.setThemeMode(ThemeMode.light);
+                    },
+                    child: ListTile(
+                      tileColor: Colors.transparent,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 36),
+                      title: Text(
+                        style: TextStyle(
+                          color:
+                              themeProvider.themeMode == ThemeMode.light
+                                  ? Theme.of(context).colorScheme.onSecondary
+                                  : null,
+                        ),
+                        AppLocalizations.of(
+                          context,
+                        )!.translate('theme_mode_light'),
+                      ),
+                      leading: Padding(
+                        padding: const EdgeInsets.only(left: 13.0),
+                        child: Icon(
+                          Icons.check,
+                          color:
+                              themeProvider.themeMode == ThemeMode.light
+                                  ? Theme.of(context).colorScheme.onSecondary
+                                  : Colors.transparent,
+                        ),
+                      ),
+                    ),
                   ),
-                  leading: Icon(
-                    Icons.check,
-                    color:
-                        themeProvider.themeMode == ThemeMode.light
-                            ? Theme.of(context).colorScheme.onSecondary
-                            : Colors.transparent,
-                  ),
-                  onTap: () {
-                    themeProvider.setThemeMode(ThemeMode.light);
-                    Navigator.of(context).pop();
-                  },
-                ),
+                ],
               ),
-              Container(
-                decoration: BoxDecoration(
-                  color:
-                      themeProvider.themeMode == ThemeMode.dark
-                          ? HSLColor.fromColor(
-                            Theme.of(context).colorScheme.secondary,
-                          ).withSaturation(0.6).withLightness(0.77).toColor()
-                          : null,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(20),
-                    bottomRight: Radius.circular(20),
-                  ),
-                ),
-                child: InkWell(
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(20),
-                    bottomRight: Radius.circular(20),
-                  ),
-                  onTap: () {
-                    themeProvider.setThemeMode(
+              Stack(
+                children: [
+                  selectionBox(themeProvider, context, ThemeMode.dark),
+                  InkWell(
+                    focusColor: transparentIfSelected(
+                      themeProvider,
                       ThemeMode.dark,
-                    ); // Define o tema como escuro
-                    Navigator.of(context).pop();
-                  },
-                  child: ListTile(
-                    title: Text(
-                      style: TextStyle(
-                        color:
-                            themeProvider.themeMode == ThemeMode.dark
-                                ? Theme.of(context).colorScheme.onSecondary
-                                : null,
-                      ),
-                      AppLocalizations.of(
-                        context,
-                      )!.translate('theme_mode_dark'),
                     ),
-                    leading: Icon(
-                      Icons.check,
-                      color:
-                          themeProvider.themeMode == ThemeMode.dark
-                              ? Theme.of(context).colorScheme.onSecondary
-                              : Colors.transparent,
+                    hoverColor: transparentIfSelected(
+                      themeProvider,
+                      ThemeMode.dark,
+                    ),
+                    highlightColor: transparentIfSelected(
+                      themeProvider,
+                      ThemeMode.dark,
+                    ),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      themeProvider.setThemeMode(ThemeMode.dark);
+                    },
+                    child: ListTile(
+                      tileColor: Colors.transparent,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 36),
+                      title: Text(
+                        style: TextStyle(
+                          color:
+                              themeProvider.themeMode == ThemeMode.dark
+                                  ? Theme.of(context).colorScheme.onSecondary
+                                  : null,
+                        ),
+                        AppLocalizations.of(
+                          context,
+                        )!.translate('theme_mode_dark'),
+                      ),
+                      leading: Padding(
+                        padding: const EdgeInsets.only(left: 13.0),
+                        child: Icon(
+                          Icons.check,
+                          color:
+                              themeProvider.themeMode == ThemeMode.dark
+                                  ? Theme.of(context).colorScheme.onSecondary
+                                  : Colors.transparent,
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
             ],
           ),
         );
       },
+    );
+  }
+
+  static Column dialogTitle(BuildContext context, IconData icon, String title) {
+    return Column(
+      children: [
+        const SizedBox(height: 8),
+        Icon(icon, size: 48),
+        const SizedBox(height: 16),
+        Text(AppLocalizations.of(context)!.translate(title)),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
+  static Padding selectionBox(
+    ThemeProvider themeProvider,
+    BuildContext context,
+    ThemeMode mode,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 36),
+      child: Container(
+        height: 48, // Altura do ListTile
+        decoration: BoxDecoration(
+          color:
+              themeProvider.themeMode == mode
+                  ? HSLColor.fromColor(
+                    Theme.of(context).colorScheme.secondary,
+                  ).withSaturation(0.6).withLightness(0.77).toColor()
+                  : null,
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
     );
   }
 
@@ -211,6 +262,7 @@ class ThemeProvider extends ChangeNotifier {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          title: dialogTitle(context, Icons.color_lens, 'accent_color'),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min, // Ajusta o tamanho do conteúdo
@@ -263,4 +315,7 @@ class ThemeProvider extends ChangeNotifier {
       },
     );
   }
+
+  static Color? transparentIfSelected(ThemeProvider provider, ThemeMode mode) =>
+      provider.themeMode == mode ? Colors.transparent : null;
 }
