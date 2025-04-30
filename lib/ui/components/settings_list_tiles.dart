@@ -112,7 +112,11 @@ class SettingsTiles extends StatelessWidget {
                       icon,
                       color:
                           icon == Icons.circle
-                              ? AppColors.seeds[themeProvider.appThemeMode]
+                              ? (themeProvider.appThemeMode ==
+                                      AppThemeMode.dynamic
+                                  ? themeProvider.dynamicColor ??
+                                      AppColors.seeds[AppThemeMode.dynamic]
+                                  : AppColors.seeds[themeProvider.appThemeMode])
                               : null,
                     ),
             onTap:

@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ThemeProvider extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system;
   bool _useBlackBackground = false;
+  Color? _dynamicColor;
 
   bool isDarkMode(BuildContext context) {
     return _themeMode == ThemeMode.dark ||
@@ -21,6 +22,7 @@ class ThemeProvider extends ChangeNotifier {
   ThemeMode get themeMode => _themeMode;
   bool get useBlackBackground => _useBlackBackground;
   AppThemeMode get appThemeMode => _appThemeMode;
+  Color? get dynamicColor => _dynamicColor;
 
   Future<void> saveBlackBackground(bool value) async {
     final prefs = await SharedPreferences.getInstance();
@@ -36,6 +38,13 @@ class ThemeProvider extends ChangeNotifier {
   Future<void> saveAppThemeMode(AppThemeMode mode) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('appThemeMode', mode.index);
+  }
+
+  Future<void> saveDynamicColor(Color color) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('dynamicColor', color.value);
+    _dynamicColor = color;
+    notifyListeners();
   }
 
   Future<void> loadBlackBackground() async {
@@ -57,6 +66,15 @@ class ThemeProvider extends ChangeNotifier {
     final index = prefs.getInt('appThemeMode') ?? AppThemeMode.dynamic.index;
     _appThemeMode = AppThemeMode.values[index];
     notifyListeners();
+  }
+
+  Future<void> loadDynamicColor() async {
+    final prefs = await SharedPreferences.getInstance();
+    final colorValue = prefs.getInt('dynamicColor');
+    if (colorValue != null) {
+      _dynamicColor = Color(colorValue);
+      notifyListeners();
+    }
   }
 
   void toggleBlackBackground(bool value) {
@@ -289,6 +307,9 @@ class ThemeProvider extends ChangeNotifier {
     required ValueChanged<AppThemeMode> onThemeSelected,
     required Map<AppThemeMode, Color> seeds,
   }) {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    final dynamicColor =
+        themeProvider.dynamicColor ?? Theme.of(context).colorScheme.primary;
     return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -296,30 +317,24 @@ class ThemeProvider extends ChangeNotifier {
           title: dialogTitle(context, Icons.color_lens, 'accent_color'),
           content: SingleChildScrollView(
             child: Column(
-              mainAxisSize: MainAxisSize.min, // Ajusta o tamanho do conteúdo
+              mainAxisSize: MainAxisSize.min,
               children: [
                 ListTile(
                   trailing: Icon(
                     Icons.circle,
-                    color:
-                        selectedMode == AppThemeMode.dynamic
-                            ? Theme.of(context).colorScheme.primary
-                            : Colors.grey, // Cor do círculo
+                    color: dynamicColor, // Use a cor dinâmica salva
                   ),
                   leading: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (selectedMode == AppThemeMode.dynamic)
-                        Icon(
-                          Icons.check,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
+                        Icon(Icons.check, color: dynamicColor),
                     ],
                   ),
                   title: Text('Dinâmico (Material You)'),
                   onTap: () {
                     onThemeSelected(AppThemeMode.dynamic);
-                    Navigator.pop(context); // Fecha o diálogo após a seleção
+                    Navigator.pop(context);
                   },
                 ),
                 ...seeds.entries.map((entry) {
@@ -335,7 +350,7 @@ class ThemeProvider extends ChangeNotifier {
                     title: Text(themeModeNames[entry.key] ?? entry.key.name),
                     onTap: () {
                       onThemeSelected(entry.key);
-                      Navigator.pop(context); // Fecha o diálogo após a seleção
+                      Navigator.pop(context);
                     },
                   );
                 }),

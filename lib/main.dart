@@ -14,7 +14,8 @@ void main() async {
   final themeProvider = ThemeProvider();
   await themeProvider.loadTheme();
   await themeProvider.loadBlackBackground();
-  await themeProvider.loadAppThemeMode(); // <-- Adicione esta linha
+  await themeProvider.loadAppThemeMode();
+  await themeProvider.loadDynamicColor(); // <-- Adicione isto
 
   final languageProvider = LanguageProvider();
   await languageProvider.loadLanguage();
@@ -54,6 +55,14 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return DynamicColorBuilder(
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+        final themeProvider = Provider.of<ThemeProvider>(
+          context,
+          listen: false,
+        );
+        // Salve a cor dinâmica detectada, se disponível
+        if (lightDynamic != null) {
+          themeProvider.saveDynamicColor(lightDynamic.primary);
+        }
         return Consumer2<ThemeProvider, LanguageProvider>(
           builder: (context, themeProvider, languageProvider, child) {
             late ThemeData lightTheme;
