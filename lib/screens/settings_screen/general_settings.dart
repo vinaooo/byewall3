@@ -93,7 +93,7 @@ class GeneralSettingsView extends StatelessWidget {
                   subtitle: AppLocalizations.of(
                     context,
                   )!.translate('choose_theme_color'),
-                  icon: Icons.arrow_drop_down,
+                  icon: Icons.circle,
                   switchEnable: false,
                   onPressed: () {
                     ThemeProvider.showColorSelection(

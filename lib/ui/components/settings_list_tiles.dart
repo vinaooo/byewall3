@@ -33,6 +33,13 @@ class SettingsTiles extends StatelessWidget {
       themeProvider.saveBlackBackground(value); // Salva o estado ao alternar
     }
 
+    bool widgetEnabled(context, bool switchEnable) {
+      if (switchEnable) {
+        return themeProvider.isDarkMode(context);
+      }
+      return true; // Tiles normais sempre habilitados
+    }
+
     return Material(
       color: Colors.transparent, // Necessário para o efeito ripple funcionar
       child: InkWell(
@@ -68,6 +75,7 @@ class SettingsTiles extends StatelessWidget {
                     : BorderRadius.zero,
           ),
           child: ListTile(
+            enabled: widgetEnabled(context, switchEnable),
             shape:
                 border == 3
                     ? RoundedRectangleBorder(
@@ -95,9 +103,18 @@ class SettingsTiles extends StatelessWidget {
                 switchEnable
                     ? Switch(
                       value: themeProvider.useBlackBackground,
-                      onChanged: toggleAndSaveBlackBackground,
+                      onChanged:
+                          widgetEnabled(context, switchEnable)
+                              ? toggleAndSaveBlackBackground
+                              : null, // Switch desabilitado se ThemeMode.light
                     )
-                    : Icon(icon),
+                    : Icon(
+                      icon,
+                      color:
+                          icon == Icons.circle
+                              ? AppColors.seeds[themeProvider.appThemeMode]
+                              : null,
+                    ),
             onTap:
                 switchEnable
                     ? () {

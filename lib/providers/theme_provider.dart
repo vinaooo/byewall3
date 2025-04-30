@@ -9,6 +9,12 @@ class ThemeProvider extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system;
   bool _useBlackBackground = false;
 
+  bool isDarkMode(BuildContext context) {
+    return _themeMode == ThemeMode.dark ||
+        (_themeMode == ThemeMode.system &&
+            MediaQuery.of(context).platformBrightness == Brightness.dark);
+  }
+
   // Novo campo para armazenar o modo de cor do tema
   AppThemeMode _appThemeMode = AppThemeMode.dynamic;
 
