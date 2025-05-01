@@ -1,3 +1,4 @@
+import 'package:byewall3/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 enum AppThemeMode {
@@ -24,28 +25,38 @@ enum AppThemeMode {
 }
 
 // Nomes formatados para exibição
-const Map<AppThemeMode, String> themeModeNames = {
-  AppThemeMode.dynamic: 'Dynamic (Material You)',
-  AppThemeMode.amber: 'Amber',
-  AppThemeMode.blue: 'Blue',
-  AppThemeMode.blueGrey: 'Blue Grey',
-  AppThemeMode.brown: 'Brown',
-  AppThemeMode.cyan: 'Cyan',
-  AppThemeMode.deepOrange: 'Deep Orange',
-  AppThemeMode.deepPurple: 'Deep Purple',
-  AppThemeMode.green: 'Green',
-  AppThemeMode.grey: 'Grey',
-  AppThemeMode.indigo: 'Indigo',
-  AppThemeMode.lightBlue: 'Light Blue',
-  AppThemeMode.lightGreen: 'Light Green',
-  AppThemeMode.lime: 'Lime',
-  AppThemeMode.orange: 'Orange',
-  AppThemeMode.pink: 'Pink',
-  AppThemeMode.purple: 'Purple',
-  AppThemeMode.red: 'Red',
-  AppThemeMode.teal: 'Teal',
-  AppThemeMode.yellow: 'Yellow',
-};
+Map<AppThemeMode, String> themeModeNames(BuildContext context) {
+  return {
+    AppThemeMode.dynamic: AppLocalizations.of(context)!.translate('dynamic'),
+    AppThemeMode.amber: AppLocalizations.of(context)!.translate('amber'),
+    AppThemeMode.blue: AppLocalizations.of(context)!.translate('blue'),
+    AppThemeMode.blueGrey: AppLocalizations.of(context)!.translate('blue_grey'),
+    AppThemeMode.brown: AppLocalizations.of(context)!.translate('brown'),
+    AppThemeMode.cyan: AppLocalizations.of(context)!.translate('cyan'),
+    AppThemeMode.deepOrange: AppLocalizations.of(
+      context,
+    )!.translate('deep_orange'),
+    AppThemeMode.deepPurple: AppLocalizations.of(
+      context,
+    )!.translate('deep_purple'),
+    AppThemeMode.green: AppLocalizations.of(context)!.translate('green'),
+    AppThemeMode.grey: AppLocalizations.of(context)!.translate('grey'),
+    AppThemeMode.indigo: AppLocalizations.of(context)!.translate('indigo'),
+    AppThemeMode.lightBlue: AppLocalizations.of(
+      context,
+    )!.translate('light_blue'),
+    AppThemeMode.lightGreen: AppLocalizations.of(
+      context,
+    )!.translate('light_green'),
+    AppThemeMode.lime: AppLocalizations.of(context)!.translate('lime'),
+    AppThemeMode.orange: AppLocalizations.of(context)!.translate('orange'),
+    AppThemeMode.pink: AppLocalizations.of(context)!.translate('pink'),
+    AppThemeMode.purple: AppLocalizations.of(context)!.translate('purple'),
+    AppThemeMode.red: AppLocalizations.of(context)!.translate('red'),
+    AppThemeMode.teal: AppLocalizations.of(context)!.translate('teal'),
+    AppThemeMode.yellow: AppLocalizations.of(context)!.translate('yellow'),
+  };
+}
 
 class AppColors {
   // Mova o Map seeds para cá

@@ -53,70 +53,11 @@ class GeneralSettingsView extends StatelessWidget {
                 TitleText(
                   title: AppLocalizations.of(context)!.translate('appearance'),
                 ),
-                Consumer<ThemeProvider>(
-                  builder: (context, themeProvider, child) {
-                    String themeSubtitle = '';
-                    switch (themeProvider.themeMode) {
-                      case ThemeMode.system:
-                        themeSubtitle = AppLocalizations.of(
-                          context,
-                        )!.translate('theme_mode_system');
-                      case ThemeMode.light:
-                        themeSubtitle = AppLocalizations.of(
-                          context,
-                        )!.translate('theme_mode_light');
-                      case ThemeMode.dark:
-                        themeSubtitle = AppLocalizations.of(
-                          context,
-                        )!.translate('theme_mode_dark');
-                    }
-                    return SettingsTiles(
-                      border: 1,
-                      title: AppLocalizations.of(
-                        context,
-                      )!.translate('theme_mode'),
-                      subtitle: themeSubtitle,
-                      icon: Icons.arrow_drop_down,
-                      switchEnable: false,
-                      onPressed: () {
-                        ThemeProvider.showThemeSelection(context);
-                      },
-                    );
-                  },
-                ),
+                themeModeTile(),
                 SizedBox(height: 2),
-                SettingsTiles(
-                  border: 0, //none
-                  title: AppLocalizations.of(
-                    context,
-                  )!.translate('accent_color'),
-                  subtitle: AppLocalizations.of(
-                    context,
-                  )!.translate('choose_theme_color'),
-                  icon: Icons.circle,
-                  switchEnable: false,
-                  onPressed: () {
-                    ThemeProvider.showColorSelection(
-                      context: context,
-                      selectedMode: selectedMode,
-                      onThemeSelected: onThemeSelected,
-                      seeds: seeds,
-                    );
-                  },
-                ),
+                accentColorTile(context),
                 SizedBox(height: 2),
-                SettingsTiles(
-                  border: 2, //bottom
-                  title: AppLocalizations.of(
-                    context,
-                  )!.translate('dark_mode_amoled'),
-                  subtitle: AppLocalizations.of(
-                    context,
-                  )!.translate('dark_mode_amoled_subtitle'),
-                  icon: null,
-                  switchEnable: true,
-                  onPressed: () {},
-                ),
+                amoledTile(context),
               ],
             ),
           ),
@@ -126,18 +67,10 @@ class GeneralSettingsView extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                SettingsTiles(
-                  border: 3, //all
-                  title: AppLocalizations.of(context)!.translate('language'),
-                  subtitle: AppLocalizations.of(
-                    context,
-                  )!.translate('language_subtitle'),
-                  icon: Icons.arrow_drop_down,
-                  switchEnable: false,
-                  onPressed: () {
-                    LanguageProvider.selectLanguage(context, localeKey);
-                  },
+                TitleText(
+                  title: AppLocalizations.of(context)!.translate('defaults'),
                 ),
+                languageTile(context),
               ],
             ),
           ),
@@ -150,89 +83,151 @@ class GeneralSettingsView extends StatelessWidget {
                 TitleText(
                   title: AppLocalizations.of(context)!.translate('your_data'),
                 ),
-                SettingsTiles(
-                  border: 1, //top
-                  title: AppLocalizations.of(
-                    context,
-                  )!.translate('export_settings'),
-                  subtitle: AppLocalizations.of(
-                    context,
-                  )!.translate('export_settings_subtitle'),
-                  icon: Icons.download,
-                  switchEnable: false,
-                  onPressed: () {},
-                ),
+                exportTile(context),
                 SizedBox(height: 2),
-                SettingsTiles(
-                  border: 2, //bottom
-                  title: AppLocalizations.of(
-                    context,
-                  )!.translate('reset_settings'),
-                  subtitle: AppLocalizations.of(
-                    context,
-                  )!.translate('reset_settings_subtitle'),
-                  icon: Icons.restore,
-                  switchEnable: false,
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!.translate('reset_settings'),
-                          ),
-                          content: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!.translate('reset_settings_subtitle'),
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () async {
-                                final navigator = Navigator.of(context);
-                                await settingsManager.clearAllKeys();
-                                navigator.pop(); // Fecha o diálogo
-                                settingsManager
-                                    .closeApp(); // Fecha o aplicativo
-                              },
-                              child: Text('OK'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop(); // Fecha o diálogo
-                              },
-                              child: Text(
-                                AppLocalizations.of(
-                                  context,
-                                )!.translate('cancel'),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                ),
+                resetTile(context),
               ],
             ),
           ),
         ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate((
-            BuildContext context,
-            int index,
-          ) {
-            return SizedBox(
-              height: 100.0,
-              child: Center(
-                child: Text('$index', textScaler: const TextScaler.linear(5)),
-              ),
-            );
-          }, childCount: 20),
-        ),
       ],
+    );
+  }
+
+  Consumer<ThemeProvider> themeModeTile() {
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        String themeSubtitle = '';
+        switch (themeProvider.themeMode) {
+          case ThemeMode.system:
+            themeSubtitle = AppLocalizations.of(
+              context,
+            )!.translate('theme_mode_system');
+          case ThemeMode.light:
+            themeSubtitle = AppLocalizations.of(
+              context,
+            )!.translate('theme_mode_light');
+          case ThemeMode.dark:
+            themeSubtitle = AppLocalizations.of(
+              context,
+            )!.translate('theme_mode_dark');
+        }
+        return SettingsTiles(
+          border: 1,
+          title: AppLocalizations.of(context)!.translate('theme_mode'),
+          subtitle: themeSubtitle,
+          icon: Icons.arrow_drop_down,
+          switchEnable: false,
+          onPressed: () {
+            ThemeProvider.showThemeSelection(context);
+          },
+        );
+      },
+    );
+  }
+
+  SettingsTiles resetTile(BuildContext context) {
+    return SettingsTiles(
+      border: 2, //bottom
+      title: AppLocalizations.of(context)!.translate('reset_settings'),
+      subtitle: AppLocalizations.of(
+        context,
+      )!.translate('reset_settings_subtitle'),
+      icon: Icons.restore,
+      switchEnable: false,
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                AppLocalizations.of(context)!.translate('reset_settings'),
+              ),
+              content: Text(
+                AppLocalizations.of(
+                  context,
+                )!.translate('reset_settings_subtitle'),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () async {
+                    final navigator = Navigator.of(context);
+                    await settingsManager.clearAllKeys();
+                    navigator.pop(); // Fecha o diálogo
+                    settingsManager.closeApp(); // Fecha o aplicativo
+                  },
+                  child: Text(AppLocalizations.of(context)!.translate('reset')),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Fecha o diálogo
+                  },
+                  child: Text(
+                    AppLocalizations.of(context)!.translate('cancel'),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  SettingsTiles exportTile(BuildContext context) {
+    return SettingsTiles(
+      border: 1, //top
+      title: AppLocalizations.of(context)!.translate('export_settings'),
+      subtitle: AppLocalizations.of(
+        context,
+      )!.translate('export_settings_subtitle'),
+      icon: Icons.download,
+      switchEnable: false,
+      onPressed: () {},
+    );
+  }
+
+  SettingsTiles languageTile(BuildContext context) {
+    return SettingsTiles(
+      border: 3, //all
+      title: AppLocalizations.of(context)!.translate('language'),
+      subtitle: AppLocalizations.of(context)!.translate('language_subtitle'),
+      icon: Icons.arrow_drop_down,
+      switchEnable: false,
+      onPressed: () {
+        LanguageProvider.selectLanguage(context, localeKey);
+      },
+    );
+  }
+
+  SettingsTiles amoledTile(BuildContext context) {
+    return SettingsTiles(
+      border: 2, //bottom
+      title: AppLocalizations.of(context)!.translate('dark_mode_amoled'),
+      subtitle: AppLocalizations.of(
+        context,
+      )!.translate('dark_mode_amoled_subtitle'),
+      icon: null,
+      switchEnable: true,
+      onPressed: () {},
+    );
+  }
+
+  SettingsTiles accentColorTile(BuildContext context) {
+    return SettingsTiles(
+      border: 0, //none
+      title: AppLocalizations.of(context)!.translate('accent_color'),
+      subtitle: AppLocalizations.of(context)!.translate('choose_theme_color'),
+      icon: Icons.circle,
+      switchEnable: false,
+      onPressed: () {
+        ThemeProvider.showColorSelection(
+          context: context,
+          selectedMode: selectedMode,
+          onThemeSelected: onThemeSelected,
+          seeds: seeds,
+        );
+      },
     );
   }
 }

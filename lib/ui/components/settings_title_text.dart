@@ -9,7 +9,7 @@ class TitleText extends StatelessWidget {
     return Row(
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 16.0),
+          padding: const EdgeInsets.only(left: 16.0, bottom: 8.0, top: 4.0),
           child: Text(
             title,
             style: TextStyle(

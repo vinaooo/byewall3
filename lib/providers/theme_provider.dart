@@ -3,6 +3,7 @@ import 'package:byewall3/ui/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:diacritic/diacritic.dart';
 
 // Classe que gerencia o estado do tema
 class ThemeProvider extends ChangeNotifier {
@@ -42,7 +43,10 @@ class ThemeProvider extends ChangeNotifier {
 
   Future<void> saveDynamicColor(Color color) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('dynamicColor', color.value);
+    await prefs.setString(
+      'dynamicColor',
+      color.toString(),
+    ); // Salva como string
     _dynamicColor = color;
     notifyListeners();
   }
@@ -70,11 +74,23 @@ class ThemeProvider extends ChangeNotifier {
 
   Future<void> loadDynamicColor() async {
     final prefs = await SharedPreferences.getInstance();
-    final colorValue = prefs.getInt('dynamicColor');
-    if (colorValue != null) {
-      _dynamicColor = Color(colorValue);
-      notifyListeners();
+    final colorString = prefs.getString('dynamicColor');
+    if (colorString != null && colorString.startsWith('Color(')) {
+      try {
+        // Converte a string salva de volta para um objeto Color
+        final colorValue = int.parse(
+          colorString.split('(0x')[1].split(')')[0],
+          radix: 16,
+        );
+        _dynamicColor = Color(colorValue);
+      } catch (e) {
+        // Caso ocorra um erro na conversão, define como null
+        _dynamicColor = null;
+      }
+    } else {
+      _dynamicColor = null; // Define como null se o formato for inválido
     }
+    notifyListeners();
   }
 
   void toggleBlackBackground(bool value) {
@@ -310,6 +326,13 @@ class ThemeProvider extends ChangeNotifier {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     final dynamicColor =
         themeProvider.dynamicColor ?? Theme.of(context).colorScheme.primary;
+    final sortedSeeds =
+        seeds.entries.toList()..sort((a, b) {
+          final aName = themeModeNames(context)[a.key] ?? a.key.name;
+          final bName = themeModeNames(context)[b.key] ?? b.key.name;
+          // Remove acentos antes de comparar
+          return removeDiacritics(aName).compareTo(removeDiacritics(bName));
+        });
     return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -337,7 +360,7 @@ class ThemeProvider extends ChangeNotifier {
                     Navigator.pop(context);
                   },
                 ),
-                ...seeds.entries.map((entry) {
+                ...sortedSeeds.map((entry) {
                   return ListTile(
                     trailing: Icon(Icons.circle, color: entry.value),
                     leading: Row(
@@ -347,7 +370,9 @@ class ThemeProvider extends ChangeNotifier {
                           Icon(Icons.check, color: entry.value),
                       ],
                     ),
-                    title: Text(themeModeNames[entry.key] ?? entry.key.name),
+                    title: Text(
+                      themeModeNames(context)[entry.key] ?? entry.key.name,
+                    ),
                     onTap: () {
                       onThemeSelected(entry.key);
                       Navigator.pop(context);
