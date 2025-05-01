@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LanguageProvider extends ChangeNotifier {
-  Locale _locale = const Locale('en', 'US'); // Idioma padrão
+  Locale _locale = const Locale('en', 'US'); // Fica como fallback
 
   Locale get locale => _locale;
 
@@ -22,22 +22,36 @@ class LanguageProvider extends ChangeNotifier {
   /// Carrega o idioma salvo no SharedPreferences e aplica no app
   Future<void> loadLanguage() async {
     final prefs = await SharedPreferences.getInstance();
-    // Recupera o idioma salvo ou usa o padrão 'en_US'
-    final savedLanguage = prefs.getString('appLanguage') ?? 'en_US';
-    final parts = savedLanguage.split('_');
+    final savedLanguage = prefs.getString('appLanguage');
 
-    if (parts.length == 2) {
-      // Caso o idioma tenha código de idioma e país (ex.: en_US)
-      _locale = Locale(parts[0], parts[1]);
-    } else if (parts.length == 1) {
-      // Caso o idioma tenha apenas o código de idioma (ex.: pl)
-      _locale = Locale(parts[0], '');
+    if (savedLanguage == null) {
+      // Pega a localidade do sistema
+      final systemLocale =
+          WidgetsBinding.instance.platformDispatcher.locales.first;
+      // Se suportado, usa o sistema; caso contrário, fallback para inglês
+      if (_isSupported(systemLocale)) {
+        _locale = systemLocale;
+      } else {
+        _locale = const Locale('en', 'US');
+      }
     } else {
-      // Caso inesperado, define o idioma padrão
-      _locale = const Locale('en', 'US');
+      final parts = savedLanguage.split('_');
+      if (parts.length == 2) {
+        _locale = Locale(parts[0], parts[1]);
+      } else if (parts.length == 1) {
+        _locale = Locale(parts[0], '');
+      } else {
+        _locale = const Locale('en', 'US');
+      }
     }
 
     notifyListeners(); // Notifica os widgets que dependem desse estado
+  }
+
+  bool _isSupported(Locale locale) {
+    return AppLocalizations.supportedLocales.any(
+      (supported) => supported.languageCode == locale.languageCode,
+    );
   }
 
   /// Atualiza o idioma atual e salva no SharedPreferences
@@ -46,17 +60,6 @@ class LanguageProvider extends ChangeNotifier {
     saveLanguage(locale); // Salva o idioma escolhido
     notifyListeners(); // Notifica os ouvintes sobre a mudança
   }
-
-  // @override
-  // bool isSupported(Locale locale) {
-  //   return AppLocalizations.supportedLocales.any(
-  //     (supportedLocale) =>
-  //         supportedLocale.languageCode == locale.languageCode &&
-  //         (supportedLocale.countryCode == locale.countryCode ||
-  //             supportedLocale.countryCode == null ||
-  //             locale.countryCode == null),
-  //   );
-  // }
 
   /// Exibe um diálogo para o usuário selecionar o idioma
   static void selectLanguage(
