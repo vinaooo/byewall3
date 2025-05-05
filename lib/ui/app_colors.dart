@@ -1,86 +1,76 @@
 import 'package:byewall3/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
-enum AppThemeMode {
+enum AppColor {
   dynamic,
   amber,
   blue,
   blueGrey,
   brown,
-  cyan,
-  deepOrange,
-  deepPurple,
   green,
   grey,
-  indigo,
-  lightBlue,
-  lightGreen,
-  lime,
   orange,
   pink,
   purple,
   red,
   teal,
-  yellow,
 }
 
 // Nomes formatados para exibição
-Map<AppThemeMode, String> themeModeNames(BuildContext context) {
+Map<AppColor, String> themeModeNames(BuildContext context) {
   return {
-    AppThemeMode.dynamic: AppLocalizations.of(context)!.translate('dynamic'),
-    AppThemeMode.amber: AppLocalizations.of(context)!.translate('amber'),
-    AppThemeMode.blue: AppLocalizations.of(context)!.translate('blue'),
-    AppThemeMode.blueGrey: AppLocalizations.of(context)!.translate('blue_grey'),
-    AppThemeMode.brown: AppLocalizations.of(context)!.translate('brown'),
-    AppThemeMode.cyan: AppLocalizations.of(context)!.translate('cyan'),
-    AppThemeMode.deepOrange: AppLocalizations.of(
-      context,
-    )!.translate('deep_orange'),
-    AppThemeMode.deepPurple: AppLocalizations.of(
-      context,
-    )!.translate('deep_purple'),
-    AppThemeMode.green: AppLocalizations.of(context)!.translate('green'),
-    AppThemeMode.grey: AppLocalizations.of(context)!.translate('grey'),
-    AppThemeMode.indigo: AppLocalizations.of(context)!.translate('indigo'),
-    AppThemeMode.lightBlue: AppLocalizations.of(
-      context,
-    )!.translate('light_blue'),
-    AppThemeMode.lightGreen: AppLocalizations.of(
-      context,
-    )!.translate('light_green'),
-    AppThemeMode.lime: AppLocalizations.of(context)!.translate('lime'),
-    AppThemeMode.orange: AppLocalizations.of(context)!.translate('orange'),
-    AppThemeMode.pink: AppLocalizations.of(context)!.translate('pink'),
-    AppThemeMode.purple: AppLocalizations.of(context)!.translate('purple'),
-    AppThemeMode.red: AppLocalizations.of(context)!.translate('red'),
-    AppThemeMode.teal: AppLocalizations.of(context)!.translate('teal'),
-    AppThemeMode.yellow: AppLocalizations.of(context)!.translate('yellow'),
+    AppColor.dynamic: AppLocalizations.of(context)!.translate('dynamic'),
+    AppColor.amber: AppLocalizations.of(context)!.translate('amber'),
+    AppColor.blue: AppLocalizations.of(context)!.translate('blue'),
+    AppColor.blueGrey: AppLocalizations.of(context)!.translate('blue_grey'),
+    AppColor.brown: AppLocalizations.of(context)!.translate('brown'),
+    AppColor.green: AppLocalizations.of(context)!.translate('green'),
+    AppColor.grey: AppLocalizations.of(context)!.translate('grey'),
+    AppColor.orange: AppLocalizations.of(context)!.translate('orange'),
+    AppColor.pink: AppLocalizations.of(context)!.translate('pink'),
+    AppColor.purple: AppLocalizations.of(context)!.translate('purple'),
+    AppColor.red: AppLocalizations.of(context)!.translate('red'),
+    AppColor.teal: AppLocalizations.of(context)!.translate('teal'),
   };
 }
 
 class AppColors {
   // Mova o Map seeds para cá
-  static final Map<AppThemeMode, Color> seeds = {
-    AppThemeMode.amber: Colors.amber,
-    AppThemeMode.blue: Colors.blue,
-    AppThemeMode.blueGrey: Colors.blueGrey,
-    AppThemeMode.brown: Colors.brown,
-    AppThemeMode.cyan: Colors.cyan,
-    AppThemeMode.deepOrange: Colors.deepOrange,
-    AppThemeMode.deepPurple: Colors.deepPurple,
-    AppThemeMode.green: Colors.green,
-    AppThemeMode.grey: Colors.grey,
-    AppThemeMode.indigo: Colors.indigo,
-    AppThemeMode.lightBlue: Colors.lightBlue,
-    AppThemeMode.lightGreen: Colors.lightGreen,
-    AppThemeMode.lime: Colors.lime,
-    AppThemeMode.orange: Colors.orange,
-    AppThemeMode.pink: Colors.pink,
-    AppThemeMode.purple: Colors.purple,
-    AppThemeMode.red: Colors.red,
-    AppThemeMode.teal: Colors.teal,
-    AppThemeMode.yellow: Colors.yellow,
+  static final Map<AppColor, Color> seeds = {
+    AppColor.amber: Colors.amber,
+    AppColor.blue: Colors.blue,
+    AppColor.blueGrey: Colors.blueGrey,
+    AppColor.brown: Colors.brown,
+    AppColor.green: Colors.green,
+    AppColor.grey: Colors.grey,
+    AppColor.orange: Colors.orange,
+    AppColor.pink: Colors.pink,
+    AppColor.purple: Colors.purple,
+    AppColor.red: Colors.red,
+    AppColor.teal: Colors.teal,
   };
+
+  final Color brown;
+  final Color darkBrown;
+  final Color pink;
+  final Color darkPink;
+  final Color blue;
+  final Color darkBlue;
+  final Color green;
+  final Color darkGreen;
+
+  AppColors()
+    : brown = const Color.fromARGB(255, 254, 221, 194),
+      darkBrown = Color.fromARGB(255, 122, 49, 0),
+      //
+      pink = const Color.fromARGB(255, 255, 210, 243),
+      darkPink = const Color.fromARGB(255, 153, 0, 88),
+      //
+      blue = const Color.fromARGB(255, 176, 238, 253),
+      darkBlue = const Color.fromARGB(255, 0, 75, 103),
+      //
+      green = const Color.fromARGB(255, 174, 240, 178),
+      darkGreen = const Color.fromARGB(255, 0, 89, 39);
 
   static Color getTileColor(BuildContext context) {
     return HSLColor.fromColor(Theme.of(context).colorScheme.primaryContainer)

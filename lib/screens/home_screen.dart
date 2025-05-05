@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
-  final AppThemeMode selectedMode;
-  final ValueChanged<AppThemeMode> onThemeSelected;
-  final Map<AppThemeMode, Color> seeds;
+  final AppColor selectedMode;
+  final ValueChanged<AppColor> onThemeSelected;
+  final Map<AppColor, Color> seeds;
 
   const HomeScreen({
     super.key,
@@ -45,7 +45,7 @@ class HomeScreen extends StatelessWidget {
                       MaterialPageRoute(
                         builder:
                             (context) => SettingsScreen(
-                              selectedMode: themeProvider.appThemeMode,
+                              selectedMode: themeProvider.appThemeColor,
                               onThemeSelected: onThemeSelected,
                               seeds: seeds,
                             ),

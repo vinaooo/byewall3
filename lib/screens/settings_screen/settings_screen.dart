@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:byewall3/utils/settings_manager.dart';
 
 class SettingsScreen extends StatefulWidget {
-  final AppThemeMode selectedMode;
-  final ValueChanged<AppThemeMode> onThemeSelected;
-  final Map<AppThemeMode, Color> seeds;
+  final AppColor selectedMode;
+  final ValueChanged<AppColor> onThemeSelected;
+  final Map<AppColor, Color> seeds;
 
   const SettingsScreen({
     super.key,

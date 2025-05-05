@@ -13,9 +13,9 @@ class GeneralSettingsView extends StatelessWidget {
   final ScrollController controller;
   final SettingsManager settingsManager;
   final String Function(Locale) localeKey;
-  final AppThemeMode selectedMode;
-  final ValueChanged<AppThemeMode> onThemeSelected;
-  final Map<AppThemeMode, Color> seeds;
+  final AppColor selectedMode;
+  final ValueChanged<AppColor> onThemeSelected;
+  final Map<AppColor, Color> seeds;
 
   const GeneralSettingsView({
     super.key,
@@ -105,7 +105,9 @@ class GeneralSettingsView extends StatelessWidget {
               subtitle: AppLocalizations.of(
                 context,
               )!.translate('language_subtitle'),
-              icon: Icons.arrow_drop_down,
+              lIcon: leadingIcon(color: 'blue', icon: Icons.translate),
+
+              tIcon: Icons.arrow_drop_down,
               switchEnable: false,
               onPressed: () {
                 LanguageProvider.selectLanguage(context, localeKey);
@@ -139,13 +141,40 @@ class GeneralSettingsView extends StatelessWidget {
           border: 1,
           title: AppLocalizations.of(context)!.translate('theme_mode'),
           subtitle: themeSubtitle,
-          icon: Icons.arrow_drop_down,
+          lIcon: leadingIcon(color: 'pink', icon: Icons.brightness_6),
+          tIcon: Icons.arrow_drop_down,
           switchEnable: false,
           onPressed: () {
             ThemeProvider.showThemeSelection(context);
           },
         );
       },
+    );
+  }
+
+  Stack leadingIcon({String color = '', IconData? icon}) {
+    Color lightColor;
+    Color darkColor;
+    if (color == 'pink') {
+      lightColor = AppColors().pink;
+      darkColor = AppColors().darkPink;
+    } else if (color == 'blue') {
+      lightColor = AppColors().blue;
+      darkColor = AppColors().darkBlue;
+    } else if (color == 'green') {
+      lightColor = AppColors().green;
+      darkColor = AppColors().darkGreen;
+    } else {
+      lightColor = Colors.white;
+      darkColor = Colors.black;
+    }
+
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Transform.scale(scale: 2, child: Icon(Icons.circle, color: lightColor)),
+        Transform.scale(scale: 1.1, child: Icon(icon, color: darkColor)),
+      ],
     );
   }
 
@@ -156,7 +185,7 @@ class GeneralSettingsView extends StatelessWidget {
       subtitle: AppLocalizations.of(
         context,
       )!.translate('reset_settings_subtitle'),
-      icon: Icons.restore,
+      lIcon: leadingIcon(color: 'green', icon: Icons.restore),
       switchEnable: false,
       onPressed: () {
         showDialog(
@@ -204,7 +233,7 @@ class GeneralSettingsView extends StatelessWidget {
       subtitle: AppLocalizations.of(
         context,
       )!.translate('export_settings_subtitle'),
-      icon: Icons.download,
+      lIcon: leadingIcon(color: 'green', icon: Icons.download),
       switchEnable: false,
       onPressed: () {},
     );
@@ -217,7 +246,9 @@ class GeneralSettingsView extends StatelessWidget {
       subtitle: AppLocalizations.of(
         context,
       )!.translate('dark_mode_amoled_subtitle'),
-      icon: null,
+      lIcon: leadingIcon(color: 'pink', icon: Icons.nightlight_round_sharp),
+
+      tIcon: null,
       switchEnable: true,
       onPressed: () {},
     );
@@ -228,7 +259,9 @@ class GeneralSettingsView extends StatelessWidget {
       border: 0, //none
       title: AppLocalizations.of(context)!.translate('accent_color'),
       subtitle: AppLocalizations.of(context)!.translate('choose_theme_color'),
-      icon: Icons.circle,
+      lIcon: leadingIcon(color: 'pink', icon: Icons.color_lens),
+
+      tIcon: Icons.circle,
       switchEnable: false,
       onPressed: () {
         ThemeProvider.showColorSelection(

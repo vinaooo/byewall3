@@ -8,7 +8,8 @@ class SettingsTiles extends StatelessWidget {
   final String title;
   final String subtitle;
   final VoidCallback onPressed;
-  final IconData? icon;
+  final Stack lIcon;
+  final IconData? tIcon;
   final bool switchEnable;
 
   const SettingsTiles({
@@ -17,7 +18,8 @@ class SettingsTiles extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.onPressed,
-    required this.icon,
+    required this.lIcon,
+    this.tIcon,
     required this.switchEnable,
   });
 
@@ -97,8 +99,15 @@ class SettingsTiles extends StatelessWidget {
                       borderRadius: BorderRadius.zero,
                     ),
             hoverColor: Colors.transparent,
-            title: Text(title),
-            subtitle: Text(subtitle),
+            title: Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Text(title),
+            ),
+            subtitle: Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Text(subtitle),
+            ),
+            leading: lIcon,
             trailing:
                 switchEnable
                     ? Switch(
@@ -109,14 +118,14 @@ class SettingsTiles extends StatelessWidget {
                               : null, // Switch desabilitado se ThemeMode.light
                     )
                     : Icon(
-                      icon,
+                      tIcon,
                       color:
-                          icon == Icons.circle
-                              ? (themeProvider.appThemeMode ==
-                                      AppThemeMode.dynamic
+                          tIcon == Icons.circle
+                              ? (themeProvider.appThemeColor == AppColor.dynamic
                                   ? themeProvider.dynamicColor ??
-                                      AppColors.seeds[AppThemeMode.dynamic]
-                                  : AppColors.seeds[themeProvider.appThemeMode])
+                                      AppColors.seeds[AppColor.dynamic]
+                                  : AppColors.seeds[themeProvider
+                                      .appThemeColor])
                               : null,
                     ),
             onTap:

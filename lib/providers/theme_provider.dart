@@ -18,11 +18,11 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   // Novo campo para armazenar o modo de cor do tema
-  AppThemeMode _appThemeMode = AppThemeMode.dynamic;
+  AppColor _appThemeColor = AppColor.dynamic;
 
   ThemeMode get themeMode => _themeMode;
   bool get useBlackBackground => _useBlackBackground;
-  AppThemeMode get appThemeMode => _appThemeMode;
+  AppColor get appThemeColor => _appThemeColor;
   Color? get dynamicColor => _dynamicColor;
 
   Future<void> saveBlackBackground(bool value) async {
@@ -36,9 +36,9 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   // Salva o modo de cor do tema
-  Future<void> saveAppThemeMode(AppThemeMode mode) async {
+  Future<void> saveAppThemeColor(AppColor mode) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('appThemeMode', mode.index);
+    await prefs.setInt('appThemeColor', mode.index);
   }
 
   Future<void> saveDynamicColor(Color color) async {
@@ -65,10 +65,10 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   // Carrega o modo de cor do tema
-  Future<void> loadAppThemeMode() async {
+  Future<void> loadAppThemeColor() async {
     final prefs = await SharedPreferences.getInstance();
-    final index = prefs.getInt('appThemeMode') ?? AppThemeMode.dynamic.index;
-    _appThemeMode = AppThemeMode.values[index];
+    final index = prefs.getInt('appThemeColor') ?? AppColor.dynamic.index;
+    _appThemeColor = AppColor.values[index];
     notifyListeners();
   }
 
@@ -105,9 +105,9 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   // Atualiza e salva o modo de cor do tema
-  void setAppThemeMode(AppThemeMode mode) {
-    _appThemeMode = mode;
-    saveAppThemeMode(mode);
+  void setAppThemeColor(AppColor mode) {
+    _appThemeColor = mode;
+    saveAppThemeColor(mode);
     notifyListeners();
   }
 
@@ -134,19 +134,25 @@ class ThemeProvider extends ChangeNotifier {
             children: [
               Stack(
                 children: [
-                  selectionBox(themeProvider, context, ThemeMode.system),
+                  Positioned.fill(
+                    child: selectionBox(
+                      tp: themeProvider,
+                      context: context,
+                      mode: ThemeMode.system,
+                    ),
+                  ),
                   InkWell(
-                    focusColor: transparentIfSelectedForTheme(
-                      themeProvider,
-                      ThemeMode.system,
+                    focusColor: transparentIfSelected(
+                      tp: themeProvider,
+                      mode: ThemeMode.system,
                     ),
-                    hoverColor: transparentIfSelectedForTheme(
-                      themeProvider,
-                      ThemeMode.system,
+                    hoverColor: transparentIfSelected(
+                      tp: themeProvider,
+                      mode: ThemeMode.system,
                     ),
-                    highlightColor: transparentIfSelectedForTheme(
-                      themeProvider,
-                      ThemeMode.system,
+                    highlightColor: transparentIfSelected(
+                      tp: themeProvider,
+                      mode: ThemeMode.system,
                     ),
                     onTap: () {
                       Navigator.of(context).pop();
@@ -182,19 +188,25 @@ class ThemeProvider extends ChangeNotifier {
               ),
               Stack(
                 children: [
-                  selectionBox(themeProvider, context, ThemeMode.light),
+                  Positioned.fill(
+                    child: selectionBox(
+                      tp: themeProvider,
+                      context: context,
+                      mode: ThemeMode.light,
+                    ),
+                  ),
                   InkWell(
-                    focusColor: transparentIfSelectedForTheme(
-                      themeProvider,
-                      ThemeMode.light,
+                    focusColor: transparentIfSelected(
+                      tp: themeProvider,
+                      mode: ThemeMode.light,
                     ),
-                    hoverColor: transparentIfSelectedForTheme(
-                      themeProvider,
-                      ThemeMode.light,
+                    hoverColor: transparentIfSelected(
+                      tp: themeProvider,
+                      mode: ThemeMode.light,
                     ),
-                    highlightColor: transparentIfSelectedForTheme(
-                      themeProvider,
-                      ThemeMode.light,
+                    highlightColor: transparentIfSelected(
+                      tp: themeProvider,
+                      mode: ThemeMode.light,
                     ),
                     onTap: () {
                       Navigator.of(context).pop();
@@ -230,19 +242,25 @@ class ThemeProvider extends ChangeNotifier {
               ),
               Stack(
                 children: [
-                  selectionBox(themeProvider, context, ThemeMode.dark),
+                  Positioned.fill(
+                    child: selectionBox(
+                      tp: themeProvider,
+                      context: context,
+                      mode: ThemeMode.dark,
+                    ),
+                  ),
                   InkWell(
-                    focusColor: transparentIfSelectedForTheme(
-                      themeProvider,
-                      ThemeMode.dark,
+                    focusColor: transparentIfSelected(
+                      tp: themeProvider,
+                      mode: ThemeMode.dark,
                     ),
-                    hoverColor: transparentIfSelectedForTheme(
-                      themeProvider,
-                      ThemeMode.dark,
+                    hoverColor: transparentIfSelected(
+                      tp: themeProvider,
+                      mode: ThemeMode.dark,
                     ),
-                    highlightColor: transparentIfSelectedForTheme(
-                      themeProvider,
-                      ThemeMode.dark,
+                    highlightColor: transparentIfSelected(
+                      tp: themeProvider,
+                      mode: ThemeMode.dark,
                     ),
                     onTap: () {
                       Navigator.of(context).pop();
@@ -295,21 +313,24 @@ class ThemeProvider extends ChangeNotifier {
     );
   }
 
-  static Padding selectionBox(
-    ThemeProvider themeProvider,
-    BuildContext context,
-    ThemeMode mode,
-  ) {
+  static Padding selectionBox({
+    ThemeProvider? tp,
+    BuildContext? context,
+    ThemeMode? mode,
+    AppColor? appColor,
+  }) {
+    Color corBox =
+        HSLColor.fromColor(
+          Theme.of(context!).colorScheme.secondary,
+        ).withSaturation(0.6).withLightness(0.77).toColor();
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 36),
+      padding: EdgeInsets.symmetric(horizontal: mode == null ? 12 : 36),
       child: Container(
-        height: 48, // Altura do ListTile
+        // height: 48, // Remova esta linha
         decoration: BoxDecoration(
           color:
-              themeProvider.themeMode == mode
-                  ? HSLColor.fromColor(
-                    Theme.of(context).colorScheme.secondary,
-                  ).withSaturation(0.6).withLightness(0.77).toColor()
+              tp!.themeMode == mode || tp.appThemeColor == appColor
+                  ? corBox
                   : null,
           borderRadius: BorderRadius.circular(12),
         ),
@@ -319,9 +340,9 @@ class ThemeProvider extends ChangeNotifier {
 
   static Future<dynamic> showColorSelection({
     required BuildContext context,
-    required AppThemeMode selectedMode,
-    required ValueChanged<AppThemeMode> onThemeSelected,
-    required Map<AppThemeMode, Color> seeds,
+    required AppColor selectedMode,
+    required ValueChanged<AppColor> onThemeSelected,
+    required Map<AppColor, Color> seeds,
   }) {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     final dynamicColor =
@@ -354,8 +375,39 @@ class ThemeProvider extends ChangeNotifier {
               children: [
                 Stack(
                   children: [
+                    Positioned.fill(
+                      child: selectionBox(
+                        tp: themeProvider,
+                        context: context,
+                        appColor: AppColor.dynamic,
+                      ),
+                    ),
                     InkWell(
+                      focusColor: transparentIfSelected(
+                        tp: themeProvider,
+                        appColor: AppColor.dynamic,
+                      ),
+                      hoverColor: transparentIfSelected(
+                        tp: themeProvider,
+                        appColor: AppColor.dynamic,
+                      ),
+                      highlightColor: transparentIfSelected(
+                        tp: themeProvider,
+                        appColor: AppColor.dynamic,
+                      ),
                       child: ListTile(
+                        hoverColor: transparentIfSelected(
+                          tp: themeProvider,
+                          appColor: AppColor.dynamic,
+                        ),
+                        splashColor: transparentIfSelected(
+                          tp: themeProvider,
+                          appColor: AppColor.dynamic,
+                        ),
+                        tileColor: transparentIfSelected(
+                          tp: themeProvider,
+                          appColor: AppColor.dynamic,
+                        ),
                         trailing: Icon(
                           Icons.circle,
                           color: dynamicColor, // Use a cor dinâmica salva
@@ -363,13 +415,30 @@ class ThemeProvider extends ChangeNotifier {
                         leading: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            if (selectedMode == AppThemeMode.dynamic)
-                              Icon(Icons.check, color: dynamicColor),
+                            if (selectedMode == AppColor.dynamic)
+                              Icon(
+                                Icons.check,
+                                color:
+                                    themeProvider.appThemeColor ==
+                                            AppColor.dynamic
+                                        ? Theme.of(
+                                          context,
+                                        ).colorScheme.onSecondary
+                                        : null,
+                              ),
                           ],
                         ),
-                        title: Text('Dinâmico (Material You)'),
+                        title: Text(
+                          style: TextStyle(
+                            color:
+                                themeProvider.appThemeColor == AppColor.dynamic
+                                    ? Theme.of(context).colorScheme.onSecondary
+                                    : null,
+                          ),
+                          AppLocalizations.of(context)!.translate('dynamic'),
+                        ),
                         onTap: () {
-                          onThemeSelected(AppThemeMode.dynamic);
+                          onThemeSelected(AppColor.dynamic);
                           Navigator.pop(context);
                         },
                       ),
@@ -377,22 +446,47 @@ class ThemeProvider extends ChangeNotifier {
                   ],
                 ),
                 ...sortedSeeds.map((entry) {
-                  return ListTile(
-                    trailing: Icon(Icons.circle, color: entry.value),
-                    leading: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (selectedMode == entry.key)
-                          Icon(Icons.check, color: entry.value),
-                      ],
-                    ),
-                    title: Text(
-                      themeModeNames(context)[entry.key] ?? entry.key.name,
-                    ),
-                    onTap: () {
-                      onThemeSelected(entry.key);
-                      Navigator.pop(context);
-                    },
+                  return Stack(
+                    children: [
+                      Positioned.fill(
+                        child: selectionBox(
+                          tp: themeProvider,
+                          context: context,
+                          appColor: entry.key,
+                        ),
+                      ),
+                      ListTile(
+                        trailing: Icon(Icons.circle, color: entry.value),
+                        leading: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (selectedMode == entry.key)
+                              Icon(
+                                Icons.check,
+                                color:
+                                    themeProvider.appThemeColor == entry.key
+                                        ? Theme.of(
+                                          context,
+                                        ).colorScheme.onSecondary
+                                        : null,
+                              ),
+                          ],
+                        ),
+                        title: Text(
+                          style: TextStyle(
+                            color:
+                                themeProvider.appThemeColor == entry.key
+                                    ? Theme.of(context).colorScheme.onSecondary
+                                    : null,
+                          ),
+                          themeModeNames(context)[entry.key] ?? entry.key.name,
+                        ),
+                        onTap: () {
+                          onThemeSelected(entry.key);
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
                   );
                 }),
               ],
@@ -403,8 +497,15 @@ class ThemeProvider extends ChangeNotifier {
     );
   }
 
-  static Color? transparentIfSelectedForTheme(
-    ThemeProvider provider,
-    ThemeMode mode,
-  ) => provider.themeMode == mode ? Colors.transparent : null;
+  static Color? transparentIfSelected({
+    ThemeProvider? tp,
+    ThemeMode? mode,
+    AppColor? appColor,
+  }) {
+    if (tp!.themeMode == mode || tp.appThemeColor == appColor) {
+      return Colors.transparent;
+    } else {
+      return null;
+    }
+  }
 }

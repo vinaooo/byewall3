@@ -13,7 +13,7 @@ void main() async {
   final themeProvider = ThemeProvider();
   await themeProvider.loadTheme();
   await themeProvider.loadBlackBackground();
-  await themeProvider.loadAppThemeMode();
+  await themeProvider.loadAppThemeColor();
   await themeProvider.loadDynamicColor(); // <-- Adicione isto
 
   final languageProvider = LanguageProvider();
@@ -38,7 +38,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  AppThemeMode appThemeMode = AppThemeMode.dynamic;
+  AppColor appThemeColor = AppColor.dynamic;
 
   ThemeData fixedTheme(Brightness brightness, Color seed) {
     return ThemeData(
@@ -68,7 +68,7 @@ class _MyAppState extends State<MyApp> {
             late ThemeData darkTheme;
 
             // Substitua appThemeMode por themeProvider.appThemeMode
-            if (themeProvider.appThemeMode == AppThemeMode.dynamic &&
+            if (themeProvider.appThemeColor == AppColor.dynamic &&
                 lightDynamic != null &&
                 darkDynamic != null) {
               lightTheme = ThemeData(
@@ -81,7 +81,7 @@ class _MyAppState extends State<MyApp> {
               );
             } else {
               final seed =
-                  AppColors.seeds[themeProvider.appThemeMode] ??
+                  AppColors.seeds[themeProvider.appThemeColor] ??
                   Colors.deepPurple;
               lightTheme = fixedTheme(Brightness.light, seed);
               darkTheme = fixedTheme(Brightness.dark, seed);
@@ -119,9 +119,9 @@ class _MyAppState extends State<MyApp> {
               darkTheme: darkTheme, // Tema escuro modificado
               home: HomeScreen(
                 selectedMode:
-                    themeProvider.appThemeMode, // use o valor do provider
+                    themeProvider.appThemeColor, // use o valor do provider
                 onThemeSelected: (mode) {
-                  themeProvider.setAppThemeMode(
+                  themeProvider.setAppThemeColor(
                     mode,
                   ); // Atualize o provider e salve
                 },
