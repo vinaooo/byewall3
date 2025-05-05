@@ -129,172 +129,169 @@ class ThemeProvider extends ChangeNotifier {
                   ).withLightness(0.21).toColor()
                   : null,
           title: dialogTitle(context, Icons.brightness_6, 'theme_mode'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Stack(
-                children: [
-                  Positioned.fill(
-                    child: selectionBox(
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.8,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Stack(
+                  children: [
+                    selectionBox(
                       tp: themeProvider,
                       context: context,
                       mode: ThemeMode.system,
                     ),
-                  ),
-                  InkWell(
-                    focusColor: transparentIfSelected(
-                      tp: themeProvider,
-                      mode: ThemeMode.system,
-                    ),
-                    hoverColor: transparentIfSelected(
-                      tp: themeProvider,
-                      mode: ThemeMode.system,
-                    ),
-                    highlightColor: transparentIfSelected(
-                      tp: themeProvider,
-                      mode: ThemeMode.system,
-                    ),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      themeProvider.setThemeMode(ThemeMode.system);
-                    },
-                    child: ListTile(
-                      tileColor: Colors.transparent, // Garante transparência
-                      contentPadding: EdgeInsets.symmetric(horizontal: 36),
-                      title: Text(
-                        style: TextStyle(
-                          color:
-                              themeProvider.themeMode == ThemeMode.system
-                                  ? Theme.of(context).colorScheme.onSecondary
-                                  : null,
-                        ),
-                        AppLocalizations.of(
-                          context,
-                        )!.translate('theme_mode_system'),
+                    InkWell(
+                      focusColor: transparentIfSelected(
+                        tp: themeProvider,
+                        mode: ThemeMode.system,
                       ),
-                      leading: Padding(
-                        padding: const EdgeInsets.only(left: 13.0),
-                        child: Icon(
-                          Icons.check,
-                          color:
-                              themeProvider.themeMode == ThemeMode.system
-                                  ? Theme.of(context).colorScheme.onSecondary
-                                  : Colors.transparent,
+                      hoverColor: transparentIfSelected(
+                        tp: themeProvider,
+                        mode: ThemeMode.system,
+                      ),
+                      highlightColor: transparentIfSelected(
+                        tp: themeProvider,
+                        mode: ThemeMode.system,
+                      ),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        themeProvider.setThemeMode(ThemeMode.system);
+                      },
+                      child: ListTile(
+                        tileColor: Colors.transparent, // Garante transparência
+                        contentPadding: EdgeInsets.symmetric(horizontal: 36),
+                        title: Text(
+                          style: TextStyle(
+                            color:
+                                themeProvider.themeMode == ThemeMode.system
+                                    ? Theme.of(context).colorScheme.onSecondary
+                                    : null,
+                          ),
+                          AppLocalizations.of(
+                            context,
+                          )!.translate('theme_mode_system'),
+                        ),
+                        leading: Padding(
+                          padding: const EdgeInsets.only(left: 13.0),
+                          child: Icon(
+                            Icons.check,
+                            color:
+                                themeProvider.themeMode == ThemeMode.system
+                                    ? Theme.of(context).colorScheme.onSecondary
+                                    : Colors.transparent,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              Stack(
-                children: [
-                  Positioned.fill(
-                    child: selectionBox(
+                  ],
+                ),
+                Stack(
+                  children: [
+                    selectionBox(
                       tp: themeProvider,
                       context: context,
                       mode: ThemeMode.light,
                     ),
-                  ),
-                  InkWell(
-                    focusColor: transparentIfSelected(
-                      tp: themeProvider,
-                      mode: ThemeMode.light,
-                    ),
-                    hoverColor: transparentIfSelected(
-                      tp: themeProvider,
-                      mode: ThemeMode.light,
-                    ),
-                    highlightColor: transparentIfSelected(
-                      tp: themeProvider,
-                      mode: ThemeMode.light,
-                    ),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      themeProvider.setThemeMode(ThemeMode.light);
-                    },
-                    child: ListTile(
-                      tileColor: Colors.transparent,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 36),
-                      title: Text(
-                        style: TextStyle(
-                          color:
-                              themeProvider.themeMode == ThemeMode.light
-                                  ? Theme.of(context).colorScheme.onSecondary
-                                  : null,
-                        ),
-                        AppLocalizations.of(
-                          context,
-                        )!.translate('theme_mode_light'),
+                    InkWell(
+                      focusColor: transparentIfSelected(
+                        tp: themeProvider,
+                        mode: ThemeMode.light,
                       ),
-                      leading: Padding(
-                        padding: const EdgeInsets.only(left: 13.0),
-                        child: Icon(
-                          Icons.check,
-                          color:
-                              themeProvider.themeMode == ThemeMode.light
-                                  ? Theme.of(context).colorScheme.onSecondary
-                                  : Colors.transparent,
+                      hoverColor: transparentIfSelected(
+                        tp: themeProvider,
+                        mode: ThemeMode.light,
+                      ),
+                      highlightColor: transparentIfSelected(
+                        tp: themeProvider,
+                        mode: ThemeMode.light,
+                      ),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        themeProvider.setThemeMode(ThemeMode.light);
+                      },
+                      child: ListTile(
+                        tileColor: Colors.transparent,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 36),
+                        title: Text(
+                          style: TextStyle(
+                            color:
+                                themeProvider.themeMode == ThemeMode.light
+                                    ? Theme.of(context).colorScheme.onSecondary
+                                    : null,
+                          ),
+                          AppLocalizations.of(
+                            context,
+                          )!.translate('theme_mode_light'),
+                        ),
+                        leading: Padding(
+                          padding: const EdgeInsets.only(left: 13.0),
+                          child: Icon(
+                            Icons.check,
+                            color:
+                                themeProvider.themeMode == ThemeMode.light
+                                    ? Theme.of(context).colorScheme.onSecondary
+                                    : Colors.transparent,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              Stack(
-                children: [
-                  Positioned.fill(
-                    child: selectionBox(
+                  ],
+                ),
+                Stack(
+                  children: [
+                    selectionBox(
                       tp: themeProvider,
                       context: context,
                       mode: ThemeMode.dark,
                     ),
-                  ),
-                  InkWell(
-                    focusColor: transparentIfSelected(
-                      tp: themeProvider,
-                      mode: ThemeMode.dark,
-                    ),
-                    hoverColor: transparentIfSelected(
-                      tp: themeProvider,
-                      mode: ThemeMode.dark,
-                    ),
-                    highlightColor: transparentIfSelected(
-                      tp: themeProvider,
-                      mode: ThemeMode.dark,
-                    ),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      themeProvider.setThemeMode(ThemeMode.dark);
-                    },
-                    child: ListTile(
-                      tileColor: Colors.transparent,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 36),
-                      title: Text(
-                        style: TextStyle(
-                          color:
-                              themeProvider.themeMode == ThemeMode.dark
-                                  ? Theme.of(context).colorScheme.onSecondary
-                                  : null,
-                        ),
-                        AppLocalizations.of(
-                          context,
-                        )!.translate('theme_mode_dark'),
+                    InkWell(
+                      focusColor: transparentIfSelected(
+                        tp: themeProvider,
+                        mode: ThemeMode.dark,
                       ),
-                      leading: Padding(
-                        padding: const EdgeInsets.only(left: 13.0),
-                        child: Icon(
-                          Icons.check,
-                          color:
-                              themeProvider.themeMode == ThemeMode.dark
-                                  ? Theme.of(context).colorScheme.onSecondary
-                                  : Colors.transparent,
+                      hoverColor: transparentIfSelected(
+                        tp: themeProvider,
+                        mode: ThemeMode.dark,
+                      ),
+                      highlightColor: transparentIfSelected(
+                        tp: themeProvider,
+                        mode: ThemeMode.dark,
+                      ),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        themeProvider.setThemeMode(ThemeMode.dark);
+                      },
+                      child: ListTile(
+                        tileColor: Colors.transparent,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 36),
+                        title: Text(
+                          style: TextStyle(
+                            color:
+                                themeProvider.themeMode == ThemeMode.dark
+                                    ? Theme.of(context).colorScheme.onSecondary
+                                    : null,
+                          ),
+                          AppLocalizations.of(
+                            context,
+                          )!.translate('theme_mode_dark'),
+                        ),
+                        leading: Padding(
+                          padding: const EdgeInsets.only(left: 13.0),
+                          child: Icon(
+                            Icons.check,
+                            color:
+                                themeProvider.themeMode == ThemeMode.dark
+                                    ? Theme.of(context).colorScheme.onSecondary
+                                    : Colors.transparent,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -313,7 +310,7 @@ class ThemeProvider extends ChangeNotifier {
     );
   }
 
-  static Padding selectionBox({
+  static Positioned selectionBox({
     ThemeProvider? tp,
     BuildContext? context,
     ThemeMode? mode,
@@ -323,16 +320,18 @@ class ThemeProvider extends ChangeNotifier {
         HSLColor.fromColor(
           Theme.of(context!).colorScheme.secondary,
         ).withSaturation(0.6).withLightness(0.77).toColor();
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: mode == null ? 12 : 36),
-      child: Container(
-        // height: 48, // Remova esta linha
-        decoration: BoxDecoration(
-          color:
-              tp!.themeMode == mode || tp.appThemeColor == appColor
-                  ? corBox
-                  : null,
-          borderRadius: BorderRadius.circular(12),
+    return Positioned.fill(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: mode == null ? 12 : 36),
+        child: Container(
+          // height: 48, // Remova esta linha
+          decoration: BoxDecoration(
+            color:
+                tp!.themeMode == mode || tp.appThemeColor == appColor
+                    ? corBox
+                    : null,
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       ),
     );
@@ -369,100 +368,126 @@ class ThemeProvider extends ChangeNotifier {
                   ).withLightness(0.21).toColor()
                   : null,
           title: dialogTitle(context, Icons.color_lens, 'accent_color'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Stack(
-                  children: [
-                    Positioned.fill(
-                      child: selectionBox(
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: MediaQuery.of(context).size.height * 0.5,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Stack(
+                    children: [
+                      selectionBox(
                         tp: themeProvider,
                         context: context,
                         appColor: AppColor.dynamic,
                       ),
-                    ),
-                    InkWell(
-                      focusColor: transparentIfSelected(
-                        tp: themeProvider,
-                        appColor: AppColor.dynamic,
-                      ),
-                      hoverColor: transparentIfSelected(
-                        tp: themeProvider,
-                        appColor: AppColor.dynamic,
-                      ),
-                      highlightColor: transparentIfSelected(
-                        tp: themeProvider,
-                        appColor: AppColor.dynamic,
-                      ),
-                      child: ListTile(
+                      InkWell(
+                        focusColor: transparentIfSelected(
+                          tp: themeProvider,
+                          appColor: AppColor.dynamic,
+                        ),
                         hoverColor: transparentIfSelected(
                           tp: themeProvider,
                           appColor: AppColor.dynamic,
                         ),
-                        splashColor: transparentIfSelected(
+                        highlightColor: transparentIfSelected(
                           tp: themeProvider,
                           appColor: AppColor.dynamic,
                         ),
-                        tileColor: transparentIfSelected(
-                          tp: themeProvider,
-                          appColor: AppColor.dynamic,
-                        ),
-                        trailing: Icon(
-                          Icons.circle,
-                          color: dynamicColor, // Use a cor dinâmica salva
-                        ),
-                        leading: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (selectedMode == AppColor.dynamic)
-                              Icon(
-                                Icons.check,
-                                color:
-                                    themeProvider.appThemeColor ==
-                                            AppColor.dynamic
-                                        ? Theme.of(
-                                          context,
-                                        ).colorScheme.onSecondary
-                                        : null,
-                              ),
-                          ],
-                        ),
-                        title: Text(
-                          style: TextStyle(
-                            color:
-                                themeProvider.appThemeColor == AppColor.dynamic
-                                    ? Theme.of(context).colorScheme.onSecondary
-                                    : null,
+                        child: ListTile(
+                          hoverColor: transparentIfSelected(
+                            tp: themeProvider,
+                            appColor: AppColor.dynamic,
                           ),
-                          AppLocalizations.of(context)!.translate('dynamic'),
+                          splashColor: transparentIfSelected(
+                            tp: themeProvider,
+                            appColor: AppColor.dynamic,
+                          ),
+                          tileColor: transparentIfSelected(
+                            tp: themeProvider,
+                            appColor: AppColor.dynamic,
+                          ),
+                          trailing: Icon(
+                            Icons.circle,
+                            color: dynamicColor, // Use a cor dinâmica salva
+                          ),
+                          leading: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (selectedMode == AppColor.dynamic)
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: Icon(
+                                    Icons.check,
+                                    color:
+                                        themeProvider.appThemeColor ==
+                                                AppColor.dynamic
+                                            ? Theme.of(
+                                              context,
+                                            ).colorScheme.onSecondary
+                                            : null,
+                                  ),
+                                ),
+
+                              if (selectedMode != AppColor.dynamic)
+                                const SizedBox(width: 40),
+                            ],
+                          ),
+                          title: Text(
+                            style: TextStyle(
+                              color:
+                                  themeProvider.appThemeColor ==
+                                          AppColor.dynamic
+                                      ? Theme.of(
+                                        context,
+                                      ).colorScheme.onSecondary
+                                      : null,
+                            ),
+                            AppLocalizations.of(context)!.translate('dynamic'),
+                          ),
+                          onTap: () {
+                            onThemeSelected(AppColor.dynamic);
+                            Navigator.pop(context);
+                          },
                         ),
-                        onTap: () {
-                          onThemeSelected(AppColor.dynamic);
-                          Navigator.pop(context);
-                        },
                       ),
-                    ),
-                  ],
-                ),
-                ...sortedSeeds.map((entry) {
-                  return Stack(
-                    children: [
-                      Positioned.fill(
-                        child: selectionBox(
+                    ],
+                  ),
+                  ...sortedSeeds.map((entry) {
+                    return Stack(
+                      children: [
+                        selectionBox(
                           tp: themeProvider,
                           context: context,
                           appColor: entry.key,
                         ),
-                      ),
-                      ListTile(
-                        trailing: Icon(Icons.circle, color: entry.value),
-                        leading: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (selectedMode == entry.key)
-                              Icon(
-                                Icons.check,
+                        ListTile(
+                          trailing: Icon(Icons.circle, color: entry.value),
+                          leading: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (selectedMode == entry.key)
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: Icon(
+                                    Icons.check,
+                                    color:
+                                        themeProvider.appThemeColor == entry.key
+                                            ? Theme.of(
+                                              context,
+                                            ).colorScheme.onSecondary
+                                            : null,
+                                  ),
+                                ),
+                              if (selectedMode != entry.key)
+                                const SizedBox(width: 32),
+                            ],
+                          ),
+                          title: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              style: TextStyle(
                                 color:
                                     themeProvider.appThemeColor == entry.key
                                         ? Theme.of(
@@ -470,26 +495,20 @@ class ThemeProvider extends ChangeNotifier {
                                         ).colorScheme.onSecondary
                                         : null,
                               ),
-                          ],
-                        ),
-                        title: Text(
-                          style: TextStyle(
-                            color:
-                                themeProvider.appThemeColor == entry.key
-                                    ? Theme.of(context).colorScheme.onSecondary
-                                    : null,
+                              themeModeNames(context)[entry.key] ??
+                                  entry.key.name,
+                            ),
                           ),
-                          themeModeNames(context)[entry.key] ?? entry.key.name,
+                          onTap: () {
+                            onThemeSelected(entry.key);
+                            Navigator.pop(context);
+                          },
                         ),
-                        onTap: () {
-                          onThemeSelected(entry.key);
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ],
-                  );
-                }),
-              ],
+                      ],
+                    );
+                  }),
+                ],
+              ),
             ),
           ),
         );
@@ -502,10 +521,8 @@ class ThemeProvider extends ChangeNotifier {
     ThemeMode? mode,
     AppColor? appColor,
   }) {
-    if (tp!.themeMode == mode || tp.appThemeColor == appColor) {
-      return Colors.transparent;
-    } else {
-      return null;
-    }
+    return tp!.themeMode == mode || tp.appThemeColor == appColor
+        ? Colors.transparent
+        : null;
   }
 }

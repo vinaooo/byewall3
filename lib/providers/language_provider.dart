@@ -70,11 +70,12 @@ class LanguageProvider extends ChangeNotifier {
       context: context,
       builder: (context) {
         return AlertDialog(
+          contentPadding: const EdgeInsets.only(top: 16, bottom: 30),
           title: Text(
             AppLocalizations.of(context)!.translate('select_language'),
           ),
           content: SizedBox(
-            width: double.maxFinite,
+            width: MediaQuery.of(context).size.width * 0.8,
             child: ListView.builder(
               shrinkWrap: true,
               itemCount: AppLocalizations.supportedLocales.length,
@@ -82,20 +83,68 @@ class LanguageProvider extends ChangeNotifier {
                 final locale = AppLocalizations.supportedLocales[index];
                 final key = localeKey(locale);
                 final name = Locales.knownLocales[key] ?? key;
-                return ListTile(
-                  leading: Radio<Locale>(
-                    value: locale,
-                    groupValue: Provider.of<LanguageProvider>(context).locale,
-                    onChanged: (Locale? selectedLocale) {
-                      if (selectedLocale != null) {
-                        changeLanguage(context, selectedLocale);
-                      }
-                    },
-                  ),
-                  title: Text(name),
-                  onTap: () {
-                    changeLanguage(context, locale);
-                  },
+                final isSelected =
+                    Provider.of<LanguageProvider>(context).locale == locale;
+
+                return Stack(
+                  children: [
+                    Positioned.fill(
+                      child: selectionBox(
+                        lp: Provider.of<LanguageProvider>(context),
+                        context: context,
+                        locale: locale,
+                      ),
+                    ),
+                    InkWell(
+                      focusColor: transparentIfSelected(
+                        lp: Provider.of<LanguageProvider>(context),
+                        locale: locale,
+                      ),
+                      hoverColor: transparentIfSelected(
+                        lp: Provider.of<LanguageProvider>(context),
+                        locale: locale,
+                      ),
+                      highlightColor: transparentIfSelected(
+                        lp: Provider.of<LanguageProvider>(context),
+                        locale: locale,
+                      ),
+                      child: ListTile(
+                        hoverColor: transparentIfSelected(
+                          lp: Provider.of<LanguageProvider>(context),
+                          locale: locale,
+                        ),
+                        splashColor: transparentIfSelected(
+                          lp: Provider.of<LanguageProvider>(context),
+                          locale: locale,
+                        ),
+                        tileColor: transparentIfSelected(
+                          lp: Provider.of<LanguageProvider>(context),
+                          locale: locale,
+                        ),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 50),
+                        leading:
+                            isSelected
+                                ? Icon(
+                                  Icons.check,
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
+                                )
+                                : const SizedBox.shrink(), // Ícone vazio se não for selecionado
+                        title: Text(
+                          name,
+                          style: TextStyle(
+                            color:
+                                isSelected
+                                    ? Theme.of(context).colorScheme.onPrimary
+                                    : null,
+                          ),
+                        ),
+                        onTap: () {
+                          changeLanguage(context, locale);
+                        },
+                      ),
+                    ),
+                  ],
                 );
               },
             ),
@@ -111,5 +160,34 @@ class LanguageProvider extends ChangeNotifier {
       listen: false,
     ).setLocale(selectedLocale);
     Navigator.pop(context);
+  }
+
+  static Padding selectionBox({
+    required LanguageProvider lp,
+    required BuildContext context,
+    required Locale locale,
+  }) {
+    final isSelected = lp.locale == locale;
+    final Color corBox =
+        HSLColor.fromColor(
+          Theme.of(context).colorScheme.secondary,
+        ).withSaturation(0.6).withLightness(0.77).toColor();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 36),
+      child: Container(
+        decoration: BoxDecoration(
+          color: isSelected ? corBox : null,
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
+  }
+
+  static Color? transparentIfSelected({
+    required LanguageProvider lp,
+    required Locale locale,
+  }) {
+    return lp.locale == locale ? Colors.transparent : null;
   }
 }

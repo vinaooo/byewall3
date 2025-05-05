@@ -22,6 +22,11 @@ class SettingsTiles extends StatelessWidget {
     this.tIcon,
     required this.switchEnable,
   });
+  static const WidgetStateProperty<Icon> thumbIcon =
+      WidgetStateProperty<Icon>.fromMap(<WidgetStatesConstraint, Icon>{
+        WidgetState.selected: Icon(Icons.check),
+        WidgetState.any: Icon(Icons.close),
+      });
 
   get onTap => null;
 
@@ -111,6 +116,7 @@ class SettingsTiles extends StatelessWidget {
             trailing:
                 switchEnable
                     ? Switch(
+                      thumbIcon: thumbIcon,
                       value: themeProvider.useBlackBackground,
                       onChanged:
                           widgetEnabled(context, switchEnable)
