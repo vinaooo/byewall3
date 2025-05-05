@@ -70,7 +70,9 @@ class LanguageProvider extends ChangeNotifier {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Select Language'),
+          title: Text(
+            AppLocalizations.of(context)!.translate('select_language'),
+          ),
           content: SizedBox(
             width: double.maxFinite,
             child: ListView.builder(
@@ -86,27 +88,13 @@ class LanguageProvider extends ChangeNotifier {
                     groupValue: Provider.of<LanguageProvider>(context).locale,
                     onChanged: (Locale? selectedLocale) {
                       if (selectedLocale != null) {
-                        Provider.of<LanguageProvider>(
-                          context,
-                          listen: false,
-                        ).setLocale(selectedLocale);
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Language changed to $name')),
-                        );
+                        changeLanguage(context, selectedLocale);
                       }
                     },
                   ),
                   title: Text(name),
                   onTap: () {
-                    Provider.of<LanguageProvider>(
-                      context,
-                      listen: false,
-                    ).setLocale(locale);
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Language changed to $name')),
-                    );
+                    changeLanguage(context, locale);
                   },
                 );
               },
@@ -115,5 +103,13 @@ class LanguageProvider extends ChangeNotifier {
         );
       },
     );
+  }
+
+  static void changeLanguage(BuildContext context, Locale selectedLocale) {
+    Provider.of<LanguageProvider>(
+      context,
+      listen: false,
+    ).setLocale(selectedLocale);
+    Navigator.pop(context);
   }
 }

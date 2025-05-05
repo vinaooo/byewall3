@@ -136,15 +136,15 @@ class ThemeProvider extends ChangeNotifier {
                 children: [
                   selectionBox(themeProvider, context, ThemeMode.system),
                   InkWell(
-                    focusColor: transparentIfSelected(
+                    focusColor: transparentIfSelectedForTheme(
                       themeProvider,
                       ThemeMode.system,
                     ),
-                    hoverColor: transparentIfSelected(
+                    hoverColor: transparentIfSelectedForTheme(
                       themeProvider,
                       ThemeMode.system,
                     ),
-                    highlightColor: transparentIfSelected(
+                    highlightColor: transparentIfSelectedForTheme(
                       themeProvider,
                       ThemeMode.system,
                     ),
@@ -184,15 +184,15 @@ class ThemeProvider extends ChangeNotifier {
                 children: [
                   selectionBox(themeProvider, context, ThemeMode.light),
                   InkWell(
-                    focusColor: transparentIfSelected(
+                    focusColor: transparentIfSelectedForTheme(
                       themeProvider,
                       ThemeMode.light,
                     ),
-                    hoverColor: transparentIfSelected(
+                    hoverColor: transparentIfSelectedForTheme(
                       themeProvider,
                       ThemeMode.light,
                     ),
-                    highlightColor: transparentIfSelected(
+                    highlightColor: transparentIfSelectedForTheme(
                       themeProvider,
                       ThemeMode.light,
                     ),
@@ -232,15 +232,15 @@ class ThemeProvider extends ChangeNotifier {
                 children: [
                   selectionBox(themeProvider, context, ThemeMode.dark),
                   InkWell(
-                    focusColor: transparentIfSelected(
+                    focusColor: transparentIfSelectedForTheme(
                       themeProvider,
                       ThemeMode.dark,
                     ),
-                    hoverColor: transparentIfSelected(
+                    hoverColor: transparentIfSelectedForTheme(
                       themeProvider,
                       ThemeMode.dark,
                     ),
-                    highlightColor: transparentIfSelected(
+                    highlightColor: transparentIfSelectedForTheme(
                       themeProvider,
                       ThemeMode.dark,
                     ),
@@ -337,28 +337,44 @@ class ThemeProvider extends ChangeNotifier {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          contentPadding: const EdgeInsets.only(top: 16.0, bottom: 30),
+          backgroundColor:
+              themeProvider.themeMode == ThemeMode.dark ||
+                      (themeProvider.themeMode == ThemeMode.system &&
+                          MediaQuery.of(context).platformBrightness ==
+                              Brightness.dark)
+                  ? HSLColor.fromColor(
+                    Theme.of(context).colorScheme.surface,
+                  ).withLightness(0.21).toColor()
+                  : null,
           title: dialogTitle(context, Icons.color_lens, 'accent_color'),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                ListTile(
-                  trailing: Icon(
-                    Icons.circle,
-                    color: dynamicColor, // Use a cor dinâmica salva
-                  ),
-                  leading: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (selectedMode == AppThemeMode.dynamic)
-                        Icon(Icons.check, color: dynamicColor),
-                    ],
-                  ),
-                  title: Text('Dinâmico (Material You)'),
-                  onTap: () {
-                    onThemeSelected(AppThemeMode.dynamic);
-                    Navigator.pop(context);
-                  },
+                Stack(
+                  children: [
+                    InkWell(
+                      child: ListTile(
+                        trailing: Icon(
+                          Icons.circle,
+                          color: dynamicColor, // Use a cor dinâmica salva
+                        ),
+                        leading: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (selectedMode == AppThemeMode.dynamic)
+                              Icon(Icons.check, color: dynamicColor),
+                          ],
+                        ),
+                        title: Text('Dinâmico (Material You)'),
+                        onTap: () {
+                          onThemeSelected(AppThemeMode.dynamic);
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                  ],
                 ),
                 ...sortedSeeds.map((entry) {
                   return ListTile(
@@ -387,6 +403,8 @@ class ThemeProvider extends ChangeNotifier {
     );
   }
 
-  static Color? transparentIfSelected(ThemeProvider provider, ThemeMode mode) =>
-      provider.themeMode == mode ? Colors.transparent : null;
+  static Color? transparentIfSelectedForTheme(
+    ThemeProvider provider,
+    ThemeMode mode,
+  ) => provider.themeMode == mode ? Colors.transparent : null;
 }

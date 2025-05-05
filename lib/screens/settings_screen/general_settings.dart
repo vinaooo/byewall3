@@ -45,52 +45,75 @@ class GeneralSettingsView extends StatelessWidget {
           expandedHeight,
           minExtent,
         ),
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                TitleText(
-                  title: AppLocalizations.of(context)!.translate('appearance'),
-                ),
-                themeModeTile(),
-                SizedBox(height: 2),
-                accentColorTile(context),
-                SizedBox(height: 2),
-                amoledTile(context),
-              ],
-            ),
-          ),
-        ),
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                TitleText(
-                  title: AppLocalizations.of(context)!.translate('defaults'),
-                ),
-                languageTile(context),
-              ],
-            ),
-          ),
-        ),
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                TitleText(
-                  title: AppLocalizations.of(context)!.translate('your_data'),
-                ),
-                exportTile(context),
-                SizedBox(height: 2),
-                resetTile(context),
-              ],
-            ),
-          ),
-        ),
+        appearenceTiles(context),
+        languageTile(context),
+        dataTiles(context),
       ],
+    );
+  }
+
+  SliverToBoxAdapter appearenceTiles(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            TitleText(
+              title: AppLocalizations.of(context)!.translate('appearance'),
+            ),
+            themeModeTile(),
+            SizedBox(height: 2),
+            accentColorTile(context),
+            SizedBox(height: 2),
+            amoledTile(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  SliverToBoxAdapter dataTiles(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            TitleText(
+              title: AppLocalizations.of(context)!.translate('your_data'),
+            ),
+            exportTile(context),
+            SizedBox(height: 2),
+            resetTile(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  SliverToBoxAdapter languageTile(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            TitleText(
+              title: AppLocalizations.of(context)!.translate('defaults'),
+            ),
+            SettingsTiles(
+              border: 3, //all
+              title: AppLocalizations.of(context)!.translate('language'),
+              subtitle: AppLocalizations.of(
+                context,
+              )!.translate('language_subtitle'),
+              icon: Icons.arrow_drop_down,
+              switchEnable: false,
+              onPressed: () {
+                LanguageProvider.selectLanguage(context, localeKey);
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -184,19 +207,6 @@ class GeneralSettingsView extends StatelessWidget {
       icon: Icons.download,
       switchEnable: false,
       onPressed: () {},
-    );
-  }
-
-  SettingsTiles languageTile(BuildContext context) {
-    return SettingsTiles(
-      border: 3, //all
-      title: AppLocalizations.of(context)!.translate('language'),
-      subtitle: AppLocalizations.of(context)!.translate('language_subtitle'),
-      icon: Icons.arrow_drop_down,
-      switchEnable: false,
-      onPressed: () {
-        LanguageProvider.selectLanguage(context, localeKey);
-      },
     );
   }
 
