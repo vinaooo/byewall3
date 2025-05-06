@@ -1,3 +1,4 @@
+import 'package:byewall3/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class CustomSliverAppBar {
@@ -5,11 +6,10 @@ class CustomSliverAppBar {
 
   CustomSliverAppBar(this.context);
 
-  SliverAppBar buildSliverAppBar(
-    String title,
-    double expandedHeight,
-    double minExtent,
-  ) {
+  SliverAppBar buildSliverAppBar(String title) {
+    final double expandedHeight = MediaQuery.of(context).size.height * 0.25;
+    final double minExtent =
+        kToolbarHeight + MediaQuery.of(context).padding.top;
     double calculateT(double currentHeight) {
       return ((currentHeight - minExtent) / (expandedHeight - minExtent)).clamp(
         0.0,
@@ -17,6 +17,7 @@ class CustomSliverAppBar {
       );
     }
 
+    title = AppLocalizations.of(context)!.translate(title);
     return SliverAppBar(
       surfaceTintColor: Colors.transparent,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,

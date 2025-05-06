@@ -1,10 +1,10 @@
-import 'package:byewall3/l10n/app_localizations.dart';
 import 'package:byewall3/providers/language_provider.dart';
 import 'package:byewall3/providers/theme_provider.dart';
 import 'package:byewall3/ui/app_colors.dart';
+import 'package:byewall3/ui/components/localized_text.dart';
 import 'package:byewall3/ui/components/settings_custom_sliverappbar.dart';
 import 'package:byewall3/ui/components/settings_list_tiles.dart';
-import 'package:byewall3/ui/components/settings_title_text.dart';
+import 'package:byewall3/ui/components/tile_title_text.dart';
 import 'package:byewall3/utils/settings_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,22 +29,13 @@ class GeneralSettingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
-    final double expandedHeight = screenHeight * 0.25;
-    final double minExtent =
-        kToolbarHeight + MediaQuery.of(context).padding.top;
-
     final customSliverAppBar = CustomSliverAppBar(context);
 
     return CustomScrollView(
       key: const PageStorageKey('generalSettings'),
       controller: controller,
       slivers: <Widget>[
-        customSliverAppBar.buildSliverAppBar(
-          AppLocalizations.of(context)!.translate('general'),
-          expandedHeight,
-          minExtent,
-        ),
+        customSliverAppBar.buildSliverAppBar('general'),
         appearenceTiles(context),
         languageTile(context),
         dataTiles(context),
@@ -58,32 +49,10 @@ class GeneralSettingsView extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            TitleText(
-              title: AppLocalizations.of(context)!.translate('appearance'),
-            ),
+            TileTitleText(title: 'appearance'),
             themeModeTile(),
-            SizedBox(height: 2),
             accentColorTile(context),
-            SizedBox(height: 2),
             amoledTile(context),
-          ],
-        ),
-      ),
-    );
-  }
-
-  SliverToBoxAdapter dataTiles(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            TitleText(
-              title: AppLocalizations.of(context)!.translate('your_data'),
-            ),
-            exportTile(context),
-            SizedBox(height: 2),
-            resetTile(context),
           ],
         ),
       ),
@@ -96,23 +65,32 @@ class GeneralSettingsView extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            TitleText(
-              title: AppLocalizations.of(context)!.translate('defaults'),
-            ),
+            TileTitleText(title: 'defaults'),
             SettingsTiles(
               border: 3, //all
-              title: AppLocalizations.of(context)!.translate('language'),
-              subtitle: AppLocalizations.of(
-                context,
-              )!.translate('language_subtitle'),
+              title: 'language',
+              subtitle: 'language_subtitle',
               lIcon: leadingIcon(color: 'blue', icon: Icons.translate),
-
               tIcon: Icons.arrow_drop_down,
-              switchEnable: false,
               onPressed: () {
                 LanguageProvider.selectLanguage(context, localeKey);
               },
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  SliverToBoxAdapter dataTiles(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            TileTitleText(title: 'your_data'),
+            exportTile(context),
+            resetTile(context),
           ],
         ),
       ),
@@ -125,25 +103,18 @@ class GeneralSettingsView extends StatelessWidget {
         String themeSubtitle = '';
         switch (themeProvider.themeMode) {
           case ThemeMode.system:
-            themeSubtitle = AppLocalizations.of(
-              context,
-            )!.translate('theme_mode_system');
+            themeSubtitle = 'theme_mode_system';
           case ThemeMode.light:
-            themeSubtitle = AppLocalizations.of(
-              context,
-            )!.translate('theme_mode_light');
+            themeSubtitle = 'theme_mode_light';
           case ThemeMode.dark:
-            themeSubtitle = AppLocalizations.of(
-              context,
-            )!.translate('theme_mode_dark');
+            themeSubtitle = 'theme_mode_dark';
         }
         return SettingsTiles(
           border: 1,
-          title: AppLocalizations.of(context)!.translate('theme_mode'),
+          title: 'theme_mode',
           subtitle: themeSubtitle,
           lIcon: leadingIcon(color: 'pink', icon: Icons.brightness_6),
           tIcon: Icons.arrow_drop_down,
-          switchEnable: false,
           onPressed: () {
             ThemeProvider.showThemeSelection(context);
           },
@@ -152,21 +123,116 @@ class GeneralSettingsView extends StatelessWidget {
     );
   }
 
+  Column accentColorTile(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(height: 2),
+        SettingsTiles(
+          border: 0, //none
+          title: 'accent_color',
+          subtitle: 'choose_theme_color',
+          lIcon: leadingIcon(color: 'pink', icon: Icons.color_lens),
+          tIcon: Icons.circle,
+          onPressed: () {
+            ThemeProvider.showColorSelection(
+              context: context,
+              selectedMode: selectedMode,
+              onThemeSelected: onThemeSelected,
+              seeds: seeds,
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Column amoledTile(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(height: 2),
+        SettingsTiles(
+          border: 2, //bottom
+          title: 'dark_mode_amoled',
+          subtitle: 'dark_mode_amoled_subtitle',
+          lIcon: leadingIcon(color: 'pink', icon: Icons.nightlight_round_sharp),
+          switchEnable: true,
+          onPressed: () {},
+        ),
+      ],
+    );
+  }
+
+  SettingsTiles exportTile(BuildContext context) {
+    return SettingsTiles(
+      border: 1, //top
+      title: 'export_settings',
+      subtitle: 'export_settings_subtitle',
+      lIcon: leadingIcon(color: 'green', icon: Icons.download),
+      onPressed: () {},
+    );
+  }
+
+  Column resetTile(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(height: 2),
+        SettingsTiles(
+          border: 2, //bottom
+          title: 'reset_settings',
+          subtitle: 'reset_settings_subtitle',
+          lIcon: leadingIcon(color: 'green', icon: Icons.restore),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: LocalizedText(tKey: 'reset_settings'),
+                  content: LocalizedText(tKey: 'reset_settings_subtitle'),
+                  actions: [
+                    TextButton(
+                      onPressed: () async {
+                        final navigator = Navigator.of(context);
+                        await settingsManager.clearAllKeys();
+                        navigator.pop(); // Fecha o diálogo
+                        settingsManager.closeApp(); // Fecha o aplicativo
+                      },
+                      child: LocalizedText(tKey: 'reset'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Fecha o diálogo
+                      },
+                      child: LocalizedText(tKey: 'cancel'),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        ),
+      ],
+    );
+  }
+
   Stack leadingIcon({String color = '', IconData? icon}) {
     Color lightColor;
     Color darkColor;
-    if (color == 'pink') {
-      lightColor = AppColors().pink;
-      darkColor = AppColors().darkPink;
-    } else if (color == 'blue') {
-      lightColor = AppColors().blue;
-      darkColor = AppColors().darkBlue;
-    } else if (color == 'green') {
-      lightColor = AppColors().green;
-      darkColor = AppColors().darkGreen;
-    } else {
-      lightColor = Colors.white;
-      darkColor = Colors.black;
+    switch (color) {
+      case 'pink':
+        lightColor = AppColors().pink;
+        darkColor = AppColors().darkPink;
+        break;
+      case 'blue':
+        lightColor = AppColors().blue;
+        darkColor = AppColors().darkBlue;
+        break;
+      case 'green':
+        lightColor = AppColors().green;
+        darkColor = AppColors().darkGreen;
+        break;
+      default:
+        lightColor = Colors.white;
+        darkColor = Colors.black;
     }
 
     return Stack(
@@ -175,102 +241,6 @@ class GeneralSettingsView extends StatelessWidget {
         Transform.scale(scale: 2, child: Icon(Icons.circle, color: lightColor)),
         Transform.scale(scale: 1.1, child: Icon(icon, color: darkColor)),
       ],
-    );
-  }
-
-  SettingsTiles resetTile(BuildContext context) {
-    return SettingsTiles(
-      border: 2, //bottom
-      title: AppLocalizations.of(context)!.translate('reset_settings'),
-      subtitle: AppLocalizations.of(
-        context,
-      )!.translate('reset_settings_subtitle'),
-      lIcon: leadingIcon(color: 'green', icon: Icons.restore),
-      switchEnable: false,
-      onPressed: () {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text(
-                AppLocalizations.of(context)!.translate('reset_settings'),
-              ),
-              content: Text(
-                AppLocalizations.of(
-                  context,
-                )!.translate('reset_settings_subtitle'),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () async {
-                    final navigator = Navigator.of(context);
-                    await settingsManager.clearAllKeys();
-                    navigator.pop(); // Fecha o diálogo
-                    settingsManager.closeApp(); // Fecha o aplicativo
-                  },
-                  child: Text(AppLocalizations.of(context)!.translate('reset')),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(); // Fecha o diálogo
-                  },
-                  child: Text(
-                    AppLocalizations.of(context)!.translate('cancel'),
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
-
-  SettingsTiles exportTile(BuildContext context) {
-    return SettingsTiles(
-      border: 1, //top
-      title: AppLocalizations.of(context)!.translate('export_settings'),
-      subtitle: AppLocalizations.of(
-        context,
-      )!.translate('export_settings_subtitle'),
-      lIcon: leadingIcon(color: 'green', icon: Icons.download),
-      switchEnable: false,
-      onPressed: () {},
-    );
-  }
-
-  SettingsTiles amoledTile(BuildContext context) {
-    return SettingsTiles(
-      border: 2, //bottom
-      title: AppLocalizations.of(context)!.translate('dark_mode_amoled'),
-      subtitle: AppLocalizations.of(
-        context,
-      )!.translate('dark_mode_amoled_subtitle'),
-      lIcon: leadingIcon(color: 'pink', icon: Icons.nightlight_round_sharp),
-
-      tIcon: null,
-      switchEnable: true,
-      onPressed: () {},
-    );
-  }
-
-  SettingsTiles accentColorTile(BuildContext context) {
-    return SettingsTiles(
-      border: 0, //none
-      title: AppLocalizations.of(context)!.translate('accent_color'),
-      subtitle: AppLocalizations.of(context)!.translate('choose_theme_color'),
-      lIcon: leadingIcon(color: 'pink', icon: Icons.color_lens),
-
-      tIcon: Icons.circle,
-      switchEnable: false,
-      onPressed: () {
-        ThemeProvider.showColorSelection(
-          context: context,
-          selectedMode: selectedMode,
-          onThemeSelected: onThemeSelected,
-          seeds: seeds,
-        );
-      },
     );
   }
 }

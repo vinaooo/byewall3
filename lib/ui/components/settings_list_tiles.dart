@@ -1,3 +1,4 @@
+import 'package:byewall3/l10n/app_localizations.dart';
 import 'package:byewall3/ui/app_colors.dart';
 import 'package:byewall3/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class SettingsTiles extends StatelessWidget {
     required this.onPressed,
     required this.lIcon,
     this.tIcon,
-    required this.switchEnable,
+    this.switchEnable = false,
   });
 
   static const WidgetStateProperty<Icon> thumbIcon =
@@ -61,6 +62,9 @@ class SettingsTiles extends StatelessWidget {
       themeProvider.saveBlackBackground(value);
     }
 
+    String useTitle = AppLocalizations.of(context)!.translate(title);
+    String useSubtitle = AppLocalizations.of(context)!.translate(subtitle);
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -80,14 +84,14 @@ class SettingsTiles extends StatelessWidget {
             title: Padding(
               padding: const EdgeInsets.only(left: 8.0),
               child: Text(
-                title,
+                useTitle,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
             subtitle: Padding(
               padding: const EdgeInsets.only(left: 8.0),
               child: Text(
-                subtitle,
+                useSubtitle,
                 style: Theme.of(
                   context,
                 ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.normal),
