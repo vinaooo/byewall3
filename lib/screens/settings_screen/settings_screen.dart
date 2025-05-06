@@ -66,7 +66,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             label: AppLocalizations.of(context)!.translate('general'),
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.list_outlined),
             icon: Icon(Icons.list_rounded),
             label: AppLocalizations.of(context)!.translate('services'),
           ),

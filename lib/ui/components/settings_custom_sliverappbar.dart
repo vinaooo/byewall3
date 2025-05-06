@@ -1,4 +1,4 @@
-import 'package:byewall3/l10n/app_localizations.dart';
+import 'package:byewall3/ui/components/localized_text.dart';
 import 'package:flutter/material.dart';
 
 class CustomSliverAppBar {
@@ -17,7 +17,6 @@ class CustomSliverAppBar {
       );
     }
 
-    title = AppLocalizations.of(context)!.translate(title);
     return SliverAppBar(
       surfaceTintColor: Colors.transparent,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -45,8 +44,8 @@ class CustomSliverAppBar {
               Positioned(
                 left: horizontalPadding,
                 bottom: 12,
-                child: Text(
-                  title,
+                child: LocalizedText(
+                  tKey: title,
                   style: TextStyle(
                     fontSize: fontSize,
                     fontWeight: FontWeight.w600,

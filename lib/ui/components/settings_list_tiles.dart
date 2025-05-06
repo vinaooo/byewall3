@@ -1,6 +1,6 @@
-import 'package:byewall3/l10n/app_localizations.dart';
 import 'package:byewall3/ui/app_colors.dart';
 import 'package:byewall3/providers/theme_provider.dart';
+import 'package:byewall3/ui/components/localized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -62,9 +62,6 @@ class SettingsTiles extends StatelessWidget {
       themeProvider.saveBlackBackground(value);
     }
 
-    String useTitle = AppLocalizations.of(context)!.translate(title);
-    String useSubtitle = AppLocalizations.of(context)!.translate(subtitle);
-
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -83,15 +80,15 @@ class SettingsTiles extends StatelessWidget {
             hoverColor: Colors.transparent,
             title: Padding(
               padding: const EdgeInsets.only(left: 8.0),
-              child: Text(
-                useTitle,
+              child: LocalizedText(
+                tKey: title,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
             subtitle: Padding(
               padding: const EdgeInsets.only(left: 8.0),
-              child: Text(
-                useSubtitle,
+              child: LocalizedText(
+                tKey: subtitle,
                 style: Theme.of(
                   context,
                 ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.normal),

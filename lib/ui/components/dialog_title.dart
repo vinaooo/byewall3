@@ -1,4 +1,4 @@
-import 'package:byewall3/l10n/app_localizations.dart';
+import 'package:byewall3/ui/components/localized_text.dart';
 import 'package:flutter/material.dart';
 
 class DialogTitle extends StatelessWidget {
@@ -20,7 +20,7 @@ class DialogTitle extends StatelessWidget {
         const SizedBox(height: 8),
         Icon(icon, size: 48),
         const SizedBox(height: 16),
-        Text(AppLocalizations.of(context)!.translate(title)),
+        LocalizedText(tKey: title),
         const SizedBox(height: 16),
       ],
     );

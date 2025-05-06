@@ -1,6 +1,6 @@
-import 'package:byewall3/l10n/app_localizations.dart';
 import 'package:byewall3/ui/app_colors.dart';
 import 'package:byewall3/ui/components/dialog_title.dart';
+import 'package:byewall3/ui/components/localized_text.dart';
 import 'package:byewall3/ui/components/selection_box.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -167,17 +167,16 @@ class ThemeProvider extends ChangeNotifier {
                       child: ListTile(
                         tileColor: Colors.transparent, // Garante transparência
                         contentPadding: EdgeInsets.symmetric(horizontal: 36),
-                        title: Text(
+                        title: LocalizedText(
+                          tKey: 'theme_mode_system',
                           style: TextStyle(
                             color:
                                 themeProvider.themeMode == ThemeMode.system
                                     ? Theme.of(context).colorScheme.onSecondary
                                     : null,
                           ),
-                          AppLocalizations.of(
-                            context,
-                          )!.translate('theme_mode_system'),
                         ),
+
                         leading: Padding(
                           padding: const EdgeInsets.only(left: 13.0),
                           child: Icon(
@@ -219,16 +218,14 @@ class ThemeProvider extends ChangeNotifier {
                       child: ListTile(
                         tileColor: Colors.transparent,
                         contentPadding: EdgeInsets.symmetric(horizontal: 36),
-                        title: Text(
+                        title: LocalizedText(
+                          tKey: 'theme_mode_light',
                           style: TextStyle(
                             color:
                                 themeProvider.themeMode == ThemeMode.light
                                     ? Theme.of(context).colorScheme.onSecondary
                                     : null,
                           ),
-                          AppLocalizations.of(
-                            context,
-                          )!.translate('theme_mode_light'),
                         ),
                         leading: Padding(
                           padding: const EdgeInsets.only(left: 13.0),
@@ -271,16 +268,14 @@ class ThemeProvider extends ChangeNotifier {
                       child: ListTile(
                         tileColor: Colors.transparent,
                         contentPadding: EdgeInsets.symmetric(horizontal: 36),
-                        title: Text(
+                        title: LocalizedText(
+                          tKey: 'theme_mode_dark',
                           style: TextStyle(
                             color:
                                 themeProvider.themeMode == ThemeMode.dark
                                     ? Theme.of(context).colorScheme.onSecondary
                                     : null,
                           ),
-                          AppLocalizations.of(
-                            context,
-                          )!.translate('theme_mode_dark'),
                         ),
                         leading: Padding(
                           padding: const EdgeInsets.only(left: 13.0),
@@ -405,7 +400,8 @@ class ThemeProvider extends ChangeNotifier {
                                 const SizedBox(width: 40),
                             ],
                           ),
-                          title: Text(
+                          title: LocalizedText(
+                            tKey: 'dynamic',
                             style: TextStyle(
                               color:
                                   themeProvider.appThemeColor ==
@@ -415,7 +411,6 @@ class ThemeProvider extends ChangeNotifier {
                                       ).colorScheme.onSecondary
                                       : null,
                             ),
-                            AppLocalizations.of(context)!.translate('dynamic'),
                           ),
                           onTap: () {
                             onThemeSelected(AppColor.dynamic);
@@ -457,7 +452,10 @@ class ThemeProvider extends ChangeNotifier {
                           ),
                           title: Padding(
                             padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(
+                            child: LocalizedText(
+                              tKey:
+                                  themeModeNames(context)[entry.key] ??
+                                  entry.key.name,
                               style: TextStyle(
                                 color:
                                     themeProvider.appThemeColor == entry.key
@@ -466,8 +464,6 @@ class ThemeProvider extends ChangeNotifier {
                                         ).colorScheme.onSecondary
                                         : null,
                               ),
-                              themeModeNames(context)[entry.key] ??
-                                  entry.key.name,
                             ),
                           ),
                           onTap: () {

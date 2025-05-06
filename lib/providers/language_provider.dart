@@ -1,6 +1,7 @@
 import 'package:byewall3/l10n/app_localizations.dart';
 import 'package:byewall3/l10n/known_locations.dart';
 import 'package:byewall3/ui/components/dialog_title.dart';
+import 'package:byewall3/ui/components/localized_text.dart';
 import 'package:byewall3/ui/components/selection_box.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -75,7 +76,7 @@ class LanguageProvider extends ChangeNotifier {
           title: DialogTitle(
             context: context,
             icon: Icons.translate,
-            title: AppLocalizations.of(context)!.translate('select_language'),
+            title: 'select_language',
           ),
 
           content: SizedBox(
@@ -118,8 +119,8 @@ class LanguageProvider extends ChangeNotifier {
                                       Theme.of(context).colorScheme.onPrimary,
                                 )
                                 : const SizedBox.shrink(), // Ícone vazio se não for selecionado
-                        title: Text(
-                          name,
+                        title: LocalizedText(
+                          tKey: name,
                           style: TextStyle(
                             color:
                                 isSelected

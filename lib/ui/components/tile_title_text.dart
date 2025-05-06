@@ -1,4 +1,4 @@
-import 'package:byewall3/l10n/app_localizations.dart';
+import 'package:byewall3/ui/components/localized_text.dart';
 import 'package:flutter/material.dart';
 
 class TileTitleText extends StatelessWidget {
@@ -11,8 +11,8 @@ class TileTitleText extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 16.0, bottom: 8.0, top: 4.0),
-          child: Text(
-            AppLocalizations.of(context)!.translate(title),
+          child: LocalizedText(
+            tKey: title,
             style: Theme.of(context).textTheme.labelSmall!.copyWith(
               fontWeight: FontWeight.w600,
               color: Theme.of(context).colorScheme.primary,
