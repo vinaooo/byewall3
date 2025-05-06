@@ -89,6 +89,10 @@ class LanguageProvider extends ChangeNotifier {
                 final name = Locales.knownLocales[key] ?? key;
                 final isSelected =
                     Provider.of<LanguageProvider>(context).locale == locale;
+                final selectionColor = transparentIfSelected(
+                  lp: Provider.of<LanguageProvider>(context),
+                  locale: locale,
+                );
 
                 return Stack(
                   children: [
@@ -98,31 +102,13 @@ class LanguageProvider extends ChangeNotifier {
                       locale: locale,
                     ),
                     InkWell(
-                      focusColor: transparentIfSelected(
-                        lp: Provider.of<LanguageProvider>(context),
-                        locale: locale,
-                      ),
-                      hoverColor: transparentIfSelected(
-                        lp: Provider.of<LanguageProvider>(context),
-                        locale: locale,
-                      ),
-                      highlightColor: transparentIfSelected(
-                        lp: Provider.of<LanguageProvider>(context),
-                        locale: locale,
-                      ),
+                      focusColor: selectionColor,
+                      hoverColor: selectionColor,
+                      highlightColor: selectionColor,
                       child: ListTile(
-                        hoverColor: transparentIfSelected(
-                          lp: Provider.of<LanguageProvider>(context),
-                          locale: locale,
-                        ),
-                        splashColor: transparentIfSelected(
-                          lp: Provider.of<LanguageProvider>(context),
-                          locale: locale,
-                        ),
-                        tileColor: transparentIfSelected(
-                          lp: Provider.of<LanguageProvider>(context),
-                          locale: locale,
-                        ),
+                        hoverColor: selectionColor,
+                        splashColor: selectionColor,
+                        tileColor: selectionColor,
                         contentPadding: EdgeInsets.symmetric(horizontal: 50),
                         leading:
                             isSelected
