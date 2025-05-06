@@ -37,7 +37,7 @@ class SelectionBox extends StatelessWidget {
 
     return Positioned.fill(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: mode == null ? 36 : 12),
+        padding: EdgeInsets.symmetric(horizontal: 12),
         child: Container(
           decoration: BoxDecoration(
             color: isSelected ? corBox : null,
