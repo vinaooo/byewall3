@@ -45,7 +45,7 @@ class LanguageProvider extends ChangeNotifier {
       }
     }
 
-    notifyListeners(); // Notifica os widgets que dependem desse estado
+    notifyListeners();
   }
 
   bool _isSupported(Locale locale) {
@@ -54,11 +54,10 @@ class LanguageProvider extends ChangeNotifier {
     );
   }
 
-  /// Atualiza o idioma atual e salva no SharedPreferences
   void setLocale(Locale locale) {
     _locale = locale;
     saveLanguage(locale); // Salva o idioma escolhido
-    notifyListeners(); // Notifica os ouvintes sobre a mudança
+    notifyListeners();
   }
 
   /// Exibe um diálogo para o usuário selecionar o idioma
@@ -88,12 +87,10 @@ class LanguageProvider extends ChangeNotifier {
 
                 return Stack(
                   children: [
-                    Positioned.fill(
-                      child: selectionBox(
-                        lp: Provider.of<LanguageProvider>(context),
-                        context: context,
-                        locale: locale,
-                      ),
+                    selectionBox(
+                      lp: Provider.of<LanguageProvider>(context),
+                      context: context,
+                      locale: locale,
                     ),
                     InkWell(
                       focusColor: transparentIfSelected(
@@ -162,7 +159,7 @@ class LanguageProvider extends ChangeNotifier {
     Navigator.pop(context);
   }
 
-  static Padding selectionBox({
+  static Positioned selectionBox({
     required LanguageProvider lp,
     required BuildContext context,
     required Locale locale,
@@ -173,12 +170,14 @@ class LanguageProvider extends ChangeNotifier {
           Theme.of(context).colorScheme.secondary,
         ).withSaturation(0.6).withLightness(0.77).toColor();
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 36),
-      child: Container(
-        decoration: BoxDecoration(
-          color: isSelected ? corBox : null,
-          borderRadius: BorderRadius.circular(12),
+    return Positioned.fill(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 36),
+        child: Container(
+          decoration: BoxDecoration(
+            color: isSelected ? corBox : null,
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       ),
     );

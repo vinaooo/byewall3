@@ -22,106 +22,99 @@ class SettingsTiles extends StatelessWidget {
     this.tIcon,
     required this.switchEnable,
   });
+
   static const WidgetStateProperty<Icon> thumbIcon =
       WidgetStateProperty<Icon>.fromMap(<WidgetStatesConstraint, Icon>{
         WidgetState.selected: Icon(Icons.check),
         WidgetState.any: Icon(Icons.close),
       });
 
-  get onTap => null;
+  BorderRadius? _getBorderRadius() {
+    switch (border) {
+      case 1:
+        return const BorderRadius.vertical(top: Radius.circular(20.0));
+      case 2:
+        return const BorderRadius.vertical(bottom: Radius.circular(20.0));
+      case 3:
+        return BorderRadius.circular(20.0);
+      default:
+        return null;
+    }
+  }
+
+  RoundedRectangleBorder _getShape() {
+    return RoundedRectangleBorder(
+      borderRadius: _getBorderRadius() ?? BorderRadius.zero,
+    );
+  }
+
+  bool _widgetEnabled(BuildContext context, ThemeProvider themeProvider) {
+    return switchEnable ? themeProvider.isDarkMode(context) : true;
+  }
 
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
 
-    // Função auxiliar para alternar e salvar o estado
     void toggleAndSaveBlackBackground(bool value) {
       themeProvider.toggleBlackBackground(value);
-      themeProvider.saveBlackBackground(value); // Salva o estado ao alternar
-    }
-
-    bool widgetEnabled(context, bool switchEnable) {
-      if (switchEnable) {
-        return themeProvider.isDarkMode(context);
-      }
-      return true; // Tiles normais sempre habilitados
+      themeProvider.saveBlackBackground(value);
     }
 
     return Material(
-      color: Colors.transparent, // Necessário para o efeito ripple funcionar
+      color: Colors.transparent,
       child: InkWell(
-        borderRadius:
-            border == 0
-                ? null
-                : border == 3
-                ? BorderRadius.circular(20.0)
-                : border == 1
-                ? const BorderRadius.vertical(top: Radius.circular(20.0))
-                : border == 2
-                ? const BorderRadius.vertical(bottom: Radius.circular(20.0))
-                : BorderRadius.zero,
+        borderRadius: _getBorderRadius(),
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
-        onTap: () {
-          if (!switchEnable) {
-            onPressed();
-          }
-        },
+        onTap: !switchEnable ? onPressed : null,
         child: Container(
           decoration: BoxDecoration(
-            color: AppColors.getTileColor(context), // Adicione uma cor de fundo
-            borderRadius:
-                border == 0
-                    ? null
-                    : border == 3
-                    ? BorderRadius.circular(20.0)
-                    : border == 1
-                    ? const BorderRadius.vertical(top: Radius.circular(20.0))
-                    : border == 2
-                    ? const BorderRadius.vertical(bottom: Radius.circular(20.0))
-                    : BorderRadius.zero,
+            color: AppColors.getTileColor(context),
+            borderRadius: _getBorderRadius(),
           ),
           child: ListTile(
-            enabled: widgetEnabled(context, switchEnable),
-            shape:
-                border == 3
-                    ? RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    )
-                    : border == 1
-                    ? const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(20.0),
-                      ),
-                    )
-                    : border == 2
-                    ? const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        bottom: Radius.circular(20.0),
-                      ),
-                    )
-                    : const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
-                    ),
+            enabled: _widgetEnabled(context, themeProvider),
+            shape: _getShape(),
             hoverColor: Colors.transparent,
             title: Padding(
               padding: const EdgeInsets.only(left: 8.0),
-              child: Text(title),
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
             ),
             subtitle: Padding(
               padding: const EdgeInsets.only(left: 8.0),
-              child: Text(subtitle),
+              child: Text(
+                subtitle,
+                style: Theme.of(
+                  context,
+                ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.normal),
+              ),
             ),
-            leading: lIcon,
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: lIcon,
+            ),
             trailing:
                 switchEnable
-                    ? Switch(
-                      thumbIcon: thumbIcon,
-                      value: themeProvider.useBlackBackground,
-                      onChanged:
-                          widgetEnabled(context, switchEnable)
-                              ? toggleAndSaveBlackBackground
-                              : null, // Switch desabilitado se ThemeMode.light
+                    ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(
+                          width: 36.0,
+                          child: VerticalDivider(thickness: 1.0),
+                        ),
+                        Switch(
+                          thumbIcon: thumbIcon,
+                          value: themeProvider.useBlackBackground,
+                          onChanged:
+                              _widgetEnabled(context, themeProvider)
+                                  ? toggleAndSaveBlackBackground
+                                  : null,
+                        ),
+                      ],
                     )
                     : Icon(
                       tIcon,
@@ -136,11 +129,9 @@ class SettingsTiles extends StatelessWidget {
                     ),
             onTap:
                 switchEnable
-                    ? () {
-                      toggleAndSaveBlackBackground(
-                        !themeProvider.useBlackBackground,
-                      );
-                    }
+                    ? () => toggleAndSaveBlackBackground(
+                      !themeProvider.useBlackBackground,
+                    )
                     : onPressed,
           ),
         ),
