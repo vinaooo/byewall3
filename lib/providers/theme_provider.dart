@@ -1,5 +1,7 @@
 import 'package:byewall3/l10n/app_localizations.dart';
 import 'package:byewall3/ui/app_colors.dart';
+import 'package:byewall3/ui/components/dialog_title.dart';
+import 'package:byewall3/ui/components/selection_box.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -128,7 +130,11 @@ class ThemeProvider extends ChangeNotifier {
                     Theme.of(context).colorScheme.surface,
                   ).withLightness(0.21).toColor()
                   : null,
-          title: dialogTitle(context, Icons.brightness_6, 'theme_mode'),
+          title: DialogTitle(
+            context: context,
+            icon: Icons.brightness_6,
+            title: 'theme_mode',
+          ),
           content: SizedBox(
             width: MediaQuery.of(context).size.width * 0.8,
             child: Column(
@@ -136,8 +142,8 @@ class ThemeProvider extends ChangeNotifier {
               children: [
                 Stack(
                   children: [
-                    selectionBox(
-                      tp: themeProvider,
+                    SelectionBox(
+                      themeProvider: themeProvider,
                       context: context,
                       mode: ThemeMode.system,
                     ),
@@ -188,8 +194,8 @@ class ThemeProvider extends ChangeNotifier {
                 ),
                 Stack(
                   children: [
-                    selectionBox(
-                      tp: themeProvider,
+                    SelectionBox(
+                      themeProvider: themeProvider,
                       context: context,
                       mode: ThemeMode.light,
                     ),
@@ -240,8 +246,8 @@ class ThemeProvider extends ChangeNotifier {
                 ),
                 Stack(
                   children: [
-                    selectionBox(
-                      tp: themeProvider,
+                    SelectionBox(
+                      themeProvider: themeProvider,
                       context: context,
                       mode: ThemeMode.dark,
                     ),
@@ -298,45 +304,6 @@ class ThemeProvider extends ChangeNotifier {
     );
   }
 
-  static Column dialogTitle(BuildContext context, IconData icon, String title) {
-    return Column(
-      children: [
-        const SizedBox(height: 8),
-        Icon(icon, size: 48),
-        const SizedBox(height: 16),
-        Text(AppLocalizations.of(context)!.translate(title)),
-        const SizedBox(height: 16),
-      ],
-    );
-  }
-
-  static Positioned selectionBox({
-    ThemeProvider? tp,
-    BuildContext? context,
-    ThemeMode? mode,
-    AppColor? appColor,
-  }) {
-    Color corBox =
-        HSLColor.fromColor(
-          Theme.of(context!).colorScheme.secondary,
-        ).withSaturation(0.6).withLightness(0.77).toColor();
-    return Positioned.fill(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: mode == null ? 12 : 36),
-        child: Container(
-          // height: 48, // Remova esta linha
-          decoration: BoxDecoration(
-            color:
-                tp!.themeMode == mode || tp.appThemeColor == appColor
-                    ? corBox
-                    : null,
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      ),
-    );
-  }
-
   static Future<dynamic> showColorSelection({
     required BuildContext context,
     required AppColor selectedMode,
@@ -367,7 +334,11 @@ class ThemeProvider extends ChangeNotifier {
                     Theme.of(context).colorScheme.surface,
                   ).withLightness(0.21).toColor()
                   : null,
-          title: dialogTitle(context, Icons.color_lens, 'accent_color'),
+          title: DialogTitle(
+            context: context,
+            icon: Icons.color_lens,
+            title: 'accent_color',
+          ),
           content: SizedBox(
             width: MediaQuery.of(context).size.width * 0.8,
             height: MediaQuery.of(context).size.height * 0.5,
@@ -377,8 +348,8 @@ class ThemeProvider extends ChangeNotifier {
                 children: [
                   Stack(
                     children: [
-                      selectionBox(
-                        tp: themeProvider,
+                      SelectionBox(
+                        themeProvider: themeProvider,
                         context: context,
                         appColor: AppColor.dynamic,
                       ),
@@ -457,8 +428,8 @@ class ThemeProvider extends ChangeNotifier {
                   ...sortedSeeds.map((entry) {
                     return Stack(
                       children: [
-                        selectionBox(
-                          tp: themeProvider,
+                        SelectionBox(
+                          themeProvider: themeProvider,
                           context: context,
                           appColor: entry.key,
                         ),

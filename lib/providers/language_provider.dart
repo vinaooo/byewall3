@@ -1,5 +1,7 @@
 import 'package:byewall3/l10n/app_localizations.dart';
 import 'package:byewall3/l10n/known_locations.dart';
+import 'package:byewall3/ui/components/dialog_title.dart';
+import 'package:byewall3/ui/components/selection_box.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -70,9 +72,12 @@ class LanguageProvider extends ChangeNotifier {
       builder: (context) {
         return AlertDialog(
           contentPadding: const EdgeInsets.only(top: 16, bottom: 30),
-          title: Text(
-            AppLocalizations.of(context)!.translate('select_language'),
+          title: DialogTitle(
+            context: context,
+            icon: Icons.translate,
+            title: AppLocalizations.of(context)!.translate('select_language'),
           ),
+
           content: SizedBox(
             width: MediaQuery.of(context).size.width * 0.8,
             child: ListView.builder(
@@ -87,8 +92,8 @@ class LanguageProvider extends ChangeNotifier {
 
                 return Stack(
                   children: [
-                    selectionBox(
-                      lp: Provider.of<LanguageProvider>(context),
+                    SelectionBox(
+                      languageProvider: Provider.of<LanguageProvider>(context),
                       context: context,
                       locale: locale,
                     ),
@@ -157,30 +162,6 @@ class LanguageProvider extends ChangeNotifier {
       listen: false,
     ).setLocale(selectedLocale);
     Navigator.pop(context);
-  }
-
-  static Positioned selectionBox({
-    required LanguageProvider lp,
-    required BuildContext context,
-    required Locale locale,
-  }) {
-    final isSelected = lp.locale == locale;
-    final Color corBox =
-        HSLColor.fromColor(
-          Theme.of(context).colorScheme.secondary,
-        ).withSaturation(0.6).withLightness(0.77).toColor();
-
-    return Positioned.fill(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 36),
-        child: Container(
-          decoration: BoxDecoration(
-            color: isSelected ? corBox : null,
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      ),
-    );
   }
 
   static Color? transparentIfSelected({
