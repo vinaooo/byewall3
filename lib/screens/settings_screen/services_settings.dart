@@ -1,4 +1,4 @@
-import 'package:byewall3/ui/components/settings_custom_sliverappbar.dart';
+import 'package:byewall3/ui/components/custom_sliverappbar.dart';
 import 'package:flutter/material.dart';
 
 class ServiceSettingsView extends StatelessWidget {
