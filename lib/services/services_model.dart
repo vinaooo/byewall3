@@ -11,11 +11,15 @@ class ServicesModel extends HiveObject {
   String serviceName;
 
   @HiveField(2)
+  String serviceUrl;
+
+  @HiveField(3)
   DateTime dateAdd;
 
   ServicesModel({
     required this.id,
     required this.serviceName,
+    required this.serviceUrl,
     required this.dateAdd,
   });
 }

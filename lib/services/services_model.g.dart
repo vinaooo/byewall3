@@ -19,19 +19,22 @@ class ServicesModelAdapter extends TypeAdapter<ServicesModel> {
     return ServicesModel(
       id: fields[0] as int,
       serviceName: fields[1] as String,
-      dateAdd: fields[2] as DateTime,
+      serviceUrl: fields[2] as String,
+      dateAdd: fields[3] as DateTime,
     );
   }
 
   @override
   void write(BinaryWriter writer, ServicesModel obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.serviceName)
       ..writeByte(2)
+      ..write(obj.serviceUrl)
+      ..writeByte(3)
       ..write(obj.dateAdd);
   }
 
