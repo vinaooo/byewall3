@@ -74,6 +74,15 @@ class LanguageProvider extends ChangeNotifier {
     showDialog(
       context: context,
       builder: (context) {
+        // Ordena os idiomas com base no nome traduzido
+        final sortedLocales = List<Locale>.from(
+          AppLocalizations.supportedLocales,
+        )..sort((a, b) {
+          final nameA = Locales.knownLocales[localeKey(a)] ?? localeKey(a);
+          final nameB = Locales.knownLocales[localeKey(b)] ?? localeKey(b);
+          return nameA.compareTo(nameB);
+        });
+
         return AlertDialog(
           contentPadding: const EdgeInsets.only(top: 16, bottom: 30),
           backgroundColor:
@@ -95,9 +104,9 @@ class LanguageProvider extends ChangeNotifier {
             width: MediaQuery.of(context).size.width * 0.8,
             child: ListView.builder(
               shrinkWrap: true,
-              itemCount: AppLocalizations.supportedLocales.length,
+              itemCount: sortedLocales.length,
               itemBuilder: (context, index) {
-                final locale = AppLocalizations.supportedLocales[index];
+                final locale = sortedLocales[index];
                 final key = localeKey(locale);
                 final name = Locales.knownLocales[key] ?? key;
                 final isSelected =
