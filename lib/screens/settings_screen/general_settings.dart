@@ -49,7 +49,7 @@ class GeneralSettingsView extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            TileTitleText(title: 'appearance'),
+            const TileTitleText(title: 'appearance'),
             themeModeTile(),
             accentColorTile(context),
             amoledTile(context),
@@ -65,7 +65,7 @@ class GeneralSettingsView extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            TileTitleText(title: 'defaults'),
+            const TileTitleText(title: 'defaults'),
             SettingsTiles(
               border: 3, //all
               title: 'language',
@@ -88,7 +88,7 @@ class GeneralSettingsView extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            TileTitleText(title: 'your_data'),
+            const TileTitleText(title: 'your_data'),
             exportTile(context),
             resetTile(context),
           ],
@@ -126,7 +126,7 @@ class GeneralSettingsView extends StatelessWidget {
   Column accentColorTile(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 2),
+        const SizedBox(height: 2),
         SettingsTiles(
           border: 0, //none
           title: 'accent_color',
@@ -149,7 +149,7 @@ class GeneralSettingsView extends StatelessWidget {
   Column amoledTile(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 2),
+        const SizedBox(height: 2),
         SettingsTiles(
           border: 2, //bottom
           title: 'dark_mode_amoled',
@@ -175,65 +175,57 @@ class GeneralSettingsView extends StatelessWidget {
   Column resetTile(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 2),
+        const SizedBox(height: 2),
         SettingsTiles(
           border: 2, //bottom
           title: 'reset_settings',
           subtitle: 'reset_settings_subtitle',
           lIcon: leadingIcon(color: 'green', icon: Icons.restore),
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: LocalizedText(tKey: 'reset_settings'),
-                  content: LocalizedText(tKey: 'reset_settings_subtitle'),
-                  actions: [
-                    TextButton(
-                      onPressed: () async {
-                        final navigator = Navigator.of(context);
-                        await settingsManager.clearAllKeys();
-                        navigator.pop(); // Fecha o diálogo
-                        settingsManager.closeApp(); // Fecha o aplicativo
-                      },
-                      child: LocalizedText(tKey: 'reset'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(); // Fecha o diálogo
-                      },
-                      child: LocalizedText(tKey: 'cancel'),
-                    ),
-                  ],
-                );
-              },
-            );
-          },
+          onPressed: () => _showResetDialog(context),
         ),
       ],
     );
   }
 
+  void _showResetDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const LocalizedText(tKey: 'reset_settings'),
+          content: const LocalizedText(tKey: 'reset_settings_subtitle'),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                final navigator = Navigator.of(context);
+                await settingsManager.clearAllKeys();
+                navigator.pop(); // Fecha o diálogo
+                settingsManager.closeApp(); // Fecha o aplicativo
+              },
+              child: const LocalizedText(tKey: 'reset'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Fecha o diálogo
+              },
+              child: const LocalizedText(tKey: 'cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Stack leadingIcon({String color = '', IconData? icon}) {
-    Color lightColor;
-    Color darkColor;
-    switch (color) {
-      case 'pink':
-        lightColor = AppColors().pink;
-        darkColor = AppColors().darkPink;
-        break;
-      case 'blue':
-        lightColor = AppColors().blue;
-        darkColor = AppColors().darkBlue;
-        break;
-      case 'green':
-        lightColor = AppColors().green;
-        darkColor = AppColors().darkGreen;
-        break;
-      default:
-        lightColor = Colors.white;
-        darkColor = Colors.black;
-    }
+    final colorMap = {
+      'pink': [AppColors().pink, AppColors().darkPink],
+      'blue': [AppColors().blue, AppColors().darkBlue],
+      'green': [AppColors().green, AppColors().darkGreen],
+    };
+
+    final colors = colorMap[color] ?? [Colors.white, Colors.black];
+    final lightColor = colors[0];
+    final darkColor = colors[1];
 
     return Stack(
       alignment: Alignment.center,
