@@ -61,17 +61,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
         selectedIndex: _selectedIndex,
         destinations: <Widget>[
           NavigationDestination(
-            selectedIcon: Icon(Icons.build),
-            icon: Icon(Icons.build_outlined),
+            selectedIcon: const Icon(Icons.build),
+            icon: const Icon(Icons.build_outlined),
             label: AppLocalizations.of(context)!.translate('general'),
           ),
           NavigationDestination(
-            icon: Icon(Icons.list_rounded),
+            icon: const Icon(Icons.list_rounded),
             label: AppLocalizations.of(context)!.translate('services'),
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.info),
-            icon: Icon(Icons.info_outlined),
+            selectedIcon: const Icon(Icons.info),
+            icon: const Icon(Icons.info_outlined),
             label: AppLocalizations.of(context)!.translate('about'),
           ),
         ],
