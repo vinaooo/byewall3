@@ -14,7 +14,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   Hive.registerAdapter(ServicesModelAdapter());
-  await Hive.openBox<ServicesModel>('historicos');
+  await Hive.openBox<ServicesModel>('services');
 
   final themeProvider = ThemeProvider();
   await themeProvider.loadTheme();
@@ -45,6 +45,47 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   AppColor appThemeColor = AppColor.dynamic;
+  late Box<ServicesModel> box;
+
+  @override
+  void initState() {
+    super.initState();
+    box = Hive.box<ServicesModel>('services');
+    _adicionarDadosPadraoSeNecessario();
+  }
+
+  void _adicionarDadosPadraoSeNecessario() {
+    if (box.isEmpty) {
+      final dadosPadrao = [
+        ServicesModel(
+          id: DateTime.now().millisecondsSinceEpoch,
+          serviceName: '12ft.io',
+          serviceUrl: 'https://12ft.io/',
+          dateAdd: DateTime.now(),
+        ),
+        ServicesModel(
+          id: DateTime.now().millisecondsSinceEpoch + 1,
+          serviceName: 'Remove Paywall',
+          serviceUrl: 'https://www.removepaywall.com/search?url=',
+          dateAdd: DateTime.now(),
+        ),
+        ServicesModel(
+          id: DateTime.now().millisecondsSinceEpoch + 1,
+          serviceName: 'smry',
+          serviceUrl: 'https://smry.ai/',
+          dateAdd: DateTime.now(),
+        ),
+        ServicesModel(
+          id: DateTime.now().millisecondsSinceEpoch + 1,
+          serviceName: 'Internet Archive',
+          serviceUrl: 'https://web.archive.org/web/',
+          dateAdd: DateTime.now(),
+        ),
+      ];
+      box.addAll(dadosPadrao);
+      setState(() {});
+    }
+  }
 
   ThemeData fixedTheme(Brightness brightness, Color seed) {
     return ThemeData(

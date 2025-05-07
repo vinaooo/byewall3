@@ -4,7 +4,6 @@ import 'package:byewall3/screens/settings_screen/general_settings.dart';
 import 'package:byewall3/screens/settings_screen/services_settings.dart';
 import 'package:byewall3/ui/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:byewall3/utils/settings_manager.dart';
 
 class SettingsScreen extends StatefulWidget {
   final AppColor selectedMode;
@@ -23,7 +22,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  final SettingsManager _settingsManager = SettingsManager();
   int _selectedIndex = 0;
 
   final ScrollController _generalScrollController = ScrollController();
@@ -80,7 +78,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           <Widget>[
             GeneralSettingsView(
               controller: _generalScrollController,
-              settingsManager: _settingsManager,
               localeKey: _localeKey,
               selectedMode: selectedMode,
               onThemeSelected: onThemeSelected,

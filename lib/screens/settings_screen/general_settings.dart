@@ -11,7 +11,6 @@ import 'package:provider/provider.dart';
 
 class GeneralSettingsView extends StatelessWidget {
   final ScrollController controller;
-  final SettingsManager settingsManager;
   final String Function(Locale) localeKey;
   final AppColor selectedMode;
   final ValueChanged<AppColor> onThemeSelected;
@@ -20,13 +19,11 @@ class GeneralSettingsView extends StatelessWidget {
   const GeneralSettingsView({
     super.key,
     required this.controller,
-    required this.settingsManager,
     required this.localeKey,
     required this.selectedMode,
     required this.onThemeSelected,
     required this.seeds,
   });
-
   @override
   Widget build(BuildContext context) {
     final customSliverAppBar = CustomSliverAppBar(context);
@@ -188,6 +185,8 @@ class GeneralSettingsView extends StatelessWidget {
   }
 
   void _showResetDialog(BuildContext context) {
+    final SettingsManager settingsManager = SettingsManager();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
