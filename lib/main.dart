@@ -2,14 +2,20 @@ import 'package:byewall3/screens/home_screen.dart';
 import 'package:byewall3/l10n/app_localizations.dart';
 import 'package:byewall3/providers/language_provider.dart';
 import 'package:byewall3/providers/theme_provider.dart';
+import 'package:byewall3/services/services_model.dart';
 import 'package:byewall3/ui/app_colors.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Hive.registerAdapter(ServicesModelAdapter());
+  await Hive.openBox<ServicesModel>('historicos');
+
   final themeProvider = ThemeProvider();
   await themeProvider.loadTheme();
   await themeProvider.loadBlackBackground();
