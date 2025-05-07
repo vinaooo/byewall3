@@ -1,5 +1,6 @@
 import 'package:byewall3/l10n/app_localizations.dart';
 import 'package:byewall3/l10n/known_locations.dart';
+import 'package:byewall3/providers/theme_provider.dart';
 import 'package:byewall3/ui/components/dialog_title.dart';
 import 'package:byewall3/ui/components/localized_text.dart';
 import 'package:byewall3/ui/components/selection_box.dart';
@@ -68,11 +69,22 @@ class LanguageProvider extends ChangeNotifier {
     BuildContext context,
     String Function(Locale locale) localeKey,
   ) {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           contentPadding: const EdgeInsets.only(top: 16, bottom: 30),
+          backgroundColor:
+              themeProvider.themeMode == ThemeMode.dark ||
+                      (themeProvider.themeMode == ThemeMode.system &&
+                          MediaQuery.of(context).platformBrightness ==
+                              Brightness.dark)
+                  ? HSLColor.fromColor(
+                    Theme.of(context).colorScheme.surface,
+                  ).withLightness(0.21).toColor()
+                  : null,
           title: DialogTitle(
             context: context,
             icon: Icons.translate,

@@ -119,6 +119,19 @@ class ThemeProvider extends ChangeNotifier {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        final selectionThemeColor = transparentIfSelected(
+          tp: themeProvider,
+          mode: ThemeMode.system,
+        );
+        final selectionLightThemeColor = transparentIfSelected(
+          tp: themeProvider,
+          mode: ThemeMode.light,
+        );
+        final selectionDarkThemeColor = transparentIfSelected(
+          tp: themeProvider,
+          mode: ThemeMode.dark,
+        );
+
         return AlertDialog(
           contentPadding: const EdgeInsets.only(top: 16.0, bottom: 30),
           backgroundColor:
@@ -137,6 +150,7 @@ class ThemeProvider extends ChangeNotifier {
           ),
           content: SizedBox(
             width: MediaQuery.of(context).size.width * 0.8,
+
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -148,23 +162,22 @@ class ThemeProvider extends ChangeNotifier {
                       mode: ThemeMode.system,
                     ),
                     InkWell(
-                      focusColor: transparentIfSelected(
-                        tp: themeProvider,
-                        mode: ThemeMode.system,
+                      focusColor: selectionThemeColor,
+                      hoverColor: selectionThemeColor,
+                      highlightColor: selectionThemeColor,
+                      splashColor: selectionThemeColor,
+                      overlayColor: WidgetStateProperty.all(
+                        selectionThemeColor,
                       ),
-                      hoverColor: transparentIfSelected(
-                        tp: themeProvider,
-                        mode: ThemeMode.system,
-                      ),
-                      highlightColor: transparentIfSelected(
-                        tp: themeProvider,
-                        mode: ThemeMode.system,
-                      ),
+
                       onTap: () {
                         Navigator.of(context).pop();
                         themeProvider.setThemeMode(ThemeMode.system);
                       },
                       child: ListTile(
+                        hoverColor: selectionThemeColor,
+                        splashColor: selectionThemeColor,
+                        focusColor: selectionThemeColor,
                         tileColor: Colors.transparent, // Garante transparência
                         contentPadding: EdgeInsets.symmetric(horizontal: 36),
                         title: LocalizedText(
@@ -199,23 +212,21 @@ class ThemeProvider extends ChangeNotifier {
                       mode: ThemeMode.light,
                     ),
                     InkWell(
-                      focusColor: transparentIfSelected(
-                        tp: themeProvider,
-                        mode: ThemeMode.light,
-                      ),
-                      hoverColor: transparentIfSelected(
-                        tp: themeProvider,
-                        mode: ThemeMode.light,
-                      ),
-                      highlightColor: transparentIfSelected(
-                        tp: themeProvider,
-                        mode: ThemeMode.light,
+                      focusColor: selectionLightThemeColor,
+                      hoverColor: selectionLightThemeColor,
+                      highlightColor: selectionLightThemeColor,
+                      splashColor: selectionLightThemeColor,
+                      overlayColor: WidgetStateProperty.all(
+                        selectionLightThemeColor,
                       ),
                       onTap: () {
                         Navigator.of(context).pop();
                         themeProvider.setThemeMode(ThemeMode.light);
                       },
                       child: ListTile(
+                        hoverColor: selectionLightThemeColor,
+                        splashColor: selectionLightThemeColor,
+                        focusColor: selectionLightThemeColor,
                         tileColor: Colors.transparent,
                         contentPadding: EdgeInsets.symmetric(horizontal: 36),
                         title: LocalizedText(
@@ -249,23 +260,21 @@ class ThemeProvider extends ChangeNotifier {
                       mode: ThemeMode.dark,
                     ),
                     InkWell(
-                      focusColor: transparentIfSelected(
-                        tp: themeProvider,
-                        mode: ThemeMode.dark,
-                      ),
-                      hoverColor: transparentIfSelected(
-                        tp: themeProvider,
-                        mode: ThemeMode.dark,
-                      ),
-                      highlightColor: transparentIfSelected(
-                        tp: themeProvider,
-                        mode: ThemeMode.dark,
+                      focusColor: selectionDarkThemeColor,
+                      hoverColor: selectionDarkThemeColor,
+                      highlightColor: selectionDarkThemeColor,
+                      splashColor: selectionDarkThemeColor,
+                      overlayColor: WidgetStateProperty.all(
+                        selectionDarkThemeColor,
                       ),
                       onTap: () {
                         Navigator.of(context).pop();
                         themeProvider.setThemeMode(ThemeMode.dark);
                       },
                       child: ListTile(
+                        focusColor: selectionDarkThemeColor,
+                        hoverColor: selectionDarkThemeColor,
+                        splashColor: selectionDarkThemeColor,
                         tileColor: Colors.transparent,
                         contentPadding: EdgeInsets.symmetric(horizontal: 36),
                         title: LocalizedText(
@@ -318,6 +327,10 @@ class ThemeProvider extends ChangeNotifier {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
+        final selectionColor = transparentIfSelected(
+          tp: themeProvider,
+          appColor: AppColor.dynamic,
+        );
         return AlertDialog(
           contentPadding: const EdgeInsets.only(top: 16.0, bottom: 30),
           backgroundColor:
@@ -349,31 +362,17 @@ class ThemeProvider extends ChangeNotifier {
                         appColor: AppColor.dynamic,
                       ),
                       InkWell(
-                        focusColor: transparentIfSelected(
-                          tp: themeProvider,
-                          appColor: AppColor.dynamic,
-                        ),
-                        hoverColor: transparentIfSelected(
-                          tp: themeProvider,
-                          appColor: AppColor.dynamic,
-                        ),
-                        highlightColor: transparentIfSelected(
-                          tp: themeProvider,
-                          appColor: AppColor.dynamic,
-                        ),
+                        focusColor: selectionColor,
+                        hoverColor: selectionColor,
+                        highlightColor: selectionColor,
+                        splashColor: selectionColor,
+
+                        overlayColor: WidgetStateProperty.all(selectionColor),
                         child: ListTile(
-                          hoverColor: transparentIfSelected(
-                            tp: themeProvider,
-                            appColor: AppColor.dynamic,
-                          ),
-                          splashColor: transparentIfSelected(
-                            tp: themeProvider,
-                            appColor: AppColor.dynamic,
-                          ),
-                          tileColor: transparentIfSelected(
-                            tp: themeProvider,
-                            appColor: AppColor.dynamic,
-                          ),
+                          hoverColor: selectionColor,
+                          splashColor: selectionColor,
+                          focusColor: selectionColor,
+                          tileColor: Colors.transparent,
                           trailing: Icon(
                             Icons.circle,
                             color: dynamicColor, // Use a cor dinâmica salva
