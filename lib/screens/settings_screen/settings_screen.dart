@@ -1,4 +1,4 @@
-import 'package:byewall3/l10n/app_localizations.dart';
+import 'dart:ui';
 import 'package:byewall3/screens/settings_screen/about_settings.dart';
 import 'package:byewall3/screens/settings_screen/general_settings.dart';
 import 'package:byewall3/screens/settings_screen/services_settings.dart';
@@ -49,33 +49,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
+    final screenWidth = MediaQuery.of(context).size.width;
 
-        selectedIndex: _selectedIndex,
-        destinations: <Widget>[
-          NavigationDestination(
-            selectedIcon: const Icon(Icons.build),
-            icon: const Icon(Icons.build_outlined),
-            label: AppLocalizations.of(context)!.translate('general'),
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.list_rounded),
-            label: AppLocalizations.of(context)!.translate('services'),
-          ),
-          NavigationDestination(
-            selectedIcon: const Icon(Icons.info),
-            icon: const Icon(Icons.info_outlined),
-            label: AppLocalizations.of(context)!.translate('about'),
-          ),
-        ],
-      ),
-      body:
+    return Scaffold(
+      body: Stack(
+        children: [
           <Widget>[
             GeneralSettingsView(
               controller: _generalScrollController,
@@ -87,6 +65,61 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ServiceSettingsView(controller: _serviceScrollController),
             AboutSettingsView(controller: _aboutScrollController),
           ][_selectedIndex],
+          Positioned(
+            left: screenWidth * 0.25,
+            right: screenWidth * 0.25,
+            bottom: 20,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(30),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: BottomNavigationBar(
+                    backgroundColor:
+                        Theme.of(
+                          context,
+                        ).colorScheme.secondaryContainer, // Fundo do tema
+                    currentIndex: _selectedIndex,
+                    onTap: (int index) {
+                      setState(() {
+                        _selectedIndex = index;
+                      });
+                    },
+                    showSelectedLabels: false, // Remove o espaço do label
+                    showUnselectedLabels: false, // Remove o espaço do label
+                    items: const [
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.build_outlined),
+                        activeIcon: Icon(Icons.build),
+                        label: '',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.list_rounded),
+                        label: '',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.info_outlined),
+                        activeIcon: Icon(Icons.info),
+                        label: '',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

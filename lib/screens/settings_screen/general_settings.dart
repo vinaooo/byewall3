@@ -88,6 +88,7 @@ class GeneralSettingsView extends StatelessWidget {
             const TileTitleText(title: 'your_data'),
             exportTile(context),
             resetTile(context),
+            SizedBox(height: 90),
           ],
         ),
       ),
