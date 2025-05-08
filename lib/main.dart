@@ -2,13 +2,14 @@ import 'package:byewall3/screens/home_screen.dart';
 import 'package:byewall3/l10n/app_localizations.dart';
 import 'package:byewall3/providers/language_provider.dart';
 import 'package:byewall3/providers/theme_provider.dart';
-import 'package:byewall3/services/services_model.dart';
+import 'package:byewall3/break_services/services_model.dart';
 import 'package:byewall3/ui/app_colors.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:byewall3/break_services/default_services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,47 +45,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  AppColor appThemeColor = AppColor.dynamic;
   late Box<ServicesModel> box;
 
   @override
   void initState() {
     super.initState();
     box = Hive.box<ServicesModel>('services');
-    _adicionarDadosPadraoSeNecessario();
-  }
-
-  void _adicionarDadosPadraoSeNecessario() {
-    if (box.isEmpty) {
-      final dadosPadrao = [
-        ServicesModel(
-          id: DateTime.now().millisecondsSinceEpoch,
-          serviceName: '12ft.io',
-          serviceUrl: 'https://12ft.io/',
-          dateAdd: DateTime.now(),
-        ),
-        ServicesModel(
-          id: DateTime.now().millisecondsSinceEpoch + 1,
-          serviceName: 'Remove Paywall',
-          serviceUrl: 'https://www.removepaywall.com/search?url=',
-          dateAdd: DateTime.now(),
-        ),
-        ServicesModel(
-          id: DateTime.now().millisecondsSinceEpoch + 1,
-          serviceName: 'smry',
-          serviceUrl: 'https://smry.ai/',
-          dateAdd: DateTime.now(),
-        ),
-        ServicesModel(
-          id: DateTime.now().millisecondsSinceEpoch + 1,
-          serviceName: 'Internet Archive',
-          serviceUrl: 'https://web.archive.org/web/',
-          dateAdd: DateTime.now(),
-        ),
-      ];
-      box.addAll(dadosPadrao);
-      setState(() {});
-    }
+    DefaultServicesProvider.defaultServices(box);
+    setState(() {});
   }
 
   ThemeData fixedTheme(Brightness brightness, Color seed) {
@@ -137,16 +105,15 @@ class _MyAppState extends State<MyApp> {
             // ADIÇÃO CRUCIAL: Aplicar fundo preto se necessário
             if (themeProvider.useBlackBackground) {
               darkTheme = darkTheme.copyWith(
+                navigationBarTheme: NavigationBarThemeData(
+                  backgroundColor: Colors.black, // Define a cor de fundo
+                ),
                 colorScheme: darkTheme.colorScheme.copyWith(
-                  surface: Colors.black,
-                  // background: Colors.black, // importante!
+                  surface: Colors.black, // background
                 ),
                 scaffoldBackgroundColor: Colors.black, // aplica no Scaffold
-                canvasColor:
-                    Colors
-                        .black, // aplica em backgrounds de diálogos, menus, etc.
-                cardColor:
-                    Colors.black, // opcional, se quiser cards pretos também
+                canvasColor: Colors.black, // aplica no Canvas
+                // cardColor: Colors.black, // card colors optional
               );
             }
 

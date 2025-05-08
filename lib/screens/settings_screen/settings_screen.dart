@@ -56,6 +56,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _selectedIndex = index;
           });
         },
+
         selectedIndex: _selectedIndex,
         destinations: <Widget>[
           NavigationDestination(
