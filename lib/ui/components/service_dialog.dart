@@ -11,10 +11,10 @@ class ServiceDialog extends StatefulWidget {
   const ServiceDialog({super.key, this.initialService});
 
   @override
-  State<ServiceDialog> createState() => _ServiceDialogState();
+  State<ServiceDialog> createState() => ServiceDialogState();
 }
 
-class _ServiceDialogState extends State<ServiceDialog> {
+class ServiceDialogState extends State<ServiceDialog> {
   late TextEditingController nameController;
   late TextEditingController urlController;
   final FocusNode nameFocusNode = FocusNode();
@@ -24,7 +24,7 @@ class _ServiceDialogState extends State<ServiceDialog> {
   String? urlError;
   bool attemptedSubmit = false;
 
-  late Future<Box<ServicesModel>> _boxFuture;
+  late Future<Box<ServicesModel>> boxFuture;
 
   @override
   void initState() {
@@ -35,7 +35,7 @@ class _ServiceDialogState extends State<ServiceDialog> {
     urlController = TextEditingController(
       text: widget.initialService?.serviceUrl ?? '',
     );
-    _boxFuture = Hive.openBox<ServicesModel>('services');
+    boxFuture = Hive.openBox<ServicesModel>('services');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       nameFocusNode.requestFocus();
     });
@@ -70,7 +70,7 @@ class _ServiceDialogState extends State<ServiceDialog> {
     return (newNameError == null && newUrlError == null);
   }
 
-  void _validateAndSubmit(BuildContext context) {
+  void validateAndSubmit(BuildContext context) {
     attemptedSubmit = true;
     final valid = validateFields();
 
@@ -103,7 +103,7 @@ class _ServiceDialogState extends State<ServiceDialog> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Box<ServicesModel>>(
-      future: _boxFuture, // Use o futuro armazenado
+      future: boxFuture, // Use o futuro armazenado
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -209,7 +209,7 @@ class _ServiceDialogState extends State<ServiceDialog> {
               child: const LocalizedText(kText: 'Cancelar'),
             ),
             ElevatedButton(
-              onPressed: () => _validateAndSubmit(context),
+              onPressed: () => validateAndSubmit(context),
               child: const LocalizedText(kText: 'OK'),
             ),
           ],
