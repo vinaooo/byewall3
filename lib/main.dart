@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:byewall3/screens/home_screen.dart';
 import 'package:byewall3/l10n/app_localizations.dart';
 import 'package:byewall3/providers/language_provider.dart';
@@ -10,9 +12,25 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:byewall3/break_services/services_helper.dart';
+import 'package:window_manager/window_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (Platform.isLinux) {
+    await windowManager.ensureInitialized();
+
+    WindowOptions windowOptions = WindowOptions(
+      size: Size(400, 600),
+      center: true,
+      title: 'Meu App Flutter Linux',
+    );
+
+    windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.show();
+      await windowManager.focus();
+    });
+  }
+
   await Hive.initFlutter();
   Hive.registerAdapter(ServicesModelAdapter());
   await Hive.openBox<ServicesModel>('services');

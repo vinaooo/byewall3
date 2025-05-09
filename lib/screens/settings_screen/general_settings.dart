@@ -1,3 +1,4 @@
+import 'package:byewall3/break_services/services_helper.dart';
 import 'package:byewall3/providers/language_provider.dart';
 import 'package:byewall3/providers/theme_provider.dart';
 import 'package:byewall3/ui/app_colors.dart';
@@ -179,15 +180,13 @@ class GeneralSettingsView extends StatelessWidget {
           title: 'reset_settings',
           subtitle: 'reset_settings_subtitle',
           lIcon: leadingIcon(color: 'green', icon: Icons.restore),
-          onPressed: () => _showResetDialog(context),
+          onPressed: () => showResetDialog(context),
         ),
       ],
     );
   }
 
-  void _showResetDialog(BuildContext context) {
-    final SettingsManager settingsManager = SettingsManager();
-
+  void showResetDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -198,9 +197,10 @@ class GeneralSettingsView extends StatelessWidget {
             TextButton(
               onPressed: () async {
                 final navigator = Navigator.of(context);
-                await settingsManager.clearAllKeys();
+                await SettingsManager.clearAllKeys();
+                await ServicesHelper.clearAllServices();
                 navigator.pop(); // Fecha o diálogo
-                settingsManager.closeApp(); // Fecha o aplicativo
+                SettingsManager.closeApp(); // Fecha o aplicativo
               },
               child: const LocalizedText(kText: 'reset'),
             ),
