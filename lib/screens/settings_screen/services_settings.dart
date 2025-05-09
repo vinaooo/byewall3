@@ -67,7 +67,7 @@ class _ServiceSettingsViewState extends State<ServiceSettingsView> {
                                           context,
                                         ).colorScheme.errorContainer,
                                     child: Icon(
-                                      Icons.delete,
+                                      Icons.delete_outline,
                                       size: 30,
                                       color:
                                           Theme.of(
@@ -85,18 +85,6 @@ class _ServiceSettingsViewState extends State<ServiceSettingsView> {
                           }, childCount: services.length),
                         ),
                       ],
-                    ),
-                  ),
-                  Positioned(
-                    right: 16,
-                    bottom: 100,
-                    child: FloatingActionButton(
-                      backgroundColor:
-                          Theme.of(context).colorScheme.primaryContainer,
-                      onPressed: () {
-                        // Sua ação ao clicar
-                      },
-                      child: const Icon(Icons.add),
                     ),
                   ),
                 ],

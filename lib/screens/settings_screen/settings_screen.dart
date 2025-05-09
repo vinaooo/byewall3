@@ -2,6 +2,7 @@ import 'package:byewall3/screens/settings_screen/about_settings.dart';
 import 'package:byewall3/screens/settings_screen/general_settings.dart';
 import 'package:byewall3/screens/settings_screen/services_settings.dart';
 import 'package:byewall3/ui/app_colors.dart';
+import 'package:byewall3/ui/components/floating_nav_bar.dart';
 import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -65,82 +66,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ServiceSettingsView(controller: serviceScrollController),
             AboutSettingsView(controller: aboutScrollController),
           ][selectedIndex],
-          Positioned(
-            left: (screenWidth - floatingBarWidth) / 2,
-            width: floatingBarWidth,
-            bottom: 25,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(30),
-              child: Container(
-                height: 60, // Altura customizada
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: Theme.of(context).colorScheme.secondaryContainer,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color:
-                            selectedIndex == 0
-                                ? Theme.of(
-                                  context,
-                                ).colorScheme.primary.withValues(alpha: 0.15)
-                                : Colors.transparent,
-                        shape: BoxShape.circle,
-                      ),
-                      child: IconButton(
-                        icon: Icon(
-                          selectedIndex == 0
-                              ? Icons.build
-                              : Icons.build_outlined,
-                        ),
-                        onPressed: () => setState(() => selectedIndex = 0),
-                      ),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color:
-                            selectedIndex == 1
-                                ? Theme.of(
-                                  context,
-                                ).colorScheme.primary.withValues(alpha: 0.15)
-                                : Colors.transparent,
-                        shape: BoxShape.circle,
-                      ),
-                      child: IconButton(
-                        icon: Icon(Icons.list_rounded),
-                        onPressed: () => setState(() => selectedIndex = 1),
-                      ),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color:
-                            selectedIndex == 2
-                                ? Theme.of(
-                                  context,
-                                ).colorScheme.primary.withValues(alpha: 0.15)
-                                : Colors.transparent,
-                        shape: BoxShape.circle,
-                      ),
-                      child: IconButton(
-                        icon: Icon(
-                          selectedIndex == 2 ? Icons.info : Icons.info_outlined,
-                          color:
-                              selectedIndex == 2
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Theme.of(context).iconTheme.color,
-                        ),
-                        onPressed: () => setState(() => selectedIndex = 2),
-                      ),
-                    ),
-                  ],
+          FloatingNavBar(
+            screenWidth: screenWidth,
+            floatingBarWidth: floatingBarWidth,
+            selectedIndex: selectedIndex,
+            onTap: (index) => setState(() => selectedIndex = index),
+          ),
+          if (selectedIndex == 1)
+            Positioned(
+              left: (screenWidth - floatingBarWidth) / 2 + floatingBarWidth + 8,
+              bottom: 25,
+              child: SizedBox(
+                height: 60,
+                width: 60,
+                child: FloatingActionButton(
+                  onPressed: () {
+                    // Sua ação aqui
+                  },
+                  backgroundColor:
+                      Theme.of(context).colorScheme.primaryContainer,
+                  foregroundColor:
+                      Theme.of(context).colorScheme.onPrimaryContainer,
+                  elevation: 4,
+                  mini: false,
+                  child: const Icon(Icons.add),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );
