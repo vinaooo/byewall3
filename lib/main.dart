@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:byewall3/break_services/default_services.dart';
+import 'package:byewall3/break_services/services_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,8 +50,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    box = Hive.box<ServicesModel>('services');
-    DefaultServicesProvider.defaultServices(box);
+    ServicesHelper.defaultServices(); // Substituído
     setState(() {});
   }
 

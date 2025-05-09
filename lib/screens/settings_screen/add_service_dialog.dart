@@ -3,6 +3,7 @@ import 'package:byewall3/ui/components/localized_text.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:byewall3/break_services/services_model.dart';
+import 'package:byewall3/break_services/services_helper.dart';
 
 class AddServiceDialog extends StatelessWidget {
   const AddServiceDialog({super.key});
@@ -34,8 +35,6 @@ class AddServiceDialog extends StatelessWidget {
             ],
           );
         }
-
-        final box = snapshot.data!;
 
         return AlertDialog(
           title: const LocalizedText(kText: 'add_service'),
@@ -77,7 +76,7 @@ class AddServiceDialog extends StatelessWidget {
                     serviceUrl: serviceUrl,
                     dateAdd: DateTime.now(),
                   );
-                  box.add(newService); // Adiciona o novo serviço ao Hive
+                  ServicesHelper.addService(newService); // Substituído
                   Navigator.of(context).pop(); // Fecha a dialog
                 }
               },
