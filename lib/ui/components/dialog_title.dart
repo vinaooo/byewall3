@@ -20,7 +20,7 @@ class DialogTitle extends StatelessWidget {
         const SizedBox(height: 8),
         Icon(icon, size: 48),
         const SizedBox(height: 16),
-        LocalizedText(tKey: title),
+        LocalizedText(kText: title),
         const SizedBox(height: 16),
       ],
     );

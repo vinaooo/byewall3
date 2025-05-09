@@ -147,7 +147,7 @@ class LanguageProvider extends ChangeNotifier {
                                 )
                                 : const SizedBox.shrink(), // Ícone vazio se não for selecionado
                         title: LocalizedText(
-                          tKey: name,
+                          kText: name,
                           style: TextStyle(
                             color:
                                 isSelected

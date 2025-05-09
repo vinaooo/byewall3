@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:byewall3/break_services/services_model.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:byewall3/screens/settings_screen/add_service_dialog.dart';
 
 class ServiceSettingsView extends StatefulWidget {
   final ScrollController controller;
@@ -47,52 +48,74 @@ class _ServiceSettingsViewState extends State<ServiceSettingsView> {
                       slivers: [
                         customSliverAppBar.buildSliverAppBar('services'),
                         SliverList(
-                          delegate: SliverChildBuilderDelegate((
-                            BuildContext context,
-                            int index,
-                          ) {
-                            final service = services[index];
-                            return Slidable(
-                              key: ValueKey(service.key),
-                              endActionPane: ActionPane(
-                                extentRatio: 0.15,
-                                motion: const DrawerMotion(),
-                                children: [
-                                  CustomSlidableAction(
-                                    onPressed: (context) {
-                                      box.delete(service.key);
-                                    },
-                                    backgroundColor: Theme.of(
-                                      context,
-                                    ).colorScheme.error.withAlpha(200),
-                                    padding: const EdgeInsets.all(0),
-                                    child: Center(
-                                      child: Icon(
-                                        Icons.delete_outline_rounded,
-                                        size: 36,
-                                        color: Theme.of(context) //
-                                        .colorScheme.onError.withAlpha(150),
+                          delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                              if (index < services.length) {
+                                final service = services[index];
+                                return Slidable(
+                                  key: ValueKey(service.key),
+                                  endActionPane: ActionPane(
+                                    extentRatio: 0.15,
+                                    motion: const DrawerMotion(),
+                                    children: [
+                                      CustomSlidableAction(
+                                        onPressed: (context) {
+                                          box.delete(service.key);
+                                        },
+                                        backgroundColor: Theme.of(context) //
+                                        .colorScheme.error.withAlpha(200),
+                                        padding: const EdgeInsets.all(0),
+                                        child: Center(
+                                          child: Icon(
+                                            Icons.delete_outline_rounded,
+                                            size: 36,
+                                            color: Theme.of(context) //
+                                            .colorScheme.onError.withAlpha(150),
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                              child: Builder(
-                                builder: (context) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      color:
-                                          Theme.of(context).colorScheme.surface,
-                                    ),
-                                    child: ListTile(
-                                      title: Text(service.serviceName),
-                                      subtitle: Text(service.serviceUrl),
-                                    ),
-                                  );
-                                },
-                              ),
-                            );
-                          }, childCount: services.length),
+                                  child: Builder(
+                                    builder: (context) {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                          color:
+                                              Theme.of(
+                                                context,
+                                              ).colorScheme.surface,
+                                        ),
+                                        child: ListTile(
+                                          title: Text(service.serviceName),
+                                          subtitle: Text(service.serviceUrl),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                );
+                              } else if (index == services.length) {
+                                // Botão ao final da lista
+                                return Center(
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder:
+                                            (context) =>
+                                                const AddServiceDialog(),
+                                      );
+                                    },
+                                    child: const Text('Adicionar Serviço'),
+                                  ),
+                                );
+                              } else {
+                                return const SizedBox(height: 90);
+                              }
+                            },
+                            childCount:
+                                services.length +
+                                2, // Incrementa para incluir o botão
+                          ),
                         ),
                       ],
                     ),

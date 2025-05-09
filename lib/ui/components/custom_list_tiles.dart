@@ -81,14 +81,14 @@ class SettingsTiles extends StatelessWidget {
             title: Padding(
               padding: const EdgeInsets.only(left: 8.0),
               child: LocalizedText(
-                tKey: title,
+                kText: title,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
             subtitle: Padding(
               padding: const EdgeInsets.only(left: 8.0),
               child: LocalizedText(
-                tKey: subtitle,
+                kText: subtitle,
                 style: Theme.of(
                   context,
                 ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.normal),

@@ -192,8 +192,8 @@ class GeneralSettingsView extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const LocalizedText(tKey: 'reset_settings'),
-          content: const LocalizedText(tKey: 'reset_settings_subtitle'),
+          title: const LocalizedText(kText: 'reset_settings'),
+          content: const LocalizedText(kText: 'reset_settings_subtitle'),
           actions: [
             TextButton(
               onPressed: () async {
@@ -202,13 +202,13 @@ class GeneralSettingsView extends StatelessWidget {
                 navigator.pop(); // Fecha o diálogo
                 settingsManager.closeApp(); // Fecha o aplicativo
               },
-              child: const LocalizedText(tKey: 'reset'),
+              child: const LocalizedText(kText: 'reset'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Fecha o diálogo
               },
-              child: const LocalizedText(tKey: 'cancel'),
+              child: const LocalizedText(kText: 'cancel'),
             ),
           ],
         );

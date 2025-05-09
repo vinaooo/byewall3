@@ -45,7 +45,7 @@ class CustomSliverAppBar {
                 left: horizontalPadding,
                 bottom: 12,
                 child: LocalizedText(
-                  tKey: title,
+                  kText: title,
                   style: Theme.of(
                     context,
                   ).textTheme.titleLarge?.copyWith(fontSize: fontSize),

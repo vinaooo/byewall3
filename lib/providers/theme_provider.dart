@@ -181,7 +181,7 @@ class ThemeProvider extends ChangeNotifier {
                         tileColor: Colors.transparent, // Garante transparência
                         contentPadding: EdgeInsets.symmetric(horizontal: 36),
                         title: LocalizedText(
-                          tKey: 'theme_mode_system',
+                          kText: 'theme_mode_system',
                           style: TextStyle(
                             color:
                                 themeProvider.themeMode == ThemeMode.system
@@ -230,7 +230,7 @@ class ThemeProvider extends ChangeNotifier {
                         tileColor: Colors.transparent,
                         contentPadding: EdgeInsets.symmetric(horizontal: 36),
                         title: LocalizedText(
-                          tKey: 'theme_mode_light',
+                          kText: 'theme_mode_light',
                           style: TextStyle(
                             color:
                                 themeProvider.themeMode == ThemeMode.light
@@ -278,7 +278,7 @@ class ThemeProvider extends ChangeNotifier {
                         tileColor: Colors.transparent,
                         contentPadding: EdgeInsets.symmetric(horizontal: 36),
                         title: LocalizedText(
-                          tKey: 'theme_mode_dark',
+                          kText: 'theme_mode_dark',
                           style: TextStyle(
                             color:
                                 themeProvider.themeMode == ThemeMode.dark
@@ -400,7 +400,7 @@ class ThemeProvider extends ChangeNotifier {
                             ],
                           ),
                           title: LocalizedText(
-                            tKey: 'dynamic',
+                            kText: 'dynamic',
                             style: TextStyle(
                               color:
                                   themeProvider.appThemeColor ==
@@ -452,7 +452,7 @@ class ThemeProvider extends ChangeNotifier {
                           title: Padding(
                             padding: const EdgeInsets.only(left: 8.0),
                             child: LocalizedText(
-                              tKey:
+                              kText:
                                   themeModeNames(context)[entry.key] ??
                                   entry.key.name,
                               style: TextStyle(
