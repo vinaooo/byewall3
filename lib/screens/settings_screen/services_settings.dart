@@ -55,31 +55,42 @@ class _ServiceSettingsViewState extends State<ServiceSettingsView> {
                             return Slidable(
                               key: ValueKey(service.key),
                               endActionPane: ActionPane(
-                                extentRatio: 0.2,
+                                extentRatio: 0.15,
                                 motion: const DrawerMotion(),
                                 children: [
                                   CustomSlidableAction(
                                     onPressed: (context) {
                                       box.delete(service.key);
                                     },
-                                    backgroundColor:
-                                        Theme.of(
+                                    backgroundColor: Theme.of(
+                                      context,
+                                    ).colorScheme.error.withAlpha(200),
+                                    padding: const EdgeInsets.all(0),
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.delete_outline_rounded,
+                                        size: 36,
+                                        color: Theme.of(
                                           context,
-                                        ).colorScheme.errorContainer,
-                                    child: Icon(
-                                      Icons.delete_outline,
-                                      size: 30,
-                                      color:
-                                          Theme.of(
-                                            context,
-                                          ).colorScheme.onErrorContainer,
+                                        ).colorScheme.onError.withAlpha(150),
+                                      ),
                                     ),
                                   ),
                                 ],
                               ),
-                              child: ListTile(
-                                title: Text(service.serviceName),
-                                subtitle: Text(service.serviceUrl),
+                              child: Builder(
+                                builder: (context) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      color:
+                                          Theme.of(context).colorScheme.surface,
+                                    ),
+                                    child: ListTile(
+                                      title: Text(service.serviceName),
+                                      subtitle: Text(service.serviceUrl),
+                                    ),
+                                  );
+                                },
                               ),
                             );
                           }, childCount: services.length),
