@@ -21,11 +21,11 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  int _selectedIndex = 0;
+  int selectedIndex = 0;
 
-  final ScrollController _generalScrollController = ScrollController();
-  final ScrollController _serviceScrollController = ScrollController();
-  final ScrollController _aboutScrollController = ScrollController();
+  final ScrollController generalScrollController = ScrollController();
+  final ScrollController serviceScrollController = ScrollController();
+  final ScrollController aboutScrollController = ScrollController();
 
   get selectedMode => widget.selectedMode;
   get onThemeSelected => widget.onThemeSelected;
@@ -33,9 +33,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   void dispose() {
-    _generalScrollController.dispose();
-    _serviceScrollController.dispose();
-    _aboutScrollController.dispose();
+    generalScrollController.dispose();
+    serviceScrollController.dispose();
+    aboutScrollController.dispose();
     super.dispose();
   }
 
@@ -56,15 +56,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           <Widget>[
             GeneralSettingsView(
-              controller: _generalScrollController,
+              controller: generalScrollController,
               localeKey: localeKey,
               selectedMode: selectedMode,
               onThemeSelected: onThemeSelected,
               seeds: seeds,
             ),
-            ServiceSettingsView(controller: _serviceScrollController),
-            AboutSettingsView(controller: _aboutScrollController),
-          ][_selectedIndex],
+            ServiceSettingsView(controller: serviceScrollController),
+            AboutSettingsView(controller: aboutScrollController),
+          ][selectedIndex],
           Positioned(
             left: (screenWidth - floatingBarWidth) / 2,
             width: floatingBarWidth,
@@ -84,7 +84,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Container(
                       decoration: BoxDecoration(
                         color:
-                            _selectedIndex == 0
+                            selectedIndex == 0
                                 ? Theme.of(
                                   context,
                                 ).colorScheme.primary.withValues(alpha: 0.15)
@@ -93,17 +93,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       child: IconButton(
                         icon: Icon(
-                          _selectedIndex == 0
+                          selectedIndex == 0
                               ? Icons.build
                               : Icons.build_outlined,
                         ),
-                        onPressed: () => setState(() => _selectedIndex = 0),
+                        onPressed: () => setState(() => selectedIndex = 0),
                       ),
                     ),
                     Container(
                       decoration: BoxDecoration(
                         color:
-                            _selectedIndex == 1
+                            selectedIndex == 1
                                 ? Theme.of(
                                   context,
                                 ).colorScheme.primary.withValues(alpha: 0.15)
@@ -112,13 +112,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       child: IconButton(
                         icon: Icon(Icons.list_rounded),
-                        onPressed: () => setState(() => _selectedIndex = 1),
+                        onPressed: () => setState(() => selectedIndex = 1),
                       ),
                     ),
                     Container(
                       decoration: BoxDecoration(
                         color:
-                            _selectedIndex == 2
+                            selectedIndex == 2
                                 ? Theme.of(
                                   context,
                                 ).colorScheme.primary.withValues(alpha: 0.15)
@@ -127,15 +127,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       child: IconButton(
                         icon: Icon(
-                          _selectedIndex == 2
-                              ? Icons.info
-                              : Icons.info_outlined,
+                          selectedIndex == 2 ? Icons.info : Icons.info_outlined,
                           color:
-                              _selectedIndex == 2
+                              selectedIndex == 2
                                   ? Theme.of(context).colorScheme.primary
                                   : Theme.of(context).iconTheme.color,
                         ),
-                        onPressed: () => setState(() => _selectedIndex = 2),
+                        onPressed: () => setState(() => selectedIndex = 2),
                       ),
                     ),
                   ],
