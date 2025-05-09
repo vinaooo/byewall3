@@ -66,4 +66,17 @@ class ServicesHelper {
     final box = await _openBox();
     return box.values.toList();
   }
+
+  /// Atualiza um serviço existente
+  static Future<void> updateService(ServicesModel updatedService) async {
+    final box = await _openBox();
+    final key = box.keys.firstWhere(
+      (k) => box.get(k)?.id == updatedService.id,
+      orElse: () => null,
+    );
+
+    if (key != null) {
+      await box.put(key, updatedService);
+    }
+  }
 }

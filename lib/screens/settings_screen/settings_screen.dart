@@ -1,5 +1,5 @@
 import 'package:byewall3/screens/settings_screen/about_settings.dart';
-import 'package:byewall3/screens/settings_screen/add_service_dialog.dart';
+import 'package:byewall3/ui/components/service_dialog.dart';
 import 'package:byewall3/screens/settings_screen/general_settings.dart';
 import 'package:byewall3/screens/settings_screen/services_settings.dart';
 import 'package:byewall3/ui/app_colors.dart';
@@ -87,7 +87,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   onPressed: () {
                     showDialog(
                       context: context,
-                      builder: (context) => const AddServiceDialog(),
+                      builder: (context) => const ServiceDialog(),
                     );
                   },
                   backgroundColor:

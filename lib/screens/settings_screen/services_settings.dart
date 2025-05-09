@@ -4,6 +4,7 @@ import 'package:byewall3/break_services/services_model.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:byewall3/break_services/services_helper.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:byewall3/ui/components/service_dialog.dart'; // Certifique-se de importar o ServiceDialog
 
 class ServiceSettingsView extends StatefulWidget {
   final ScrollController controller;
@@ -15,6 +16,17 @@ class ServiceSettingsView extends StatefulWidget {
 }
 
 class ServiceSettingsViewState extends State<ServiceSettingsView> {
+  void _openEditDialog(BuildContext context, ServicesModel service) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return ServiceDialog(
+          initialService: service, // Passa o serviço para edição
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final customSliverAppBar = CustomSliverAppBar(context);
@@ -66,19 +78,19 @@ class ServiceSettingsViewState extends State<ServiceSettingsView> {
                                 ),
                               ],
                             ),
-                            child: Builder(
-                              builder: (context) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    color:
-                                        Theme.of(context).colorScheme.surface,
-                                  ),
-                                  child: ListTile(
-                                    title: Text(service.serviceName),
-                                    subtitle: Text(service.serviceUrl),
-                                  ),
-                                );
+                            child: GestureDetector(
+                              onLongPress: () {
+                                _openEditDialog(context, service);
                               },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.surface,
+                                ),
+                                child: ListTile(
+                                  title: Text(service.serviceName),
+                                  subtitle: Text(service.serviceUrl),
+                                ),
+                              ),
                             ),
                           );
                         } else {
