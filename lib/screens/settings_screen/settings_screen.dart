@@ -72,10 +72,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
             selectedIndex: selectedIndex,
             onTap: (index) => setState(() => selectedIndex = index),
           ),
-          if (selectedIndex == 1)
-            Positioned(
-              left: (screenWidth - floatingBarWidth) / 2 + floatingBarWidth + 8,
-              bottom: 25,
+          Positioned(
+            left: (screenWidth - floatingBarWidth) / 2 + floatingBarWidth + 8,
+            bottom: 25,
+            child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 200),
+              opacity: selectedIndex == 1 ? 1.0 : 0.0,
+              curve: Curves.easeInOut,
               child: SizedBox(
                 height: 60,
                 width: 60,
@@ -93,6 +96,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
             ),
+          ),
         ],
       ),
     );

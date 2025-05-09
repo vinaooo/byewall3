@@ -70,9 +70,8 @@ class _ServiceSettingsViewState extends State<ServiceSettingsView> {
                                       child: Icon(
                                         Icons.delete_outline_rounded,
                                         size: 36,
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.onError.withAlpha(150),
+                                        color: Theme.of(context) //
+                                        .colorScheme.onError.withAlpha(150),
                                       ),
                                     ),
                                   ),
