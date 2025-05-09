@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:byewall3/screens/settings_screen/about_settings.dart';
 import 'package:byewall3/screens/settings_screen/general_settings.dart';
 import 'package:byewall3/screens/settings_screen/services_settings.dart';
@@ -40,7 +39,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.dispose();
   }
 
-  String _localeKey(Locale locale) {
+  String localeKey(Locale locale) {
     if (locale.countryCode != null && locale.countryCode!.isNotEmpty) {
       return '${locale.languageCode}_${locale.countryCode}';
     }
@@ -50,6 +49,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final double floatingBarWidth = 155; // Defina a largura desejada
 
     return Scaffold(
       body: Stack(
@@ -57,7 +57,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           <Widget>[
             GeneralSettingsView(
               controller: _generalScrollController,
-              localeKey: _localeKey,
+              localeKey: localeKey,
               selectedMode: selectedMode,
               onThemeSelected: onThemeSelected,
               seeds: seeds,
@@ -66,54 +66,79 @@ class _SettingsScreenState extends State<SettingsScreen> {
             AboutSettingsView(controller: _aboutScrollController),
           ][_selectedIndex],
           Positioned(
-            left: screenWidth * 0.25,
-            right: screenWidth * 0.25,
-            bottom: 20,
+            left: (screenWidth - floatingBarWidth) / 2,
+            width: floatingBarWidth,
+            bottom: 25,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(30),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
+              child: Container(
+                height: 60, // Altura customizada
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  color: Theme.of(context).colorScheme.secondaryContainer,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color:
+                            _selectedIndex == 0
+                                ? Theme.of(
+                                  context,
+                                ).colorScheme.primary.withValues(alpha: 0.15)
+                                : Colors.transparent,
+                        shape: BoxShape.circle,
                       ),
-                    ],
-                  ),
-                  child: BottomNavigationBar(
-                    backgroundColor:
-                        Theme.of(
-                          context,
-                        ).colorScheme.secondaryContainer, // Fundo do tema
-                    currentIndex: _selectedIndex,
-                    onTap: (int index) {
-                      setState(() {
-                        _selectedIndex = index;
-                      });
-                    },
-                    showSelectedLabels: false, // Remove o espaço do label
-                    showUnselectedLabels: false, // Remove o espaço do label
-                    items: const [
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.build_outlined),
-                        activeIcon: Icon(Icons.build),
-                        label: '',
+                      child: IconButton(
+                        icon: Icon(
+                          _selectedIndex == 0
+                              ? Icons.build
+                              : Icons.build_outlined,
+                        ),
+                        onPressed: () => setState(() => _selectedIndex = 0),
                       ),
-                      BottomNavigationBarItem(
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color:
+                            _selectedIndex == 1
+                                ? Theme.of(
+                                  context,
+                                ).colorScheme.primary.withValues(alpha: 0.15)
+                                : Colors.transparent,
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
                         icon: Icon(Icons.list_rounded),
-                        label: '',
+                        onPressed: () => setState(() => _selectedIndex = 1),
                       ),
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.info_outlined),
-                        activeIcon: Icon(Icons.info),
-                        label: '',
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color:
+                            _selectedIndex == 2
+                                ? Theme.of(
+                                  context,
+                                ).colorScheme.primary.withValues(alpha: 0.15)
+                                : Colors.transparent,
+                        shape: BoxShape.circle,
                       ),
-                    ],
-                  ),
+                      child: IconButton(
+                        icon: Icon(
+                          _selectedIndex == 2
+                              ? Icons.info
+                              : Icons.info_outlined,
+                          color:
+                              _selectedIndex == 2
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Theme.of(context).iconTheme.color,
+                        ),
+                        onPressed: () => setState(() => _selectedIndex = 2),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

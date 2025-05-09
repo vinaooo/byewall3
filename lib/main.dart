@@ -105,15 +105,11 @@ class _MyAppState extends State<MyApp> {
             // ADIÇÃO CRUCIAL: Aplicar fundo preto se necessário
             if (themeProvider.useBlackBackground) {
               darkTheme = darkTheme.copyWith(
-                navigationBarTheme: NavigationBarThemeData(
-                  backgroundColor: Colors.black, // Define a cor de fundo
-                ),
                 colorScheme: darkTheme.colorScheme.copyWith(
                   surface: Colors.black, // background
                 ),
                 scaffoldBackgroundColor: Colors.black, // aplica no Scaffold
                 canvasColor: Colors.black, // aplica no Canvas
-                // cardColor: Colors.black, // card colors optional
               );
             }
 
