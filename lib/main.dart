@@ -9,7 +9,7 @@ import 'package:byewall3/ui/app_colors.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:byewall3/break_services/services_helper.dart';
 import 'package:window_manager/window_manager.dart';

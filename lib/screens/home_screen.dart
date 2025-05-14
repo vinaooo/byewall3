@@ -31,30 +31,7 @@ class HomeScreen extends StatelessWidget {
             pinned: true,
             floating: false,
             snap: false,
-            actions: [
-              Padding(
-                padding: const EdgeInsets.only(top: 8, right: 8),
-                child: IconButton(
-                  icon: const Icon(Icons.settings_outlined),
-                  onPressed: () async {
-                    final themeProvider = Provider.of<ThemeProvider>(
-                      context,
-                      listen: false,
-                    );
-                    await Navigator.of(context, rootNavigator: true).push(
-                      MaterialPageRoute(
-                        builder:
-                            (context) => SettingsScreen(
-                              selectedMode: themeProvider.appThemeColor,
-                              onThemeSelected: onThemeSelected,
-                              seeds: seeds,
-                            ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
+
             flexibleSpace: LayoutBuilder(
               builder: (BuildContext context, BoxConstraints constraints) {
                 return Stack(
@@ -62,7 +39,7 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     Positioned(
                       left: 8, // Remova o uso de horizontalPadding
-                      right: 48,
+                      right: 8,
                       bottom: 0,
                       child: TextField(
                         decoration: InputDecoration(
@@ -80,8 +57,31 @@ class HomeScreen extends StatelessWidget {
                             horizontal: 16,
                           ),
                           prefixIcon: const Icon(
-                            Icons.search,
+                            Icons.south_america,
                           ), // opcional, para visual mais comum
+                          suffixIcon: IconButton(
+                            icon: const Icon(Icons.settings_outlined),
+                            onPressed: () async {
+                              final themeProvider = Provider.of<ThemeProvider>(
+                                context,
+                                listen: false,
+                              );
+                              await Navigator.of(
+                                context,
+                                rootNavigator: true,
+                              ).push(
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => SettingsScreen(
+                                        selectedMode:
+                                            themeProvider.appThemeColor,
+                                        onThemeSelected: onThemeSelected,
+                                        seeds: seeds,
+                                      ),
+                                ),
+                              );
+                            },
+                          ),
                         ),
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),

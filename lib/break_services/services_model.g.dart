@@ -17,7 +17,7 @@ class ServicesModelAdapter extends TypeAdapter<ServicesModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ServicesModel(
-      id: fields[0] as int,
+      id: (fields[0] as num).toInt(),
       serviceName: fields[1] as String,
       serviceUrl: fields[2] as String,
       dateAdd: fields[3] as DateTime,

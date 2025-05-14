@@ -1,5 +1,5 @@
 import 'package:byewall3/break_services/services_model.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 
 class ServicesHelper {
   static const String _boxName = 'services';
