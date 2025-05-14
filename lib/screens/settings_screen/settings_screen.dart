@@ -51,7 +51,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final double floatingBarWidth = 155; // Defina a largura desejada
+    final double floatingBarWidth = 170; // Defina a largura desejada
 
     return Scaffold(
       body: Stack(
@@ -67,6 +67,39 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ServiceSettingsView(controller: serviceScrollController),
             AboutSettingsView(controller: aboutScrollController),
           ][selectedIndex],
+
+          // Sombra atrás dos widgets flutuantes (agora ocupando toda a largura)
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: 95, // ajuste conforme necessário para cobrir até o topo dos widgets flutuantes
+            child: IgnorePointer(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent, // topo: 0 sombra
+                      Colors.black.withValues(alpha: .001),
+                      Colors.black.withValues(alpha: 0.1), // base: sombra mais forte
+                    ],
+                    stops: const [0.0, 0.6, 1.0],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.13),
+                      blurRadius: 32,
+                      spreadRadius: 8,
+                      offset: const Offset(0, 12),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
           FloatingNavBar(
             screenWidth: screenWidth,
             floatingBarWidth: floatingBarWidth,
@@ -81,20 +114,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
               opacity: selectedIndex == 1 ? 1.0 : 0.0,
               curve: Curves.easeInOut,
               child: SizedBox(
-                height: 60,
-                width: 60,
+                height: 70,
+                width: 70,
                 child: FloatingActionButton(
                   onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => const ServiceDialog(),
-                    );
+                    showDialog(context: context, builder: (context) => const ServiceDialog());
                   },
-                  backgroundColor:
-                      Theme.of(context).colorScheme.primaryContainer,
-                  foregroundColor:
-                      Theme.of(context).colorScheme.onPrimaryContainer,
-                  elevation: 4,
+                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                  foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+                  elevation: 3,
                   mini: false,
                   child: const Icon(Icons.add),
                 ),

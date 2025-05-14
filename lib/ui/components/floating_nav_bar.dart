@@ -16,18 +16,27 @@ class FloatingNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double iconSize = 30;
     return Positioned(
       left: (screenWidth - floatingBarWidth) / 2,
       width: floatingBarWidth,
       bottom: 25,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(30),
-        child: Container(
-          height: 60,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30),
-            color: Theme.of(context).colorScheme.secondaryContainer,
-          ),
+      child: Container(
+        height: 70,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(35),
+          color: Theme.of(context).colorScheme.secondaryContainer,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.24),
+              blurRadius: 8,
+              spreadRadius: 0,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(35),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
@@ -41,6 +50,7 @@ class FloatingNavBar extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: IconButton(
+                  iconSize: iconSize, // <-- aumente o tamanho aqui
                   icon: Icon(
                     selectedIndex == 0 ? Icons.build : Icons.build_outlined,
                     color:
@@ -61,6 +71,7 @@ class FloatingNavBar extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: IconButton(
+                  iconSize: iconSize, // <-- aumente o tamanho aqui
                   icon: Icon(
                     Icons.list_rounded,
                     color:
@@ -81,6 +92,7 @@ class FloatingNavBar extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: IconButton(
+                  iconSize: iconSize, // <-- aumente o tamanho aqui
                   icon: Icon(
                     selectedIndex == 2 ? Icons.info : Icons.info_outlined,
                     color:
