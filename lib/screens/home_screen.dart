@@ -151,11 +151,10 @@ class HomeScreenState extends State<HomeScreen> {
                                             size: size,
                                           );
                                         },
-                                        child: Container(
+                                        child: SizedBox(
                                           key: settingsIconKey,
                                           width: 48,
                                           height: 48,
-                                          alignment: Alignment.center,
                                           child: const Icon(Icons.settings_outlined),
                                         ),
                                       ),
