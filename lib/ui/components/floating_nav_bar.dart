@@ -38,11 +38,28 @@ class FloatingNavBar extends StatelessWidget {
     // Dimensões ajustadas ao tamanho e compressão
     final double iconSize = 30 * effectiveScale;
 
-    // Espaçamento reduzido para size = 1
-    final double itemSpacing =
-        size == 1
-            ? math.max(2, 6 * effectiveScale) // Espaçamento reduzido para size=1
-            : math.max(4, 10 * effectiveScale); // Espaçamento normal para outros tamanhos
+    // Espaçamento otimizado para exatamente 3, 4 ou 5 itens
+    final double itemSpacing;
+    if (size == 1) {
+      // Espaçamento específico para cada quantidade de itens
+      switch (items.length) {
+        case 3:
+          itemSpacing = 6 * effectiveScale;
+          break;
+        case 4:
+          itemSpacing = 4 * effectiveScale;
+          break;
+        case 5:
+          itemSpacing = 3 * effectiveScale;
+          break;
+        default:
+          itemSpacing = 4 * effectiveScale;
+      }
+    } else if (size == 3) {
+      itemSpacing = 8 * effectiveScale; // Sem alteração para size 3
+    } else {
+      itemSpacing = 10 * effectiveScale; // Sem alteração para size 2
+    }
 
     final double barHeight = 70 * scaleFactor; // Mantém a altura original
     final double shadowHeight = 90 * scaleFactor;
@@ -54,41 +71,39 @@ class FloatingNavBar extends StatelessWidget {
             ? math.max(1, 5.0 * effectiveScale) // Padding reduzido
             : math.max(2, 8.0 * effectiveScale); // Padding normal
 
-    // Padding interno da barra - aumentado para size=1
-    final double internalPadding = size == 1 ? 12 * scaleFactor : 20 * scaleFactor;
-
-    // Para size=1, calculamos a largura exata necessária para os itens
-    final double itemBaseWidth = size == 1 ? 30 : 30; // Aumentado para size=1
-
-    // Calcula o tamanho que cada item ocupa incluindo padding e espaçamento
-    final double itemTotalWidth =
-        size == 1
-            ? (itemBaseWidth + (buttonPadding * 2) + 2) // Adicionado espaçamento extra
-            : (iconSize + (buttonPadding * 2) + itemSpacing);
-
-    // Calcula o espaço necessário para todos os itens
-    // Para size=1, usamos uma fórmula mais precisa
-    final double requiredWidth =
-        size == 1
-            ? (items.length * itemTotalWidth) +
-                internalPadding // Calculado precisamente para size=1
-            : (items.length * itemTotalWidth) + internalPadding;
-
-    // Para size=1, aumentamos a largura mínima
-    final double minBarWidth = size == 1 ? 200 : 220 * scaleFactor;
-
-    // Determina a largura final da barra
-    // Para size=1, usamos preferencialmente o requiredWidth para ficar mais ajustado
-    final double barWidth;
+    // Padding interno da barra otimizado para 3, 4 ou 5 itens
+    final double internalPadding;
     if (size == 1) {
-      // Para size=1, preferimos a largura exata ou um mínimo
-      barWidth = math.max(minBarWidth, requiredWidth);
+      // Padding específico para cada quantidade de itens
+      switch (items.length) {
+        case 3:
+          internalPadding = 18 * scaleFactor;
+          break;
+        case 4:
+          internalPadding = 36 * scaleFactor;
+          break;
+        case 5:
+          internalPadding = 56 * scaleFactor;
+          break;
+        default:
+          internalPadding = 8 * scaleFactor;
+      }
     } else {
-      // Para outros tamanhos, limitamos a uma porcentagem da tela
-      final double widthFactor = 0.85;
-      final double availableWidth = screenWidth * widthFactor;
-      barWidth = math.min(availableWidth, math.max(minBarWidth, requiredWidth));
+      internalPadding = 20 * scaleFactor; // Sem alteração para sizes 2 e 3
     }
+
+    // Calcula a largura de cada item (ícone + padding do botão)
+    final double singleItemWidth = iconSize + (buttonPadding * 2);
+
+    // Calcula a largura total com base no número de itens e espaçamento entre eles
+    final double itemsWidth = (singleItemWidth * items.length);
+    final double spacingsWidth = itemSpacing * (items.length - 1);
+
+    // Largura total: soma de todos os itens + espaçamentos entre eles + padding interno nas bordas
+    final double barWidth = itemsWidth + spacingsWidth + (internalPadding * 2);
+
+    // Remove all the minimum width calculations and percentages
+    final double finalBarWidth = barWidth;
 
     return Stack(
       children: [
@@ -115,8 +130,8 @@ class FloatingNavBar extends StatelessWidget {
         ),
         // Floating bar
         Positioned(
-          left: (screenWidth - barWidth) / 2,
-          width: barWidth,
+          left: (screenWidth - finalBarWidth) / 2,
+          width: finalBarWidth,
           bottom: bottomPosition,
           child: Container(
             height: barHeight,
@@ -145,21 +160,39 @@ class FloatingNavBar extends StatelessWidget {
   // Nova função para calcular o fator de compressão baseado no número de itens
   double _calculateCompressionFactor(int itemCount) {
     if (size == 1) {
-      // Para tamanho pequeno, comprimir mais agressivamente
-      if (itemCount <= 3) return 1.0;
-      if (itemCount == 4) return 0.85;
-      if (itemCount == 5) return 0.75;
-      return math.max(0.6, 1.0 - (itemCount - 3) * 0.1);
+      // Otimizado para exatamente 3, 4 ou 5 itens
+      switch (itemCount) {
+        case 3:
+          return 1.0;
+        case 4:
+          return 0.80; // Leve compressão para 4 itens
+        case 5:
+          return 0.65; // Compressão maior para 5 itens
+        default:
+          return 0.90; // Valor padrão para outros casos (não deveria ocorrer)
+      }
     } else if (size == 2) {
-      // Para tamanho médio
-      if (itemCount <= 5) return 1.0;
-      if (itemCount == 6) return 0.9;
-      return math.max(0.7, 1.0 - (itemCount - 5) * 0.08);
+      // Tamanho médio - valores específicos para 3, 4 ou 5 itens
+      switch (itemCount) {
+        case 3:
+        case 4:
+          return 1.0; // Sem compressão para 3-4 itens
+        case 5:
+          return 0.95; // Compressão mínima para 5 itens
+        default:
+          return 1.0;
+      }
     } else {
-      // Para tamanho grande
-      if (itemCount <= 4) return 1.0;
-      if (itemCount == 5) return 0.95;
-      return math.max(0.75, 1.0 - (itemCount - 4) * 0.07);
+      // Tamanho grande - valores específicos para 3, 4 ou 5 itens
+      switch (itemCount) {
+        case 3:
+        case 4:
+          return 1.0; // Sem compressão para 3-4 itens
+        case 5:
+          return 0.95; // Compressão mínima para 5 itens
+        default:
+          return 1.0;
+      }
     }
   }
 

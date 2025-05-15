@@ -78,7 +78,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           views[selectedIndex],
           FloatingNavBar(
-            size: 3,
+            size: 2,
             screenWidth: screenWidth,
             selectedIndex: selectedIndex,
             onTap: (index) => setState(() => selectedIndex = index),
@@ -86,11 +86,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               FloatingNavBarItem(icon: Icons.build_outlined, activeIcon: Icons.build),
               FloatingNavBarItem(icon: Icons.list_rounded),
               FloatingNavBarItem(icon: Icons.info_outlined, activeIcon: Icons.info),
-              FloatingNavBarItem(icon: Icons.star_outline, activeIcon: Icons.star),
-              FloatingNavBarItem(
-                icon: Icons.settings_outlined,
-                activeIcon: Icons.settings,
-              ), // Novo item
+              // FloatingNavBarItem(icon: Icons.star_outline, activeIcon: Icons.star),
+              // FloatingNavBarItem(icon: Icons.settings_outlined, activeIcon: Icons.settings),
             ],
           ),
           Positioned(
