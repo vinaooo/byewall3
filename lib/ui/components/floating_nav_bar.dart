@@ -4,6 +4,7 @@ class FloatingNavBar extends StatelessWidget {
   final double screenWidth;
   final double floatingBarWidth;
   final int selectedIndex;
+  final int elevation;
   final ValueChanged<int> onTap;
 
   const FloatingNavBar({
@@ -12,6 +13,7 @@ class FloatingNavBar extends StatelessWidget {
     required this.floatingBarWidth,
     required this.selectedIndex,
     required this.onTap,
+    required this.elevation,
   });
 
   @override
@@ -28,10 +30,10 @@ class FloatingNavBar extends StatelessWidget {
           color: Theme.of(context).colorScheme.secondaryContainer,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.24),
-              blurRadius: 8,
+              color: Colors.black.withValues(alpha: 0.25),
+              blurRadius: 2,
               spreadRadius: 0,
-              offset: const Offset(0, 2),
+              offset: const Offset(0, 3),
             ),
           ],
         ),

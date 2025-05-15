@@ -77,20 +77,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: IgnorePointer(
               child: Container(
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.transparent, // topo: 0 sombra
-                      Colors.black.withValues(alpha: .001),
-                      Colors.black.withValues(alpha: 0.1), // base: sombra mais forte
-                    ],
-                    stops: const [0.0, 0.6, 1.0],
-                  ),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.13),
-                      blurRadius: 32,
+                      blurRadius: 40,
                       spreadRadius: 8,
                       offset: const Offset(0, 12),
                     ),
@@ -104,6 +94,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             screenWidth: screenWidth,
             floatingBarWidth: floatingBarWidth,
             selectedIndex: selectedIndex,
+            elevation: 6,
             onTap: (index) => setState(() => selectedIndex = index),
           ),
           Positioned(
