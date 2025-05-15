@@ -73,7 +73,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             left: 0,
             right: 0,
             bottom: 0,
-            height: 95, // ajuste conforme necessário para cobrir até o topo dos widgets flutuantes
+            height: 90, // ajuste conforme necessário para cobrir até o topo dos widgets flutuantes
             child: IgnorePointer(
               child: Container(
                 decoration: BoxDecoration(
@@ -81,8 +81,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.13),
                       blurRadius: 40,
-                      spreadRadius: 8,
-                      offset: const Offset(0, 12),
+                      spreadRadius: 5,
+                      offset: const Offset(0, 5),
                     ),
                   ],
                 ),
