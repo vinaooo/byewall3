@@ -102,7 +102,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 width: 70,
                 child: FloatingActionButton(
                   onPressed: () {
-                    showDialog(context: context, builder: (context) => const ServiceDialog());
+                    if (selectedIndex == 1) {
+                      showDialog(context: context, builder: (context) => const ServiceDialog());
+                    }
                   },
                   backgroundColor: Theme.of(context).colorScheme.primaryContainer,
                   foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
