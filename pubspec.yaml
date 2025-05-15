@@ -23,6 +23,7 @@ dependencies:
   window_manager: ^0.4.3
   hive_ce: ^2.11.1
   hive_ce_flutter: ^2.3.0
+  floating_navbar: ^3.0.0
 
 dev_dependencies:
   flutter_test:

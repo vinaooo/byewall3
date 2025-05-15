@@ -5,6 +5,7 @@ import 'package:byewall3/screens/settings_screen/services_settings.dart';
 import 'package:byewall3/ui/app_colors.dart';
 import 'package:byewall3/ui/components/floating_nav_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:byewall3/screens/settings_screen/placeholder_settings.dart';
 
 class SettingsScreen extends StatefulWidget {
   final AppColor selectedMode;
@@ -51,54 +52,49 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final double floatingBarWidth = 170; // Defina a largura desejada
+
+    final views = [
+      GeneralSettingsView(
+        controller: generalScrollController,
+        localeKey: localeKey,
+        selectedMode: selectedMode,
+        onThemeSelected: onThemeSelected,
+        seeds: seeds,
+      ),
+      ServiceSettingsView(controller: serviceScrollController),
+      AboutSettingsView(controller: aboutScrollController),
+      const PlaceholderSettingsView(),
+      const PlaceholderSettingsView(), // Adicionada uma nova view
+    ];
+
+    final double iconSize = 30;
+    final double itemSpacing = 12;
+    final double floatingBarWidth = (views.length * (iconSize + itemSpacing)) + itemSpacing;
+    final double minBarWidth = 220; // Match with FloatingNavBar
+    final double barWidth = floatingBarWidth > minBarWidth ? floatingBarWidth : minBarWidth;
 
     return Scaffold(
       body: Stack(
         children: [
-          <Widget>[
-            GeneralSettingsView(
-              controller: generalScrollController,
-              localeKey: localeKey,
-              selectedMode: selectedMode,
-              onThemeSelected: onThemeSelected,
-              seeds: seeds,
-            ),
-            ServiceSettingsView(controller: serviceScrollController),
-            AboutSettingsView(controller: aboutScrollController),
-          ][selectedIndex],
-
-          // Sombra atrás dos widgets flutuantes (agora ocupando toda a largura)
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            height: 90, // ajuste conforme necessário para cobrir até o topo dos widgets flutuantes
-            child: IgnorePointer(
-              child: Container(
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.13),
-                      blurRadius: 40,
-                      spreadRadius: 5,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-
+          views[selectedIndex],
           FloatingNavBar(
+            size: 3,
             screenWidth: screenWidth,
-            floatingBarWidth: floatingBarWidth,
             selectedIndex: selectedIndex,
-            elevation: 6,
             onTap: (index) => setState(() => selectedIndex = index),
+            items: const [
+              FloatingNavBarItem(icon: Icons.build_outlined, activeIcon: Icons.build),
+              FloatingNavBarItem(icon: Icons.list_rounded),
+              FloatingNavBarItem(icon: Icons.info_outlined, activeIcon: Icons.info),
+              FloatingNavBarItem(icon: Icons.star_outline, activeIcon: Icons.star),
+              FloatingNavBarItem(
+                icon: Icons.settings_outlined,
+                activeIcon: Icons.settings,
+              ), // Novo item
+            ],
           ),
           Positioned(
-            left: (screenWidth - floatingBarWidth) / 2 + floatingBarWidth + 8,
+            left: (screenWidth - barWidth) / 2 + barWidth + 8,
             bottom: 25,
             child: AnimatedOpacity(
               duration: const Duration(milliseconds: 200),
