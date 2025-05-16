@@ -1,16 +1,33 @@
-# byewall3
+# Byewall
 
-A new Flutter project.
+Byewall is a Flutter app designed to help users bypass paywalls on articles and news websites by redirecting links to online services that provide this functionality. The app is built using **Flutter Material 3** with support for **dynamic colors**, ensuring a modern and visually appealing user experience.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- Redirects paywalled article links to online services for easy access.
+- Dynamic color theming for seamless integration with your device's appearance.
+- Multi-language support with translations powered by AI.
 
-A few resources to get you started if this is your first Flutter project:
+## Translations
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+The app's translations are generated using AI. If you notice any inaccuracies or have suggestions for improvement, feel free to contribute or reach out!
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Support the Project
+
+If you find Byewall useful, consider supporting its development:
+
+### International Donations
+- [Buy Me a Coffee](https://www.buymeacoffee.com/yourusername)
+
+### Brazilian Donations
+- **Pix**: Use the following key to donate via Pix: `your-pix-key`
+
+Your support helps keep the project alive and growing. Thank you!
+
+## Contributing
+
+Contributions are welcome! If you'd like to improve the app or add new features, feel free to open a pull request or submit an issue.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
