@@ -4,7 +4,7 @@ import 'package:byewall3/break_services/services_model.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:byewall3/break_services/services_helper.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
-import 'package:byewall3/ui/components/service_dialog.dart'; // Certifique-se de importar o ServiceDialog
+import 'package:byewall3/ui/components/service_dialog.dart';
 
 class ServiceSettingsView extends StatefulWidget {
   final ScrollController controller;
@@ -46,10 +46,7 @@ class ServiceSettingsViewState extends State<ServiceSettingsView> {
                   slivers: [
                     customSliverAppBar.buildSliverAppBar('services'),
                     SliverList(
-                      delegate: SliverChildBuilderDelegate((
-                        BuildContext context,
-                        int index,
-                      ) {
+                      delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
                         if (index < services.length) {
                           final service = services[index];
                           return Slidable(
@@ -70,9 +67,7 @@ class ServiceSettingsViewState extends State<ServiceSettingsView> {
                                     child: Icon(
                                       Icons.delete_outline_rounded,
                                       size: 36,
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.onError.withAlpha(150),
+                                      color: Theme.of(context).colorScheme.onError.withAlpha(150),
                                     ),
                                   ),
                                 ),
@@ -82,14 +77,35 @@ class ServiceSettingsViewState extends State<ServiceSettingsView> {
                               onLongPress: () {
                                 _openEditDialog(context, service);
                               },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.surface,
-                                ),
-                                child: ListTile(
-                                  title: Text(service.serviceName),
-                                  subtitle: Text(service.serviceUrl),
-                                ),
+                              child: Column(
+                                children: [
+                                  ListTile(
+                                    title: Text(
+                                      service.serviceName,
+                                      style: Theme.of(context).textTheme.titleMedium,
+                                    ),
+                                    subtitle: Text(
+                                      service.serviceUrl,
+                                      style: Theme.of(context)
+                                          .textTheme //
+                                          .labelSmall
+                                          ?.copyWith(fontWeight: FontWeight.normal),
+                                    ),
+                                    trailing: Checkbox(
+                                      value: service.isEnable,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          service.isEnable = value ?? false;
+                                          service.save();
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  FractionallySizedBox(
+                                    widthFactor: 0.95,
+                                    child: Divider(height: 1),
+                                  ),
+                                ],
                               ),
                             ),
                           );

@@ -29,12 +29,8 @@ class ServiceDialogState extends State<ServiceDialog> {
   @override
   void initState() {
     super.initState();
-    nameController = TextEditingController(
-      text: widget.initialService?.serviceName ?? '',
-    );
-    urlController = TextEditingController(
-      text: widget.initialService?.serviceUrl ?? '',
-    );
+    nameController = TextEditingController(text: widget.initialService?.serviceName ?? '');
+    urlController = TextEditingController(text: widget.initialService?.serviceUrl ?? '');
     boxFuture = Hive.openBox<ServicesModel>('services');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       nameFocusNode.requestFocus();
@@ -53,13 +49,9 @@ class ServiceDialogState extends State<ServiceDialog> {
   // Método separado para validação
   bool validateFields() {
     final newNameError =
-        nameController.text.trim().isEmpty
-            ? 'O nome do serviço não pode ficar em branco.'
-            : null;
+        nameController.text.trim().isEmpty ? 'O nome do serviço não pode ficar em branco.' : null;
     final newUrlError =
-        urlController.text.trim().isEmpty
-            ? 'A URL do serviço não pode ficar em branco.'
-            : null;
+        urlController.text.trim().isEmpty ? 'A URL do serviço não pode ficar em branco.' : null;
 
     // Retorna diretamente em vez de chamar setState
     if (newNameError != nameError || newUrlError != urlError) {
@@ -91,6 +83,7 @@ class ServiceDialogState extends State<ServiceDialog> {
       serviceName: nameController.text.trim(),
       serviceUrl: urlController.text.trim(),
       dateAdd: widget.initialService?.dateAdd ?? DateTime.now(),
+      isEnable: true,
     );
     if (widget.initialService != null) {
       ServicesHelper.updateService(newService);
@@ -139,13 +132,9 @@ class ServiceDialogState extends State<ServiceDialog> {
                     border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
-                    labelText: AppLocalizations.of(
-                      context,
-                    )!.translate('service_name'),
+                    labelText: AppLocalizations.of(context)!.translate('service_name'),
                     errorText:
-                        attemptedSubmit && nameError != null
-                            ? ''
-                            : null, // Só destaca sem mensagem
+                        attemptedSubmit && nameError != null ? '' : null, // Só destaca sem mensagem
                   ),
                   onChanged: (_) {
                     if (attemptedSubmit) {
@@ -161,13 +150,9 @@ class ServiceDialogState extends State<ServiceDialog> {
                     border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
-                    labelText: AppLocalizations.of(
-                      context,
-                    )!.translate('service_url'),
+                    labelText: AppLocalizations.of(context)!.translate('service_url'),
                     errorText:
-                        attemptedSubmit && urlError != null
-                            ? ''
-                            : null, // Só destaca sem mensagem
+                        attemptedSubmit && urlError != null ? '' : null, // Só destaca sem mensagem
                   ),
                   onChanged: (_) {
                     if (attemptedSubmit) {
@@ -184,15 +169,10 @@ class ServiceDialogState extends State<ServiceDialog> {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Text(
-                        (attemptedSubmit &&
-                                nameError != null &&
-                                urlError != null)
+                        (attemptedSubmit && nameError != null && urlError != null)
                             ? 'Preencha todos os campos!'
                             : '',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.error,
-                          fontSize: 13,
-                        ),
+                        style: TextStyle(color: Theme.of(context).colorScheme.error, fontSize: 13),
                         textAlign: TextAlign.left, // Alinha à esquerda
                       ),
                     ],

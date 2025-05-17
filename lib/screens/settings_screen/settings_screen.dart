@@ -77,7 +77,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           PageView(
             controller: _pageController,
             physics: const NeverScrollableScrollPhysics(),
-
             onPageChanged: (index) {
               setState(() {
                 selectedIndex = index;

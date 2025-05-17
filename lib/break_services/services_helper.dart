@@ -19,24 +19,28 @@ class ServicesHelper {
           serviceName: '12ft.io',
           serviceUrl: 'https://12ft.io/',
           dateAdd: DateTime.now(),
+          isEnable: true,
         ),
         ServicesModel(
           id: DateTime.now().millisecondsSinceEpoch + 1,
           serviceName: 'Remove Paywall',
           serviceUrl: 'https://www.removepaywall.com/search?url=',
           dateAdd: DateTime.now(),
+          isEnable: true,
         ),
         ServicesModel(
           id: DateTime.now().millisecondsSinceEpoch + 2,
           serviceName: 'smry',
           serviceUrl: 'https://smry.ai/',
           dateAdd: DateTime.now(),
+          isEnable: true,
         ),
         ServicesModel(
           id: DateTime.now().millisecondsSinceEpoch + 3,
           serviceName: 'Internet Archive',
           serviceUrl: 'https://web.archive.org/web/',
           dateAdd: DateTime.now(),
+          isEnable: true,
         ),
       ];
       await box.addAll(defaultData);
@@ -70,10 +74,7 @@ class ServicesHelper {
   /// Atualiza um serviço existente
   static Future<void> updateService(ServicesModel updatedService) async {
     final box = await _openBox();
-    final key = box.keys.firstWhere(
-      (k) => box.get(k)?.id == updatedService.id,
-      orElse: () => null,
-    );
+    final key = box.keys.firstWhere((k) => box.get(k)?.id == updatedService.id, orElse: () => null);
 
     if (key != null) {
       await box.put(key, updatedService);

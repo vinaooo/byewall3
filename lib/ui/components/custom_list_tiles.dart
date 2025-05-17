@@ -24,11 +24,12 @@ class SettingsTiles extends StatelessWidget {
     this.switchEnable = false,
   });
 
-  static const WidgetStateProperty<Icon> thumbIcon =
-      WidgetStateProperty<Icon>.fromMap(<WidgetStatesConstraint, Icon>{
-        WidgetState.selected: Icon(Icons.check),
-        WidgetState.any: Icon(Icons.close),
-      });
+  static const WidgetStateProperty<Icon> thumbIcon = WidgetStateProperty<Icon>.fromMap(
+    <WidgetStatesConstraint, Icon>{
+      WidgetState.selected: Icon(Icons.check),
+      WidgetState.any: Icon(Icons.close),
+    },
+  );
 
   BorderRadius? _getBorderRadius() {
     switch (border) {
@@ -44,9 +45,7 @@ class SettingsTiles extends StatelessWidget {
   }
 
   RoundedRectangleBorder _getShape() {
-    return RoundedRectangleBorder(
-      borderRadius: _getBorderRadius() ?? BorderRadius.zero,
-    );
+    return RoundedRectangleBorder(borderRadius: _getBorderRadius() ?? BorderRadius.zero);
   }
 
   bool _widgetEnabled(BuildContext context, ThemeProvider themeProvider) {
@@ -80,33 +79,25 @@ class SettingsTiles extends StatelessWidget {
             hoverColor: Colors.transparent,
             title: Padding(
               padding: const EdgeInsets.only(left: 8.0),
-              child: LocalizedText(
-                kText: title,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+              child: LocalizedText(kText: title, style: Theme.of(context).textTheme.titleMedium),
             ),
             subtitle: Padding(
               padding: const EdgeInsets.only(left: 8.0),
               child: LocalizedText(
                 kText: subtitle,
-                style: Theme.of(
-                  context,
-                ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.normal),
+                style: Theme.of(context) //
+                    .textTheme
+                    .labelSmall //
+                    ?.copyWith(fontWeight: FontWeight.normal),
               ),
             ),
-            leading: Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: lIcon,
-            ),
+            leading: Padding(padding: const EdgeInsets.only(left: 8.0), child: lIcon),
             trailing:
                 switchEnable
                     ? Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const SizedBox(
-                          width: 36.0,
-                          child: VerticalDivider(thickness: 1.0),
-                        ),
+                        const SizedBox(width: 36.0, child: VerticalDivider(thickness: 1.0)),
                         Switch(
                           thumbIcon: thumbIcon,
                           value: themeProvider.useBlackBackground,
@@ -122,17 +113,13 @@ class SettingsTiles extends StatelessWidget {
                       color:
                           tIcon == Icons.circle
                               ? (themeProvider.appThemeColor == AppColor.dynamic
-                                  ? themeProvider.dynamicColor ??
-                                      AppColors.seeds[AppColor.dynamic]
-                                  : AppColors.seeds[themeProvider
-                                      .appThemeColor])
+                                  ? themeProvider.dynamicColor ?? AppColors.seeds[AppColor.dynamic]
+                                  : AppColors.seeds[themeProvider.appThemeColor])
                               : null,
                     ),
             onTap:
                 switchEnable
-                    ? () => toggleAndSaveBlackBackground(
-                      !themeProvider.useBlackBackground,
-                    )
+                    ? () => toggleAndSaveBlackBackground(!themeProvider.useBlackBackground)
                     : onPressed,
           ),
         ),

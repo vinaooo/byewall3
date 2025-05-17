@@ -21,13 +21,14 @@ class ServicesModelAdapter extends TypeAdapter<ServicesModel> {
       serviceName: fields[1] as String,
       serviceUrl: fields[2] as String,
       dateAdd: fields[3] as DateTime,
+      isEnable: fields[4] == null ? true : fields[4] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, ServicesModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class ServicesModelAdapter extends TypeAdapter<ServicesModel> {
       ..writeByte(2)
       ..write(obj.serviceUrl)
       ..writeByte(3)
-      ..write(obj.dateAdd);
+      ..write(obj.dateAdd)
+      ..writeByte(4)
+      ..write(obj.isEnable);
   }
 
   @override

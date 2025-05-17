@@ -74,10 +74,7 @@ class _MyAppState extends State<MyApp> {
 
   ThemeData fixedTheme(Brightness brightness, Color seed) {
     return ThemeData(
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: seed,
-        brightness: brightness,
-      ),
+      colorScheme: ColorScheme.fromSeed(seedColor: seed, brightness: brightness),
       useMaterial3: true,
     );
   }
@@ -86,10 +83,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return DynamicColorBuilder(
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-        final themeProvider = Provider.of<ThemeProvider>(
-          context,
-          listen: false,
-        );
+        final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
         // Salve a cor dinâmica detectada, se disponível
         if (lightDynamic != null) {
           themeProvider.saveDynamicColor(lightDynamic.primary);
@@ -103,18 +97,10 @@ class _MyAppState extends State<MyApp> {
             if (themeProvider.appThemeColor == AppColor.dynamic &&
                 lightDynamic != null &&
                 darkDynamic != null) {
-              lightTheme = ThemeData(
-                colorScheme: lightDynamic,
-                useMaterial3: true,
-              );
-              darkTheme = ThemeData(
-                colorScheme: darkDynamic,
-                useMaterial3: true,
-              );
+              lightTheme = ThemeData(colorScheme: lightDynamic, useMaterial3: true);
+              darkTheme = ThemeData(colorScheme: darkDynamic, useMaterial3: true);
             } else {
-              final seed =
-                  AppColors.seeds[themeProvider.appThemeColor] ??
-                  Colors.deepPurple;
+              final seed = AppColors.seeds[themeProvider.appThemeColor] ?? Colors.deepPurple;
               lightTheme = fixedTheme(Brightness.light, seed);
               darkTheme = fixedTheme(Brightness.dark, seed);
             }
@@ -145,12 +131,9 @@ class _MyAppState extends State<MyApp> {
               theme: lightTheme,
               darkTheme: darkTheme, // Tema escuro modificado
               home: HomeScreen(
-                selectedMode:
-                    themeProvider.appThemeColor, // use o valor do provider
+                selectedMode: themeProvider.appThemeColor, // use o valor do provider
                 onThemeSelected: (mode) {
-                  themeProvider.setAppThemeColor(
-                    mode,
-                  ); // Atualize o provider e salve
+                  themeProvider.setAppThemeColor(mode); // Atualize o provider e salve
                 },
                 seeds: AppColors.seeds,
               ),

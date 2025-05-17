@@ -16,10 +16,14 @@ class ServicesModel extends HiveObject {
   @HiveField(3)
   DateTime dateAdd;
 
+  @HiveField(4)
+  bool isEnable;
+
   ServicesModel({
     required this.id,
     required this.serviceName,
     required this.serviceUrl,
     required this.dateAdd,
+    this.isEnable = true,
   });
 }
