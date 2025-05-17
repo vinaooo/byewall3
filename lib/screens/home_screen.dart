@@ -178,40 +178,34 @@ class HomeScreenState extends State<HomeScreen> {
               ),
             ),
             SliverFillRemaining(
-              child: FutureBuilder<Box<ServicesModel>>(
-                future: servicesBoxFuture, // Use o Future armazenado
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  if (snapshot.hasError) {
-                    return Center(child: Text('Erro ao carregar os serviços: ${snapshot.error}'));
-                  }
-
-                  final box = snapshot.data;
-                  if (box == null || box.isEmpty) {
-                    return const Center(child: Text('Nenhum serviço disponível.'));
+              child: ValueListenableBuilder<Box<ServicesModel>>(
+                valueListenable: Hive.box<ServicesModel>('services').listenable(),
+                builder: (context, box, _) {
+                  if (box.isEmpty) {
+                    return const Center(child: Text('No services available'));
                   }
 
                   // Filtra os serviços com isEnable == true
                   final enabledServices = box.values.where((service) => service.isEnable).toList();
 
-                  return Wrap(
-                    spacing: 8.0,
-                    runSpacing: 8.0,
-                    children:
-                        enabledServices.map((service) {
-                          return SelectableChip(
-                            label: service.serviceName,
-                            isSelected: selectedChipId == service.id,
-                            onSelected: () {
-                              setState(() {
-                                selectedChipId = selectedChipId == service.id ? null : service.id;
-                              });
-                            },
-                          );
-                        }).toList(),
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Wrap(
+                      spacing: 4.0,
+                      runSpacing: 4.0,
+                      children:
+                          enabledServices.map((service) {
+                            return SelectableChip(
+                              label: service.serviceName,
+                              isSelected: selectedChipId == service.id,
+                              onSelected: () {
+                                setState(() {
+                                  selectedChipId = selectedChipId == service.id ? null : service.id;
+                                });
+                              },
+                            );
+                          }).toList(),
+                    ),
                   );
                 },
               ),
@@ -231,26 +225,38 @@ class HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class SelectableChip extends StatelessWidget {
+class SelectableChip extends StatefulWidget {
   final String label;
   final bool isSelected;
   final VoidCallback onSelected;
 
   const SelectableChip({
-    Key? key,
+    super.key,
     required this.label,
     required this.isSelected,
     required this.onSelected,
-  }) : super(key: key);
+  });
 
+  @override
+  State<SelectableChip> createState() => _SelectableChipState();
+}
+
+class _SelectableChipState extends State<SelectableChip> {
   @override
   Widget build(BuildContext context) {
     return RawChip(
-      label: Text(label),
-      selected: isSelected,
-      selectedColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+      padding: const EdgeInsets.all(0),
+      label: Text(
+        widget.label,
+        style: Theme.of(context)
+            .textTheme //
+            .labelSmall
+            ?.copyWith(fontWeight: FontWeight.normal),
+      ),
+      selected: widget.isSelected,
+      selectedColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
       showCheckmark: false, // Remove o ícone de check
-      onSelected: (_) => onSelected(),
+      onSelected: (_) => widget.onSelected(),
     );
   }
 }
