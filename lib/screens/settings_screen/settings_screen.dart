@@ -5,7 +5,6 @@ import 'package:byewall3/screens/settings_screen/services_settings.dart';
 import 'package:byewall3/ui/app_colors.dart';
 import 'package:byewall3/ui/components/floating_nav_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:byewall3/screens/settings_screen/placeholder_settings.dart';
 
 class SettingsScreen extends StatefulWidget {
   final AppColor selectedMode;
@@ -29,6 +28,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final ScrollController generalScrollController = ScrollController();
   final ScrollController serviceScrollController = ScrollController();
   final ScrollController aboutScrollController = ScrollController();
+  final PageController _pageController = PageController();
 
   get selectedMode => widget.selectedMode;
   get onThemeSelected => widget.onThemeSelected;
@@ -63,8 +63,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       ServiceSettingsView(controller: serviceScrollController),
       AboutSettingsView(controller: aboutScrollController),
-      const PlaceholderSettingsView(),
-      const PlaceholderSettingsView(), // Adicionada uma nova view
     ];
 
     final double iconSize = 30;
@@ -76,18 +74,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          views[selectedIndex],
+          PageView(
+            controller: _pageController,
+            physics: const NeverScrollableScrollPhysics(),
+
+            onPageChanged: (index) {
+              setState(() {
+                selectedIndex = index;
+              });
+            },
+            children: views,
+          ),
           FloatingNavBar(
             size: 2,
             screenWidth: screenWidth,
             selectedIndex: selectedIndex,
-            onTap: (index) => setState(() => selectedIndex = index),
+            onTap: (index) {
+              setState(() {
+                selectedIndex = index;
+              });
+
+              // Defina a duração com base na distância entre os índices
+              final int distance = (selectedIndex - index).abs();
+              final int duration =
+                  distance > 1 ? 700 : 350; // 600ms para saltos maiores, 350ms para saltos menores
+
+              _pageController.animateToPage(
+                index,
+                duration: Duration(milliseconds: duration),
+                curve: Curves.easeInToLinear,
+              );
+            },
             items: const [
               FloatingNavBarItem(icon: Icons.build_outlined, activeIcon: Icons.build),
               FloatingNavBarItem(icon: Icons.list_rounded),
               FloatingNavBarItem(icon: Icons.info_outlined, activeIcon: Icons.info),
-              // FloatingNavBarItem(icon: Icons.star_outline, activeIcon: Icons.star),
-              // FloatingNavBarItem(icon: Icons.settings_outlined, activeIcon: Icons.settings),
             ],
           ),
           Positioned(
