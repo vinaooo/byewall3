@@ -118,7 +118,7 @@ class FloatingNavBar extends StatelessWidget {
               decoration: BoxDecoration(
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.13),
+                    color: Colors.black.withValues(alpha: 0.13),
                     blurRadius: 40 * scaleFactor,
                     spreadRadius: 5 * scaleFactor,
                     offset: Offset(0, 5 * scaleFactor),
@@ -140,7 +140,7 @@ class FloatingNavBar extends StatelessWidget {
               color: Theme.of(context).colorScheme.secondaryContainer,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.25),
+                  color: Colors.black.withValues(alpha: 0.25),
                   blurRadius: 2 * scaleFactor,
                   spreadRadius: 0,
                   offset: Offset(0, 3 * scaleFactor),
