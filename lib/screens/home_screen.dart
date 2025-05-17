@@ -1,6 +1,9 @@
+import 'package:byewall3/break_services/services_helper.dart';
+import 'package:byewall3/break_services/services_model.dart';
 import 'package:byewall3/providers/theme_provider.dart';
 import 'package:byewall3/ui/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:byewall3/ui/animations/main_screen_animations.dart';
 
@@ -24,6 +27,9 @@ class HomeScreenState extends State<HomeScreen> {
   final FocusNode focusNode = FocusNode();
   bool hasFocus = false;
   final GlobalKey settingsIconKey = GlobalKey();
+  int? selectedChipId;
+
+  late Future<Box<ServicesModel>> servicesBoxFuture;
 
   @override
   void initState() {
@@ -33,6 +39,9 @@ class HomeScreenState extends State<HomeScreen> {
         hasFocus = focusNode.hasFocus;
       });
     });
+
+    // Inicialize o Future apenas uma vez
+    servicesBoxFuture = ServicesHelper.openBox();
   }
 
   @override
@@ -168,7 +177,45 @@ class HomeScreenState extends State<HomeScreen> {
                 },
               ),
             ),
-            SliverFillRemaining(child: Column(children: [Text('teste')])),
+            SliverFillRemaining(
+              child: FutureBuilder<Box<ServicesModel>>(
+                future: servicesBoxFuture, // Use o Future armazenado
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Erro ao carregar os serviços: ${snapshot.error}'));
+                  }
+
+                  final box = snapshot.data;
+                  if (box == null || box.isEmpty) {
+                    return const Center(child: Text('Nenhum serviço disponível.'));
+                  }
+
+                  // Filtra os serviços com isEnable == true
+                  final enabledServices = box.values.where((service) => service.isEnable).toList();
+
+                  return Wrap(
+                    spacing: 8.0,
+                    runSpacing: 8.0,
+                    children:
+                        enabledServices.map((service) {
+                          return SelectableChip(
+                            label: service.serviceName,
+                            isSelected: selectedChipId == service.id,
+                            onSelected: () {
+                              setState(() {
+                                selectedChipId = selectedChipId == service.id ? null : service.id;
+                              });
+                            },
+                          );
+                        }).toList(),
+                  );
+                },
+              ),
+            ),
             SliverList(
               delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
                 return SizedBox(
@@ -180,6 +227,30 @@ class HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class SelectableChip extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onSelected;
+
+  const SelectableChip({
+    Key? key,
+    required this.label,
+    required this.isSelected,
+    required this.onSelected,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return RawChip(
+      label: Text(label),
+      selected: isSelected,
+      selectedColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+      showCheckmark: false, // Remove o ícone de check
+      onSelected: (_) => onSelected(),
     );
   }
 }

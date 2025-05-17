@@ -5,13 +5,13 @@ class ServicesHelper {
   static const String _boxName = 'services';
 
   /// Abre o box do Hive
-  static Future<Box<ServicesModel>> _openBox() async {
+  static Future<Box<ServicesModel>> openBox() async {
     return await Hive.openBox<ServicesModel>(_boxName);
   }
 
   /// Adiciona os serviços padrão, caso o box esteja vazio
   static Future<void> defaultServices() async {
-    final box = await _openBox();
+    final box = await openBox();
     if (box.isEmpty) {
       final defaultData = [
         ServicesModel(
@@ -49,31 +49,31 @@ class ServicesHelper {
 
   /// Adiciona um novo serviço
   static Future<void> addService(ServicesModel service) async {
-    final box = await _openBox();
+    final box = await openBox();
     await box.add(service);
   }
 
   /// Remove um serviço individual pelo ID
   static Future<void> removeService(int key) async {
-    final box = await _openBox();
+    final box = await openBox();
     await box.delete(key);
   }
 
   /// Apaga todos os registros
   static Future<void> clearAllServices() async {
-    final box = await _openBox();
+    final box = await openBox();
     await box.clear();
   }
 
   /// Obtém todos os serviços
   static Future<List<ServicesModel>> getAllServices() async {
-    final box = await _openBox();
+    final box = await openBox();
     return box.values.toList();
   }
 
   /// Atualiza um serviço existente
   static Future<void> updateService(ServicesModel updatedService) async {
-    final box = await _openBox();
+    final box = await openBox();
     final key = box.keys.firstWhere((k) => box.get(k)?.id == updatedService.id, orElse: () => null);
 
     if (key != null) {
