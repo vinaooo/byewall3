@@ -33,7 +33,9 @@ void main() async {
 
   await Hive.initFlutter();
   Hive.registerAdapter(ServicesModelAdapter());
-  await Hive.openBox<ServicesModel>('services');
+  if (!Hive.isBoxOpen('services')) {
+    await Hive.openBox<ServicesModel>('services');
+  }
 
   final themeProvider = ThemeProvider();
   await themeProvider.loadTheme();
@@ -70,6 +72,12 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     ServicesHelper.defaultServices(); // Substituído
     setState(() {});
+  }
+
+  @override
+  void dispose() {
+    Hive.close(); // Fecha todos os boxes abertos
+    super.dispose();
   }
 
   ThemeData fixedTheme(Brightness brightness, Color seed) {

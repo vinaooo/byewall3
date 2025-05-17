@@ -50,13 +50,18 @@ class ServiceDialogState extends State<ServiceDialog> {
   bool validateFields() {
     final newNameError =
         nameController.text.trim().isEmpty ? 'O nome do serviço não pode ficar em branco.' : null;
-    final newUrlError =
-        urlController.text.trim().isEmpty ? 'A URL do serviço não pode ficar em branco.' : null;
 
-    // Retorna diretamente em vez de chamar setState
+    final newUrlError =
+        urlController.text.trim().isEmpty
+            ? 'A URL do serviço não pode ficar em branco.'
+            : (!isValidUrl(urlController.text.trim()) ? 'A URL fornecida é inválida.' : null);
+
+    // Atualiza os erros apenas se houver mudanças
     if (newNameError != nameError || newUrlError != urlError) {
-      nameError = newNameError;
-      urlError = newUrlError;
+      setState(() {
+        nameError = newNameError;
+        urlError = newUrlError;
+      });
     }
 
     return (newNameError == null && newUrlError == null);
@@ -77,7 +82,6 @@ class ServiceDialogState extends State<ServiceDialog> {
       return;
     }
 
-    // Cria serviço e fecha a dialog
     final newService = ServicesModel(
       id: widget.initialService?.id ?? DateTime.now().millisecondsSinceEpoch,
       serviceName: nameController.text.trim(),
@@ -91,6 +95,15 @@ class ServiceDialogState extends State<ServiceDialog> {
       ServicesHelper.addService(newService);
     }
     Navigator.of(context).pop();
+  }
+
+  bool isValidUrl(String url) {
+    try {
+      final uri = Uri.parse(url);
+      return uri.hasScheme && (uri.scheme == 'http' || uri.scheme == 'https');
+    } catch (e) {
+      return false;
+    }
   }
 
   @override

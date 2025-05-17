@@ -16,7 +16,7 @@ class ServiceSettingsView extends StatefulWidget {
 }
 
 class ServiceSettingsViewState extends State<ServiceSettingsView> {
-  void _openEditDialog(BuildContext context, ServicesModel service) {
+  void openEditDialog(BuildContext context, ServicesModel service) {
     showDialog(
       context: context,
       builder: (context) {
@@ -75,7 +75,7 @@ class ServiceSettingsViewState extends State<ServiceSettingsView> {
                             ),
                             child: GestureDetector(
                               onLongPress: () {
-                                _openEditDialog(context, service);
+                                openEditDialog(context, service);
                               },
                               child: Column(
                                 children: [
