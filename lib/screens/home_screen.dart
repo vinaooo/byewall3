@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:byewall3/ui/animations/main_screen_animations.dart';
+import 'package:url_launcher/url_launcher.dart' as url_launcher;
+import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatform;
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart' as custom_tabs;
 
 class HomeScreen extends StatefulWidget {
   final AppColor selectedMode;
@@ -28,6 +31,8 @@ class HomeScreenState extends State<HomeScreen> {
   bool hasFocus = false;
   final GlobalKey settingsIconKey = GlobalKey();
   int? selectedChipId;
+  final TextEditingController textController = TextEditingController();
+  String? errorText;
 
   late Future<Box<ServicesModel>> servicesBoxFuture;
 
@@ -80,11 +85,13 @@ class HomeScreenState extends State<HomeScreen> {
                         right: 8,
                         bottom: 0,
                         child: TextField(
+                          controller: textController,
                           focusNode: focusNode,
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: AppColors.getTileColor(context),
                             labelText: 'Break the wall',
+                            errorText: errorText, // Exibe a mensagem de erro, se houver
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
                             contentPadding: const EdgeInsets.symmetric(
                               vertical: 16,
@@ -112,22 +119,18 @@ class HomeScreenState extends State<HomeScreen> {
                                         behavior: HitTestBehavior.opaque,
                                         onTap: () {
                                           focusNode.unfocus();
-                                          showDialog(
-                                            context: context,
-                                            builder:
-                                                (context) => AlertDialog(
-                                                  title: const Text('Ação da seta'),
-                                                  content: const Text(
-                                                    'Você clicou na seta para a direita!',
-                                                  ),
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed: () => Navigator.of(context).pop(),
-                                                      child: const Text('OK'),
-                                                    ),
-                                                  ],
-                                                ),
-                                          );
+                                          final urlText = textController.text.trim();
+
+                                          if (urlText.isEmpty || !_isValidUrl(urlText)) {
+                                            setState(() {
+                                              errorText = 'Por favor, insira um link válido.';
+                                            });
+                                          } else {
+                                            setState(() {
+                                              errorText = null; // Limpa o erro
+                                            });
+                                            _abrirLink(urlText);
+                                          }
                                         },
                                         child: Container(
                                           width: 48,
@@ -222,6 +225,29 @@ class HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _abrirLink(String urlText) async {
+    final Uri url = Uri.parse(urlText);
+
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      // Use flutter_custom_tabs para Android
+      try {
+        await custom_tabs.launchUrl(url, customTabsOptions: const custom_tabs.CustomTabsOptions());
+      } catch (e) {
+        throw Exception('Não foi possível abrir o link com Custom Tabs: $e');
+      }
+    } else {
+      // Use url_launcher para outras plataformas
+      if (!await url_launcher.launchUrl(url, mode: url_launcher.LaunchMode.externalApplication)) {
+        throw Exception('Não foi possível abrir o link');
+      }
+    }
+  }
+
+  bool _isValidUrl(String url) {
+    final Uri? uri = Uri.tryParse(url);
+    return uri != null && (uri.isScheme('http') || uri.isScheme('https'));
   }
 }
 
