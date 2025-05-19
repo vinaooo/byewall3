@@ -10,11 +10,10 @@ class LocalizedText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String kText = this.kText.toLowerCase();
     if (oText != null) {
-      return Text(
-        AppLocalizations.of(context)!.translate(kText) + oText!,
-        style: style,
-      );
+      String oText = this.oText!.toLowerCase();
+      return Text(AppLocalizations.of(context)!.translate(kText) + oText, style: style);
     }
     return Text(AppLocalizations.of(context)!.translate(kText), style: style);
   }

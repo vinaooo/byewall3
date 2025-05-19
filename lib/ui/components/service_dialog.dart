@@ -49,12 +49,16 @@ class ServiceDialogState extends State<ServiceDialog> {
   // Método separado para validação
   bool validateFields() {
     final newNameError =
-        nameController.text.trim().isEmpty ? 'O nome do serviço não pode ficar em branco.' : null;
+        nameController.text.trim().isEmpty
+            ? AppLocalizations.of(context)!.translate('service_name_empty')
+            : null;
 
     final newUrlError =
         urlController.text.trim().isEmpty
-            ? 'A URL do serviço não pode ficar em branco.'
-            : (!isValidUrl(urlController.text.trim()) ? 'A URL fornecida é inválida.' : null);
+            ? AppLocalizations.of(context)!.translate('service_url_empty') // Mensagem de erro
+            : (!isValidUrl(urlController.text.trim())
+                ? AppLocalizations.of(context)!.translate('service_url_invalid')
+                : null);
 
     // Atualiza os erros apenas se houver mudanças
     if (newNameError != nameError || newUrlError != urlError) {
@@ -117,9 +121,9 @@ class ServiceDialogState extends State<ServiceDialog> {
 
         if (snapshot.hasError) {
           return AlertDialog(
-            title: const LocalizedText(kText: 'Erro'),
+            title: const LocalizedText(kText: 'Error'),
             content: LocalizedText(
-              kText: 'Error opening database: ',
+              kText: 'error_opening_database',
               oText: snapshot.error.toString(),
             ),
             actions: [
@@ -183,7 +187,7 @@ class ServiceDialogState extends State<ServiceDialog> {
                     children: [
                       Text(
                         (attemptedSubmit && nameError != null && urlError != null)
-                            ? 'Preencha todos os campos!'
+                            ? AppLocalizations.of(context)!.translate('service_name_empty')
                             : '',
                         style: TextStyle(color: Theme.of(context).colorScheme.error, fontSize: 13),
                         textAlign: TextAlign.left, // Alinha à esquerda
@@ -199,11 +203,11 @@ class ServiceDialogState extends State<ServiceDialog> {
               onPressed: () {
                 Navigator.of(context).pop(); // Fecha a dialog
               },
-              child: const LocalizedText(kText: 'Cancelar'),
+              child: const LocalizedText(kText: 'cancel'),
             ),
             ElevatedButton(
               onPressed: () => validateAndSubmit(context),
-              child: const LocalizedText(kText: 'OK'),
+              child: const LocalizedText(kText: 'ok'),
             ),
           ],
         );

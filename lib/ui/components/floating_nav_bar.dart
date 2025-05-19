@@ -23,7 +23,7 @@ class FloatingNavBar extends StatelessWidget {
     required this.items,
     required this.onTap,
     this.size = 2,
-  }) : assert(size >= 1 && size <= 3, 'O tamanho deve ser 1, 2 ou 3');
+  }) : assert(size >= 1 && size <= 3, 'Size should be 1, 2 or 3');
 
   @override
   Widget build(BuildContext context) {

@@ -46,5 +46,13 @@
   "purple": "Purple",
   "red": "Red",
   "teal": "Teal",
-  "select_language": "Select Language"
+  "select_language": "Select Language",
+  "break_the_wall": "Break the wall",
+  "please_enter_valid_link": "Please enter a valid link.",
+  "no_services_available": "No services available",
+  "error_opening_database": "Error opening the database.",
+  "Cancelar": "Cancel",
+  "service_name_empty": "Service name cannot be empty.",
+  "service_url_empty": "Service URL cannot be empty.",
+  "service_url_invalid": "Service URL is invalid."
 }

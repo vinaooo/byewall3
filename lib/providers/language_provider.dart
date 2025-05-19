@@ -17,10 +17,7 @@ class LanguageProvider extends ChangeNotifier {
   Future<void> saveLanguage(Locale locale) async {
     final prefs = await SharedPreferences.getInstance();
     // Salvamos o idioma no formato "en_US" (código do idioma e região)
-    await prefs.setString(
-      'appLanguage',
-      '${locale.languageCode}_${locale.countryCode}',
-    );
+    await prefs.setString('appLanguage', '${locale.languageCode}_${locale.countryCode}');
   }
 
   /// Carrega o idioma salvo no SharedPreferences e aplica no app
@@ -30,8 +27,7 @@ class LanguageProvider extends ChangeNotifier {
 
     if (savedLanguage == null) {
       // Pega a localidade do sistema
-      final systemLocale =
-          WidgetsBinding.instance.platformDispatcher.locales.first;
+      final systemLocale = WidgetsBinding.instance.platformDispatcher.locales.first;
       // Se suportado, usa o sistema; caso contrário, fallback para inglês
       if (_isSupported(systemLocale)) {
         _locale = systemLocale;
@@ -64,9 +60,7 @@ class LanguageProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  static List<Locale> _getSortedLocales(
-    String Function(Locale locale) localeKey,
-  ) {
+  static List<Locale> _getSortedLocales(String Function(Locale locale) localeKey) {
     return List<Locale>.from(AppLocalizations.supportedLocales)..sort((a, b) {
       final nameA = Locales.knownLocales[localeKey(a)] ?? localeKey(a);
       final nameB = Locales.knownLocales[localeKey(b)] ?? localeKey(b);
@@ -74,10 +68,7 @@ class LanguageProvider extends ChangeNotifier {
     });
   }
 
-  static void selectLanguage(
-    BuildContext context,
-    String Function(Locale locale) localeKey,
-  ) {
+  static void selectLanguage(BuildContext context, String Function(Locale locale) localeKey) {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
     final sortedLocales = _getSortedLocales(localeKey);
 
@@ -91,17 +82,12 @@ class LanguageProvider extends ChangeNotifier {
           backgroundColor:
               themeProvider.themeMode == ThemeMode.dark ||
                       (themeProvider.themeMode == ThemeMode.system &&
-                          MediaQuery.of(context).platformBrightness ==
-                              Brightness.dark)
+                          MediaQuery.of(context).platformBrightness == Brightness.dark)
                   ? HSLColor.fromColor(
                     Theme.of(context).colorScheme.surface,
                   ).withLightness(0.21).toColor()
                   : null,
-          title: DialogTitle(
-            context: context,
-            icon: Icons.translate,
-            title: 'select_language',
-          ),
+          title: DialogTitle(context: context, icon: Icons.translate, title: 'select_language'),
 
           content: SizedBox(
             width: MediaQuery.of(context).size.width * 0.8,
@@ -115,9 +101,7 @@ class LanguageProvider extends ChangeNotifier {
                 final name = Locales.knownLocales[key] ?? key;
                 final isSelected = languageProvider.locale == locale;
                 final selectionColor =
-                    languageProvider.locale == locale
-                        ? Colors.transparent
-                        : null;
+                    languageProvider.locale == locale ? Colors.transparent : null;
 
                 return Stack(
                   children: [
@@ -134,25 +118,15 @@ class LanguageProvider extends ChangeNotifier {
                         hoverColor: selectionColor,
                         splashColor: selectionColor,
                         tileColor: selectionColor,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 50,
-                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 50),
                         leading:
                             isSelected
-                                ? Icon(
-                                  Icons.check,
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
-                                  semanticLabel: 'Selected language',
-                                )
+                                ? Icon(Icons.check, color: Theme.of(context).colorScheme.onPrimary)
                                 : const SizedBox.shrink(), // Ícone vazio se não for selecionado
                         title: LocalizedText(
                           kText: name,
                           style: TextStyle(
-                            color:
-                                isSelected
-                                    ? Theme.of(context).colorScheme.onPrimary
-                                    : null,
+                            color: isSelected ? Theme.of(context).colorScheme.onPrimary : null,
                           ),
                         ),
                         onTap: () {
@@ -171,17 +145,11 @@ class LanguageProvider extends ChangeNotifier {
   }
 
   static void changeLanguage(BuildContext context, Locale selectedLocale) {
-    Provider.of<LanguageProvider>(
-      context,
-      listen: false,
-    ).setLocale(selectedLocale);
+    Provider.of<LanguageProvider>(context, listen: false).setLocale(selectedLocale);
     Navigator.pop(context);
   }
 
-  static Color? transparentIfSelected({
-    required LanguageProvider lp,
-    required Locale locale,
-  }) {
+  static Color? transparentIfSelected({required LanguageProvider lp, required Locale locale}) {
     return lp.locale == locale ? Colors.transparent : null;
   }
 }

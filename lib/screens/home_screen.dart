@@ -9,6 +9,7 @@ import 'package:byewall3/ui/animations/main_screen_animations.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatform;
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart' as custom_tabs;
+import 'package:byewall3/ui/components/localized_text.dart';
 
 class HomeScreen extends StatefulWidget {
   final AppColor selectedMode;
@@ -90,9 +91,40 @@ class HomeScreenState extends State<HomeScreen> {
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: AppColors.getTileColor(context),
-                            labelText: 'Break the wall',
-                            errorText: errorText, // Exibe a mensagem de erro, se houver
+                            label: LocalizedText(
+                              kText: 'break_the_wall',
+                              style: TextStyle(
+                                color:
+                                    errorText != null ? Theme.of(context).colorScheme.error : null,
+                              ),
+                            ),
+                            errorText: errorText,
+                            // Reserve space for error text even when null
+                            errorStyle: TextStyle(
+                              color: errorText != null ? null : Colors.transparent,
+                              height: 0.01, // Very small but not zero to maintain space
+                            ),
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30),
+                              borderSide: BorderSide(
+                                color:
+                                    errorText != null
+                                        ? Theme.of(context).colorScheme.error
+                                        : Colors.transparent,
+                                width: 2.0,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30),
+                              borderSide: BorderSide(
+                                color:
+                                    errorText != null
+                                        ? Theme.of(context).colorScheme.error
+                                        : Theme.of(context).colorScheme.primary,
+                                width: 2.0,
+                              ),
+                            ),
                             contentPadding: const EdgeInsets.symmetric(
                               vertical: 16,
                               horizontal: 16,
@@ -123,7 +155,7 @@ class HomeScreenState extends State<HomeScreen> {
 
                                           if (urlText.isEmpty || !_isValidUrl(urlText)) {
                                             setState(() {
-                                              errorText = 'Por favor, insira um link válido.';
+                                              errorText = ''; // Define erro
                                             });
                                           } else {
                                             setState(() {
@@ -185,7 +217,11 @@ class HomeScreenState extends State<HomeScreen> {
                 valueListenable: Hive.box<ServicesModel>('services').listenable(),
                 builder: (context, box, _) {
                   if (box.isEmpty) {
-                    return const Center(child: Text('No services available'));
+                    return const Center(
+                      child: LocalizedText(
+                        kText: 'no_services_available', // Tradução aplicada
+                      ),
+                    );
                   }
 
                   // Filtra os serviços com isEnable == true
