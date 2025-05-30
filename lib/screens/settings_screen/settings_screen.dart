@@ -42,9 +42,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
 
   bool _isAnimating = false;
 
-  get selectedMode => widget.selectedMode;
-  get onThemeSelected => widget.onThemeSelected;
-  get seeds => widget.seeds;
+  late final List<Widget> _views;
 
   @override
   void initState() {
@@ -59,12 +57,25 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
     ).animate(CurvedAnimation(parent: _animationController, curve: animConfig.curve));
 
     _animationController.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
+      if (status == AnimationStatus.completed && _isAnimating) {
         setState(() {
           _isAnimating = false;
         });
       }
     });
+
+    // Inicialização das views
+    _views = [
+      GeneralSettingsView(
+        controller: generalScrollController,
+        localeKey: localeKey,
+        selectedMode: widget.selectedMode,
+        onThemeSelected: widget.onThemeSelected,
+        seeds: widget.seeds,
+      ),
+      ServiceSettingsView(controller: serviceScrollController),
+      AboutSettingsView(controller: aboutScrollController),
+    ];
   }
 
   @override
@@ -101,69 +112,93 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
     _animationController.forward(from: 0.0);
   }
 
+  // Constantes do layout da barra
+  static const double _iconSize = 30;
+  static const double _itemSpacing = 12;
+  static const double _minBarWidth = 220;
+  static const double _fabBottomMargin = 25;
+  static const double _fabSideMargin = 8;
+  static const double _fabSize = 70;
+
+  // Simplificar o cálculo da largura da barra
+  double _calculateBarWidth(int viewCount) {
+    final double floatingBarWidth = (viewCount * (_iconSize + _itemSpacing)) + _itemSpacing;
+    return floatingBarWidth > _minBarWidth ? floatingBarWidth : _minBarWidth;
+  }
+
+  // Extrair widget para a animação
+  Widget _buildAnimatedTransition() {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        return Stack(
+          children: [
+            // Tela de destino
+            Transform.scale(
+              scale: 0.8 + (0.2 * _animation.value),
+              child: Opacity(opacity: _animation.value, child: _views[selectedIndex]),
+            ),
+            // Tela anterior
+            Opacity(
+              opacity: 1 - _animation.value,
+              child: Transform.translate(
+                offset: Offset(
+                  selectedIndex > previousIndex
+                      ? _animation.value * MediaQuery.of(context).size.width
+                      : -_animation.value * MediaQuery.of(context).size.width,
+                  0,
+                ),
+                child: _views[previousIndex],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Extrair widget para o FAB
+  Widget _buildServiceFab(double screenWidth, double barWidth) {
+    return Positioned(
+      left: (screenWidth - barWidth) / 2 + barWidth + _fabSideMargin,
+      bottom: _fabBottomMargin,
+      child: AnimatedOpacity(
+        duration: Duration(milliseconds: animConfig.fadeDuration),
+        opacity: selectedIndex == 1 ? 1.0 : 0.0,
+        curve: animConfig.curve,
+        child: SizedBox(
+          height: _fabSize,
+          width: _fabSize,
+          child: FloatingActionButton(
+            onPressed: () {
+              if (selectedIndex == 1) {
+                showDialog(context: context, builder: (context) => const ServiceDialog());
+              }
+            },
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+            foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+            elevation: 3,
+            child: const Icon(Icons.add),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
-    final views = [
-      GeneralSettingsView(
-        controller: generalScrollController,
-        localeKey: localeKey,
-        selectedMode: selectedMode,
-        onThemeSelected: onThemeSelected,
-        seeds: seeds,
-      ),
-      ServiceSettingsView(controller: serviceScrollController),
-      AboutSettingsView(controller: aboutScrollController),
-    ];
-
-    final double iconSize = 30;
-    final double itemSpacing = 12;
-    final double floatingBarWidth = (views.length * (iconSize + itemSpacing)) + itemSpacing;
-    final double minBarWidth = 220;
-    final double barWidth = floatingBarWidth > minBarWidth ? floatingBarWidth : minBarWidth;
+    final double barWidth = _calculateBarWidth(_views.length);
 
     return Scaffold(
       body: Stack(
         children: [
           // Sempre mostra a view atual quando não está animando
-          if (!_isAnimating) views[selectedIndex],
+          if (!_isAnimating) _views[selectedIndex],
 
           // Mostra a animação apenas durante a transição
-          if (_isAnimating)
-            AnimatedBuilder(
-              animation: _animation,
-              builder: (context, child) {
-                // Aplicando a mesma animação para todas as transições
-                return Stack(
-                  children: [
-                    // A tela de destino com opacidade aumentando e efeito de zoom
-                    Transform.scale(
-                      scale: 0.8 + (0.2 * _animation.value), // Começa em 88% e cresce até 100%
-                      child: Opacity(
-                        opacity: _animation.value,
-                        child: views[selectedIndex], // Tela de destino
-                      ),
-                    ),
-                    // A tela anterior (saindo) com opacidade diminuindo
-                    Opacity(
-                      opacity: 1 - _animation.value,
-                      child: Transform.translate(
-                        // Deslizamos a tela anterior para a direção apropriada
-                        offset: Offset(
-                          selectedIndex > previousIndex
-                              ? _animation.value *
-                                  screenWidth // Para a direita se avançando
-                              : -_animation.value * screenWidth, // Para a esquerda se voltando
-                          0,
-                        ),
-                        child: views[previousIndex],
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
+          if (_isAnimating) _buildAnimatedTransition(),
 
           // Floating navigation bar
           FloatingNavBar(
@@ -179,31 +214,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
           ),
 
           // FAB for adding services
-          Positioned(
-            left: (screenWidth - barWidth) / 2 + barWidth + 8,
-            bottom: 25,
-            child: AnimatedOpacity(
-              duration: Duration(milliseconds: animConfig.fadeDuration),
-              opacity: selectedIndex == 1 ? 1.0 : 0.0,
-              curve: animConfig.curve,
-              child: SizedBox(
-                height: 70,
-                width: 70,
-                child: FloatingActionButton(
-                  onPressed: () {
-                    if (selectedIndex == 1) {
-                      showDialog(context: context, builder: (context) => const ServiceDialog());
-                    }
-                  },
-                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                  foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
-                  elevation: 3,
-                  mini: false,
-                  child: const Icon(Icons.add),
-                ),
-              ),
-            ),
-          ),
+          _buildServiceFab(screenWidth, barWidth),
         ],
       ),
     );
@@ -212,14 +223,12 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
 
 // Classe para configuração centralizada de animações
 class _AnimationConfig {
-  final int defaultDuration; // Duração padrão para transições adjacentes
-  // final int longDistance; // Duração para transições não-adjacentes (0→2, 2→0)
-  final int fadeDuration; // Duração para fade in/out
-  final Curve curve; // Curva de animação padrão
+  final int defaultDuration;
+  final int fadeDuration;
+  final Curve curve;
 
   const _AnimationConfig({
     required this.defaultDuration,
-    // required this.longDistance,
     required this.fadeDuration,
     required this.curve,
   });
