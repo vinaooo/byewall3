@@ -42,7 +42,30 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
 
   bool _isAnimating = false;
 
-  late final List<Widget> _views;
+  late final List<Widget?> _viewCache = List.filled(3, null);
+
+  Widget _getView(int index) {
+    if (_viewCache[index] == null) {
+      switch (index) {
+        case 0:
+          _viewCache[index] = GeneralSettingsView(
+            controller: generalScrollController,
+            localeKey: localeKey,
+            selectedMode: widget.selectedMode,
+            onThemeSelected: widget.onThemeSelected,
+            seeds: widget.seeds,
+          );
+          break;
+        case 1:
+          _viewCache[index] = ServiceSettingsView(controller: serviceScrollController);
+          break;
+        case 2:
+          _viewCache[index] = AboutSettingsView(controller: aboutScrollController);
+          break;
+      }
+    }
+    return _viewCache[index]!;
+  }
 
   @override
   void initState() {
@@ -63,19 +86,6 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
         });
       }
     });
-
-    // Inicialização das views
-    _views = [
-      GeneralSettingsView(
-        controller: generalScrollController,
-        localeKey: localeKey,
-        selectedMode: widget.selectedMode,
-        onThemeSelected: widget.onThemeSelected,
-        seeds: widget.seeds,
-      ),
-      ServiceSettingsView(controller: serviceScrollController),
-      AboutSettingsView(controller: aboutScrollController),
-    ];
   }
 
   @override
@@ -95,7 +105,10 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
   }
 
   void _navigateToPage(int index) {
-    if (selectedIndex == index) return;
+    if (selectedIndex == index || _isAnimating) return;
+
+    // Pré-carregar a próxima view antes da animação para evitar jank
+    _getView(index);
 
     previousIndex = selectedIndex;
     setState(() {
@@ -103,12 +116,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
       _isAnimating = true;
     });
 
-    // Usa a configuração centralizada para duração
-    // final int distance = (previousIndex - index).abs();
-    // final int duration = distance > 1 ? animConfig.longDistance : animConfig.defaultDuration;
-    final int duration = animConfig.defaultDuration;
-
-    _animationController.duration = Duration(milliseconds: duration);
+    _animationController.duration = Duration(milliseconds: animConfig.defaultDuration);
     _animationController.forward(from: 0.0);
   }
 
@@ -119,6 +127,7 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
   static const double _fabBottomMargin = 25;
   static const double _fabSideMargin = 8;
   static const double _fabSize = 70;
+  static const Widget _fabIcon = Icon(Icons.add);
 
   // Simplificar o cálculo da largura da barra
   double _calculateBarWidth(int viewCount) {
@@ -127,75 +136,78 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
   }
 
   // Extrair widget para a animação
+  // Otimizar para evitar recálculos em cada frame
   Widget _buildAnimatedTransition() {
+    // Precalcular valores usados na transformação
+    final screenWidth = MediaQuery.of(context).size.width;
+    final bool isForward = selectedIndex > previousIndex;
+
+    // Usar constantes para valores de corte - evita recálculos em cada frame
+    const double visibilityThreshold = 0.01;
+    const double scaleBase = 0.8;
+    const double scaleVariation = 0.2;
+
+    final previousView = _getView(previousIndex);
+    final currentView = _getView(selectedIndex);
+
     return AnimatedBuilder(
       animation: _animation,
+      // Uso do child para widgets estáticos
+      child: Column(children: [previousView, currentView]),
       builder: (context, child) {
+        final double animValue = _animation.value;
+        final double reverseValue = 1 - animValue;
+
+        // Extraindo views do child
+        final previousView = (child as Column).children[0];
+        final currentView = (child).children[1];
+
         return Stack(
           children: [
-            // Tela de destino
-            Transform.scale(
-              scale: 0.8 + (0.2 * _animation.value),
-              child: Opacity(opacity: _animation.value, child: _views[selectedIndex]),
-            ),
-            // Tela anterior
-            Opacity(
-              opacity: 1 - _animation.value,
-              child: Transform.translate(
-                offset: Offset(
-                  selectedIndex > previousIndex
-                      ? _animation.value * MediaQuery.of(context).size.width
-                      : -_animation.value * MediaQuery.of(context).size.width,
-                  0,
+            // Tela de destino - apenas renderiza se visível
+            if (animValue > visibilityThreshold)
+              RepaintBoundary(
+                child: Transform.scale(
+                  scale: scaleBase + (scaleVariation * animValue),
+                  child: Opacity(opacity: animValue, child: currentView),
                 ),
-                child: _views[previousIndex],
               ),
-            ),
+
+            // Tela anterior - apenas renderiza se visível
+            if (reverseValue > visibilityThreshold)
+              RepaintBoundary(
+                child: Opacity(
+                  opacity: reverseValue,
+                  child: Transform.translate(
+                    offset: Offset(
+                      isForward ? animValue * screenWidth : -animValue * screenWidth,
+                      0,
+                    ),
+                    child: previousView,
+                  ),
+                ),
+              ),
           ],
         );
       },
     );
   }
 
-  // Extrair widget para o FAB
-  Widget _buildServiceFab(double screenWidth, double barWidth) {
-    return Positioned(
-      left: (screenWidth - barWidth) / 2 + barWidth + _fabSideMargin,
-      bottom: _fabBottomMargin,
-      child: AnimatedOpacity(
-        duration: Duration(milliseconds: animConfig.fadeDuration),
-        opacity: selectedIndex == 1 ? 1.0 : 0.0,
-        curve: animConfig.curve,
-        child: SizedBox(
-          height: _fabSize,
-          width: _fabSize,
-          child: FloatingActionButton(
-            onPressed: () {
-              if (selectedIndex == 1) {
-                showDialog(context: context, builder: (context) => const ServiceDialog());
-              }
-            },
-            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-            foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
-            elevation: 3,
-            child: const Icon(Icons.add),
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    // Cache valores do MediaQuery para evitar múltiplas chamadas
+    final mediaQuery = MediaQuery.of(context);
+    final screenWidth = mediaQuery.size.width;
+    final double barWidth = _calculateBarWidth(_viewCache.length);
+    final fabLeftPosition = (screenWidth - barWidth) / 2 + barWidth + _fabSideMargin;
 
-    final double barWidth = _calculateBarWidth(_views.length);
+    // Resto do código permanece o mesmo
 
     return Scaffold(
       body: Stack(
         children: [
           // Sempre mostra a view atual quando não está animando
-          if (!_isAnimating) _views[selectedIndex],
+          if (!_isAnimating) _getView(selectedIndex),
 
           // Mostra a animação apenas durante a transição
           if (_isAnimating) _buildAnimatedTransition(),
@@ -214,7 +226,46 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
           ),
 
           // FAB for adding services
-          _buildServiceFab(screenWidth, barWidth),
+          Positioned(
+            left: fabLeftPosition,
+            bottom: _fabBottomMargin,
+            child: AnimatedOpacity(
+              duration: Duration(milliseconds: animConfig.fadeDuration),
+              opacity: selectedIndex == 1 ? 1.0 : 0.0,
+              curve: animConfig.curve,
+              child: IgnorePointer(
+                ignoring: selectedIndex != 1,
+                child: SizedBox(
+                  height: _fabSize,
+                  width: _fabSize,
+                  child: FloatingActionButton(
+                    onPressed: () {
+                      // Custom animation without nested Heroes
+                      final RenderBox buttonBox = context.findRenderObject() as RenderBox;
+                      final buttonPosition = buttonBox.localToGlobal(Offset.zero);
+                      final buttonSize = buttonBox.size;
+
+                      Navigator.of(context).push(
+                        DialogPageRoute(
+                          builder: (context) => ServiceDialog(initialService: null),
+                          sourceRect: Rect.fromLTWH(
+                            buttonPosition.dx,
+                            buttonPosition.dy,
+                            buttonSize.width,
+                            buttonSize.height,
+                          ),
+                        ),
+                      );
+                    },
+                    backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+                    elevation: 3,
+                    child: _fabIcon,
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
