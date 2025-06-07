@@ -140,69 +140,35 @@ class ServiceDialogState extends State<ServiceDialog> {
           content: SizedBox(
             width: MediaQuery.of(context).size.width * 0.8,
             child: SingleChildScrollView(
+              // Ensure content is scrollable
               child: Column(
-                mainAxisSize: MainAxisSize.min, // importante!
+                mainAxisSize: MainAxisSize.min, // Keep this to minimize height
                 children: [
                   TextFormField(
                     controller: nameController,
-                    focusNode: nameFocusNode, // já estava aqui
+                    focusNode: nameFocusNode,
                     decoration: InputDecoration(
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
-                      ),
                       labelText: AppLocalizations.of(context)!.translate('service_name'),
-                      errorText:
-                          attemptedSubmit && nameError != null
-                              ? ''
-                              : null, // Só destaca sem mensagem
+                      errorText: attemptedSubmit ? nameError : null,
                     ),
                     onChanged: (_) {
-                      if (attemptedSubmit) {
-                        validateFields(); // Valida em tempo real após primeira tentativa
-                      }
+                      if (attemptedSubmit) validateFields();
                     },
                   ),
                   if (nameError == null || !attemptedSubmit) SizedBox(height: 21),
                   TextFormField(
                     controller: urlController,
-                    focusNode: urlFocusNode, // adicione isto
+                    focusNode: urlFocusNode,
                     decoration: InputDecoration(
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
-                      ),
                       labelText: AppLocalizations.of(context)!.translate('service_url'),
-                      errorText:
-                          attemptedSubmit && urlError != null
-                              ? ''
-                              : null, // Só destaca sem mensagem
+                      errorText: attemptedSubmit ? urlError : null,
+                      hintText: 'https://',
                     ),
                     onChanged: (_) {
-                      if (attemptedSubmit) {
-                        validateFields(); // Valida em tempo real após primeira tentativa
-                      }
+                      if (attemptedSubmit) validateFields();
                     },
                   ),
                   if (urlError == null || !attemptedSubmit) SizedBox(height: 21),
-                  // Sinalizador de erro abaixo dos campos
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Text(
-                          (attemptedSubmit && nameError != null && urlError != null)
-                              ? AppLocalizations.of(context)!.translate('service_name_empty')
-                              : '',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.error,
-                            fontSize: 13,
-                          ),
-                          textAlign: TextAlign.left, // Alinha à esquerda
-                        ),
-                      ],
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -315,11 +281,14 @@ class DialogPageRoute<T> extends PageRoute<T> {
         final endRect = Rect.fromCenter(
           center: Offset(screenSize.width / 2, screenSize.height / 2),
           width: screenSize.width * 0.8,
-          height: screenSize.height * 0.5,
+          height: screenSize.height * 0.6,
         );
 
         // Animate position and size
         final currentRect = Rect.lerp(startRect, endRect, animation.value)!;
+
+        // Animate border radius - round at start (FAB), less round at end (dialog)
+        final borderRadius = BorderRadius.circular(lerp(24.0, 8.0, animation.value));
 
         return Stack(
           children: [
@@ -334,9 +303,8 @@ class DialogPageRoute<T> extends PageRoute<T> {
               child: Material(
                 color: Theme.of(context).dialogBackgroundColor,
                 elevation: 4.0 * animation.value + 2.0,
-                borderRadius: BorderRadius.circular(
-                  24 * (1 - animation.value) + 8 * animation.value,
-                ),
+                shape: RoundedRectangleBorder(borderRadius: borderRadius),
+                clipBehavior: Clip.antiAlias,
                 child: Opacity(
                   opacity: animation.value,
                   child: animation.value > 0.5 ? child : Container(),
@@ -374,4 +342,9 @@ class ServiceDialogContent extends StatelessWidget {
     // Use o widget ServiceDialogState como implementação
     return ServiceDialog(initialService: initialService);
   }
+}
+
+// Add this helper function at the bottom of the class
+double lerp(double start, double end, double t) {
+  return start + (end - start) * t;
 }

@@ -128,6 +128,8 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
   static const double _fabSideMargin = 8;
   static const double _fabSize = 70;
   static const Widget _fabIcon = Icon(Icons.add);
+  // Adicione esta chave global para o FAB
+  final GlobalKey _fabKey = GlobalKey();
 
   // Simplificar o cálculo da largura da barra
   double _calculateBarWidth(int viewCount) {
@@ -239,10 +241,20 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
                   height: _fabSize,
                   width: _fabSize,
                   child: FloatingActionButton(
+                    key: _fabKey,
                     onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => ServiceDialog(initialService: null),
+                      // Obter a posição e tamanho do FAB
+                      final RenderBox renderBox =
+                          _fabKey.currentContext!.findRenderObject() as RenderBox;
+                      final position = renderBox.localToGlobal(Offset.zero);
+                      final fabRect = Rect.fromLTWH(position.dx, position.dy, _fabSize, _fabSize);
+
+                      // Usar DialogPageRoute em vez de showDialog
+                      Navigator.of(context).push(
+                        DialogPageRoute(
+                          sourceRect: fabRect,
+                          builder: (context) => ServiceDialog(initialService: null),
+                        ),
                       );
                     },
                     backgroundColor: Theme.of(context).colorScheme.primaryContainer,
