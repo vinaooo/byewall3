@@ -243,18 +243,9 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
                   child: FloatingActionButton(
                     key: _fabKey,
                     onPressed: () {
-                      // Obter a posição e tamanho do FAB
-                      final RenderBox renderBox =
-                          _fabKey.currentContext!.findRenderObject() as RenderBox;
-                      final position = renderBox.localToGlobal(Offset.zero);
-                      final fabRect = Rect.fromLTWH(position.dx, position.dy, _fabSize, _fabSize);
-
-                      // Usar DialogPageRoute em vez de showDialog
-                      Navigator.of(context).push(
-                        DialogPageRoute(
-                          sourceRect: fabRect,
-                          builder: (context) => ServiceDialog(initialService: null),
-                        ),
+                      showDialog(
+                        context: context,
+                        builder: (context) => ServiceDialog(initialService: null),
                       );
                     },
                     backgroundColor: Theme.of(context).colorScheme.primaryContainer,
