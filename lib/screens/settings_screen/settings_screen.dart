@@ -240,21 +240,9 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
                   width: _fabSize,
                   child: FloatingActionButton(
                     onPressed: () {
-                      // Custom animation without nested Heroes
-                      final RenderBox buttonBox = context.findRenderObject() as RenderBox;
-                      final buttonPosition = buttonBox.localToGlobal(Offset.zero);
-                      final buttonSize = buttonBox.size;
-
-                      Navigator.of(context).push(
-                        DialogPageRoute(
-                          builder: (context) => ServiceDialog(initialService: null),
-                          sourceRect: Rect.fromLTWH(
-                            buttonPosition.dx,
-                            buttonPosition.dy,
-                            buttonSize.width,
-                            buttonSize.height,
-                          ),
-                        ),
+                      showDialog(
+                        context: context,
+                        builder: (context) => ServiceDialog(initialService: null),
                       );
                     },
                     backgroundColor: Theme.of(context).colorScheme.primaryContainer,

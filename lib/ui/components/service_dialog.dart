@@ -139,63 +139,72 @@ class ServiceDialogState extends State<ServiceDialog> {
           title: const LocalizedText(kText: 'add_service'),
           content: SizedBox(
             width: MediaQuery.of(context).size.width * 0.8,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextFormField(
-                  controller: nameController,
-                  focusNode: nameFocusNode, // já estava aqui
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                    ),
-                    labelText: AppLocalizations.of(context)!.translate('service_name'),
-                    errorText:
-                        attemptedSubmit && nameError != null ? '' : null, // Só destaca sem mensagem
-                  ),
-                  onChanged: (_) {
-                    if (attemptedSubmit) {
-                      validateFields(); // Valida em tempo real após primeira tentativa
-                    }
-                  },
-                ),
-                if (nameError == null || !attemptedSubmit) SizedBox(height: 21),
-                TextFormField(
-                  controller: urlController,
-                  focusNode: urlFocusNode, // adicione isto
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                    ),
-                    labelText: AppLocalizations.of(context)!.translate('service_url'),
-                    errorText:
-                        attemptedSubmit && urlError != null ? '' : null, // Só destaca sem mensagem
-                  ),
-                  onChanged: (_) {
-                    if (attemptedSubmit) {
-                      validateFields(); // Valida em tempo real após primeira tentativa
-                    }
-                  },
-                ),
-                if (urlError == null || !attemptedSubmit) SizedBox(height: 21),
-                // Sinalizador de erro abaixo dos campos
-                Padding(
-                  padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Text(
-                        (attemptedSubmit && nameError != null && urlError != null)
-                            ? AppLocalizations.of(context)!.translate('service_name_empty')
-                            : '',
-                        style: TextStyle(color: Theme.of(context).colorScheme.error, fontSize: 13),
-                        textAlign: TextAlign.left, // Alinha à esquerda
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min, // importante!
+                children: [
+                  TextFormField(
+                    controller: nameController,
+                    focusNode: nameFocusNode, // já estava aqui
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
                       ),
-                    ],
+                      labelText: AppLocalizations.of(context)!.translate('service_name'),
+                      errorText:
+                          attemptedSubmit && nameError != null
+                              ? ''
+                              : null, // Só destaca sem mensagem
+                    ),
+                    onChanged: (_) {
+                      if (attemptedSubmit) {
+                        validateFields(); // Valida em tempo real após primeira tentativa
+                      }
+                    },
                   ),
-                ),
-              ],
+                  if (nameError == null || !attemptedSubmit) SizedBox(height: 21),
+                  TextFormField(
+                    controller: urlController,
+                    focusNode: urlFocusNode, // adicione isto
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                      ),
+                      labelText: AppLocalizations.of(context)!.translate('service_url'),
+                      errorText:
+                          attemptedSubmit && urlError != null
+                              ? ''
+                              : null, // Só destaca sem mensagem
+                    ),
+                    onChanged: (_) {
+                      if (attemptedSubmit) {
+                        validateFields(); // Valida em tempo real após primeira tentativa
+                      }
+                    },
+                  ),
+                  if (urlError == null || !attemptedSubmit) SizedBox(height: 21),
+                  // Sinalizador de erro abaixo dos campos
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Text(
+                          (attemptedSubmit && nameError != null && urlError != null)
+                              ? AppLocalizations.of(context)!.translate('service_name_empty')
+                              : '',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                            fontSize: 13,
+                          ),
+                          textAlign: TextAlign.left, // Alinha à esquerda
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           actions: [
