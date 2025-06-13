@@ -1,10 +1,15 @@
+import 'package:byewall3/break_services/services_helper.dart';
+import 'package:byewall3/break_services/services_model.dart';
+import 'package:byewall3/l10n/app_localizations.dart';
 import 'package:byewall3/screens/settings_screen/about_settings.dart';
+import 'package:byewall3/ui/components/localized_text.dart';
 import 'package:byewall3/ui/components/service_dialog.dart';
 import 'package:byewall3/screens/settings_screen/general_settings.dart';
 import 'package:byewall3/screens/settings_screen/services_settings.dart';
 import 'package:byewall3/ui/app_colors.dart';
 import 'package:byewall3/ui/components/floating_nav_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 
 class SettingsScreen extends StatefulWidget {
   final AppColor selectedMode;
@@ -243,10 +248,185 @@ class _SettingsScreenState extends State<SettingsScreen> with SingleTickerProvid
                   child: FloatingActionButton(
                     key: _fabKey,
                     onPressed: () {
+                      // Create controllers and variables for dialog state
+                      final TextEditingController nameController = TextEditingController();
+                      final TextEditingController urlController = TextEditingController();
+                      final FocusNode nameFocusNode = FocusNode();
+                      final FocusNode urlFocusNode = FocusNode();
+
+                      String? nameError;
+                      String? urlError;
+                      bool attemptedSubmit = false;
+
+                      // URL validation function
+                      bool isValidUrl(String url) {
+                        try {
+                          final uri = Uri.parse(url);
+                          return uri.hasScheme && (uri.scheme == 'http' || uri.scheme == 'https');
+                        } catch (e) {
+                          return false;
+                        }
+                      }
+
+                      // Create a StatefulBuilder dialog
                       showDialog(
                         context: context,
-                        builder: (context) => ServiceDialog(initialService: null),
-                      );
+                        builder: (BuildContext dialogContext) {
+                          return StatefulBuilder(
+                            builder: (context, setState) {
+                              // Validation function
+                              bool validateFields() {
+                                final newNameError =
+                                    nameController.text.trim().isEmpty
+                                        ? AppLocalizations.of(
+                                          context,
+                                        )!.translate('service_name_empty')
+                                        : null;
+
+                                final newUrlError =
+                                    urlController.text.trim().isEmpty
+                                        ? AppLocalizations.of(
+                                          context,
+                                        )!.translate('service_url_empty')
+                                        : (!isValidUrl(urlController.text.trim())
+                                            ? AppLocalizations.of(
+                                              context,
+                                            )!.translate('service_url_invalid')
+                                            : null);
+
+                                // Only update if there are changes
+                                if (newNameError != nameError || newUrlError != urlError) {
+                                  setState(() {
+                                    nameError = newNameError;
+                                    urlError = newUrlError;
+                                  });
+                                }
+
+                                return (newNameError == null && newUrlError == null);
+                              }
+
+                              // Submit function
+                              void validateAndSubmit() {
+                                setState(() {
+                                  attemptedSubmit = true;
+                                });
+
+                                final valid = validateFields();
+
+                                // Smart focus on validation
+                                if (!valid) {
+                                  if (nameError != null) {
+                                    nameFocusNode.requestFocus();
+                                  } else if (urlError != null) {
+                                    urlFocusNode.requestFocus();
+                                  }
+                                  return;
+                                }
+
+                                final newService = ServicesModel(
+                                  id: DateTime.now().millisecondsSinceEpoch,
+                                  serviceName: nameController.text.trim(),
+                                  serviceUrl: urlController.text.trim(),
+                                  dateAdd: DateTime.now(),
+                                  isEnable: true,
+                                );
+
+                                ServicesHelper.addService(newService);
+                                Navigator.of(context).pop();
+                              }
+
+                              // Build the actual dialog UI
+                              return FutureBuilder<Box<ServicesModel>>(
+                                future: Hive.openBox<ServicesModel>('services'),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return const Center(child: CircularProgressIndicator());
+                                  }
+
+                                  if (snapshot.hasError) {
+                                    return AlertDialog(
+                                      title: const LocalizedText(kText: 'Error'),
+                                      content: LocalizedText(
+                                        kText: 'error_opening_database',
+                                        oText: snapshot.error.toString(),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.of(context).pop(),
+                                          child: const LocalizedText(kText: 'close'),
+                                        ),
+                                      ],
+                                    );
+                                  }
+
+                                  return AlertDialog(
+                                    title: const LocalizedText(kText: 'add_service'),
+                                    content: SizedBox(
+                                      width: MediaQuery.of(context).size.width * 0.8,
+                                      child: SingleChildScrollView(
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            TextFormField(
+                                              controller: nameController,
+                                              focusNode: nameFocusNode,
+                                              decoration: InputDecoration(
+                                                labelText: AppLocalizations.of(
+                                                  context,
+                                                )!.translate('service_name'),
+                                                errorText: attemptedSubmit ? nameError : null,
+                                              ),
+                                              onChanged: (_) {
+                                                if (attemptedSubmit) validateFields();
+                                              },
+                                            ),
+                                            if (nameError == null || !attemptedSubmit)
+                                              SizedBox(height: 21),
+                                            TextFormField(
+                                              controller: urlController,
+                                              focusNode: urlFocusNode,
+                                              decoration: InputDecoration(
+                                                labelText: AppLocalizations.of(
+                                                  context,
+                                                )!.translate('service_url'),
+                                                errorText: attemptedSubmit ? urlError : null,
+                                                hintText: 'https://',
+                                              ),
+                                              onChanged: (_) {
+                                                if (attemptedSubmit) validateFields();
+                                              },
+                                            ),
+                                            if (urlError == null || !attemptedSubmit)
+                                              SizedBox(height: 21),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const LocalizedText(kText: 'cancel'),
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: validateAndSubmit,
+                                        child: const LocalizedText(kText: 'ok'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                          );
+                        },
+                      ).then((_) {
+                        // Cleanup resources when dialog is closed
+                        nameController.dispose();
+                        urlController.dispose();
+                        nameFocusNode.dispose();
+                        urlFocusNode.dispose();
+                      });
                     },
                     backgroundColor: Theme.of(context).colorScheme.primaryContainer,
                     foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
