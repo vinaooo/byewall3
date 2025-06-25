@@ -1,10 +1,10 @@
 import 'package:byewall3/ui/components/custom_sliverappbar.dart';
 import 'package:flutter/material.dart';
 import 'package:byewall3/break_services/services_model.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:byewall3/break_services/services_helper.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:byewall3/ui/components/service_dialog.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ServiceSettingsView extends StatefulWidget {
   final ScrollController controller;
@@ -27,6 +27,34 @@ class ServiceSettingsViewState extends State<ServiceSettingsView> {
     );
   }
 
+  void showDeleteConfirmation(BuildContext context, ServicesModel service) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmar exclusão'),
+          content: Text('Deseja realmente excluir o serviço "${service.serviceName}"?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Fecha o diálogo sem fazer nada
+              },
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () {
+                ServicesHelper.removeService(service.key);
+                Navigator.of(context).pop(); // Fecha o diálogo após excluir
+              },
+              style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+              child: const Text('Excluir'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final customSliverAppBar = CustomSliverAppBar(context);
@@ -39,36 +67,32 @@ class ServiceSettingsViewState extends State<ServiceSettingsView> {
         return Scaffold(
           body: Stack(
             children: [
-              SlidableAutoCloseBehavior(
-                child: CustomScrollView(
-                  key: const PageStorageKey('serviceSettings'),
-                  controller: widget.controller,
-                  slivers: [
-                    customSliverAppBar.buildSliverAppBar('services'),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-                        if (index < services.length) {
-                          final service = services[index];
-                          return Slidable(
-                            key: ValueKey(service.id),
+              CustomScrollView(
+                key: const PageStorageKey('serviceSettings'),
+                controller: widget.controller,
+                slivers: [
+                  customSliverAppBar.buildSliverAppBar('services'),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+                      if (index < services.length) {
+                        final service = services[index];
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Slidable(
+                            key: Key(service.key.toString()),
                             endActionPane: ActionPane(
-                              extentRatio: 0.15,
-                              motion: const DrawerMotion(),
+                              extentRatio: 0.2,
+                              motion: const ScrollMotion(),
                               children: [
                                 CustomSlidableAction(
                                   onPressed: (context) {
-                                    ServicesHelper.removeService(service.key);
+                                    showDeleteConfirmation(context, service);
                                   },
-                                  backgroundColor: Theme.of(
-                                    context,
-                                  ).colorScheme.error.withAlpha(200),
-                                  padding: const EdgeInsets.all(0),
-                                  child: Center(
-                                    child: Icon(
-                                      Icons.delete_outline_rounded,
-                                      size: 36,
-                                      color: Theme.of(context).colorScheme.onError.withAlpha(150),
-                                    ),
+                                  backgroundColor: Theme.of(context).colorScheme.error,
+                                  child: Icon(
+                                    Icons.delete_forever_outlined,
+                                    color: Theme.of(context).colorScheme.onError,
+                                    size: 28,
                                   ),
                                 ),
                               ],
@@ -77,45 +101,52 @@ class ServiceSettingsViewState extends State<ServiceSettingsView> {
                               onLongPress: () {
                                 openEditDialog(context, service);
                               },
-                              child: Column(
-                                children: [
-                                  ListTile(
-                                    title: Text(
-                                      service.serviceName,
-                                      style: Theme.of(context).textTheme.titleMedium,
-                                    ),
-                                    subtitle: Text(
-                                      service.serviceUrl,
-                                      style: Theme.of(context)
-                                          .textTheme //
-                                          .labelSmall
-                                          ?.copyWith(fontWeight: FontWeight.normal),
-                                    ),
-                                    trailing: Checkbox(
-                                      value: service.isEnable,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          service.isEnable = value ?? false;
-                                          service.save();
-                                        });
-                                      },
-                                    ),
+                              child: Card(
+                                elevation: 2,
+                                margin: EdgeInsets.zero,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              service.serviceName,
+                                              style: Theme.of(context).textTheme.titleMedium,
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              service.serviceUrl,
+                                              style: Theme.of(context).textTheme.labelSmall
+                                                  ?.copyWith(fontWeight: FontWeight.normal),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Checkbox(
+                                        value: service.isEnable,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            service.isEnable = value ?? false;
+                                            service.save();
+                                          });
+                                        },
+                                      ),
+                                    ],
                                   ),
-                                  FractionallySizedBox(
-                                    widthFactor: 0.95,
-                                    child: Divider(height: 1),
-                                  ),
-                                ],
+                                ),
                               ),
                             ),
-                          );
-                        } else {
-                          return const SizedBox(height: 90);
-                        }
-                      }, childCount: services.length),
-                    ),
-                  ],
-                ),
+                          ),
+                        );
+                      } else {
+                        return const SizedBox(height: 120);
+                      }
+                    }, childCount: services.length + 1),
+                  ),
+                ],
               ),
             ],
           ),
