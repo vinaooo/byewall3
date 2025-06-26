@@ -78,72 +78,100 @@ class ServiceSettingsViewState extends State<ServiceSettingsView> {
                         final service = services[index];
                         return Padding(
                           padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-                          child: Stack(
-                            children: [
-                              // Fundo vermelho que se estende do centro até a direita
-                              Positioned(
-                                top: 0,
-                                bottom: 0,
-                                right: 0,
-                                width: 120, // Largura fixa para cobrir área do slide
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.error,
-                                    borderRadius: const BorderRadius.only(
-                                      topRight: Radius.circular(20),
-                                      bottomRight: Radius.circular(20),
-                                    ),
-                                  ),
-                                ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              // Gradiente sutil para criar continuidade visual
+                              gradient: LinearGradient(
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                                stops: const [0.85, 1.0],
+                                colors: [
+                                  Colors.transparent,
+                                  Theme.of(context).colorScheme.error.withOpacity(0.1),
+                                ],
                               ),
-                              // Slidable card principal
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: Slidable(
-                                  key: Key(service.key.toString()),
-                                  endActionPane: ActionPane(
-                                    extentRatio: 0.15,
-                                    motion: const ScrollMotion(),
-                                    children: [
-                                      Expanded(
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Theme.of(context).colorScheme.error,
-                                          ),
-                                          child: InkWell(
-                                            onTap: () {
-                                              showDeleteConfirmation(context, service);
-                                            },
-                                            child: Center(
-                                              child: Icon(
-                                                Icons.delete_forever_outlined,
-                                                size: 32,
-                                                color: Theme.of(context).colorScheme.onError,
-                                              ),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Slidable(
+                                key: Key(service.key.toString()),
+                                endActionPane: ActionPane(
+                                  extentRatio: 0.15,
+                                  motion: const ScrollMotion(),
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context).colorScheme.error,
+                                        ),
+                                        child: InkWell(
+                                          onTap: () {
+                                            showDeleteConfirmation(context, service);
+                                          },
+                                          child: Center(
+                                            child: Icon(
+                                              Icons.delete_forever_outlined,
+                                              size: 32,
+                                              color: Theme.of(context).colorScheme.onError,
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                  child: GestureDetector(
-                                    onLongPress: () {
-                                      openEditDialog(context, service);
-                                    },
-                                    child: Card(
-                                      elevation: 4,
-                                      margin: EdgeInsets.zero,
-                                      color: Theme.of(context).colorScheme.surface,
-                                      shadowColor: Theme.of(context).colorScheme.shadow,
-                                      surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
+                                    ),
+                                  ],
+                                ),
+                                child: GestureDetector(
+                                  onLongPress: () {
+                                    openEditDialog(context, service);
+                                  },
+                                  child: Card(
+                                    elevation: 4,
+                                    margin: EdgeInsets.zero,
+                                    color: Theme.of(context).colorScheme.surface,
+                                    shadowColor: Theme.of(context).colorScheme.shadow,
+                                    surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  service.serviceName,
+                                                  style: Theme.of(context).textTheme.titleMedium,
+                                                ),
+                                                const SizedBox(height: 4),
+                                                Text(
+                                                  service.serviceUrl,
+                                                  style: Theme.of(context).textTheme.labelSmall
+                                                      ?.copyWith(fontWeight: FontWeight.normal),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Checkbox(
+                                            value: service.isEnable,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                service.isEnable = value ?? false;
+                                                service.save();
+                                              });
+                                            },
+                                          ),
+                                        ],
                                       ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                                               child: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
