@@ -112,6 +112,12 @@ class ServiceSettingsViewState extends State<ServiceSettingsView> {
                                         surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(20),
+                                          side: BorderSide(
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.outline.withValues(alpha: 0.2),
+                                            width: 1,
+                                          ),
                                         ),
                                         child: Padding(
                                           padding: const EdgeInsets.all(12.0),

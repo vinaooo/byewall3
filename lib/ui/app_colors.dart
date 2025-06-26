@@ -81,17 +81,15 @@ class AppColors {
   }
 
   static Color getDialogBoxColor(BuildContext context) {
-    return HSLColor.fromColor(Theme.of(context).colorScheme.primaryContainer)
-        .withLightness(_getLightness(context))
-        .withSaturation(_getSaturation(context))
-        .toColor();
+    return HSLColor.fromColor(
+      Theme.of(context).colorScheme.primaryContainer,
+    ).withLightness(_getLightness(context)).withSaturation(_getSaturation(context)).toColor();
   }
 
   static Color getDialogTileColor(BuildContext context) {
-    return HSLColor.fromColor(Theme.of(context).colorScheme.primaryContainer)
-        .withLightness(_getLightness(context))
-        .toColor()
-        .withAlpha((_getAlpha(context)).toInt());
+    return HSLColor.fromColor(
+      Theme.of(context).colorScheme.primaryContainer,
+    ).withLightness(_getLightness(context)).toColor().withAlpha((_getAlpha(context)).toInt());
   }
 
   static bool _getIsDarkTheme(BuildContext context) {
