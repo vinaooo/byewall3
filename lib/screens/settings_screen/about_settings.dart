@@ -1,8 +1,12 @@
 import 'package:byewall3/ui/components/custom_sliverappbar.dart';
+import 'package:byewall3/ui/components/custom_list_tiles.dart';
+import 'package:byewall3/ui/components/tile_title_text.dart';
+import 'package:byewall3/ui/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart'; // Add this import
 import 'dart:io';
 
 class AboutSettingsView extends StatelessWidget {
@@ -43,166 +47,23 @@ class AboutSettingsView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
+              ],
+            ),
+          ),
+        ),
 
-                // Developer Info Section
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Desenvolvedor',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 12),
-                        const Text('Vina', style: TextStyle(fontSize: 16)),
-                        const SizedBox(height: 16),
+        // Developer Section with proper structure
+        developerTiles(context),
 
-                        // GitHub
-                        InkWell(
-                          onTap: () => _launchUrl('https://github.com/vinaooo'),
-                          child: const Row(
-                            children: [
-                              Icon(Icons.code, size: 20),
-                              SizedBox(width: 8),
-                              Text(
-                                'GitHub',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.blue,
-                                  decoration: TextDecoration.underline,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 12),
+        // Support Section using SettingsTiles
+        supportTiles(context),
 
-                        // Telegram
-                        InkWell(
-                          onTap: () => _launchUrl('https://t.me/vinaooo'),
-                          child: const Row(
-                            children: [
-                              Icon(Icons.telegram, size: 20),
-                              SizedBox(width: 8),
-                              Text(
-                                'Telegram: @vinaooo',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.blue,
-                                  decoration: TextDecoration.underline,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-
-                        // Email
-                        InkWell(
-                          onTap: () => _launchUrl('mailto:vrpedrinho@gmail.com'),
-                          child: const Row(
-                            children: [
-                              Icon(Icons.email, size: 20),
-                              SizedBox(width: 8),
-                              Text(
-                                'vrpedrinho@gmail.com',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.blue,
-                                  decoration: TextDecoration.underline,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Support Section
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Apoie o Projeto',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 16),
-
-                        // Buy Me a Coffee
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton.icon(
-                            onPressed: () => _launchUrl('https://buymeacoffee.com/vinaooo'),
-                            icon: const Icon(Icons.coffee),
-                            label: const Text('Buy Me a Coffee'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.orange,
-                              foregroundColor: Colors.white,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-
-                        // PIX Section
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.green.shade50,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.green.shade200),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(Icons.currency_exchange, color: Colors.green.shade700),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    'PIX (Brasil)',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.green.shade700,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  const Expanded(
-                                    child: Text(
-                                      'vrpedrinho@gmail.com',
-                                      style: TextStyle(fontSize: 14, fontFamily: 'monospace'),
-                                    ),
-                                  ),
-                                  IconButton(
-                                    onPressed:
-                                        () => _copyToClipboard(context, 'vrpedrinho@gmail.com'),
-                                    icon: const Icon(Icons.copy, size: 20),
-                                    tooltip: 'Copiar PIX',
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 // Device Info Button
                 SizedBox(
                   width: double.infinity,
@@ -216,11 +77,165 @@ class AboutSettingsView extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 90),
               ],
             ),
           ),
         ),
+      ],
+    );
+  }
+
+  SliverToBoxAdapter supportTiles(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            const TileTitleText(title: 'Apoie o Projeto'),
+            buyMeCoffeeTile(context),
+            pixTile(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  SettingsTiles buyMeCoffeeTile(BuildContext context) {
+    return SettingsTiles(
+      border: 1, // top border
+      title: 'Buy Me a Coffee',
+      subtitle: 'Apoie o desenvolvimento',
+      lIcon: Stack(
+        alignment: Alignment.center,
+        children: [
+          Transform.scale(scale: 2, child: Icon(Icons.circle, color: Colors.orange.shade300)),
+          Transform.scale(scale: 1.1, child: Icon(Icons.coffee, color: Colors.orange.shade800)),
+        ],
+      ),
+      tIcon: Icons.open_in_new,
+      onPressed: () => _launchUrl('https://buymeacoffee.com/vinaooo'),
+    );
+  }
+
+  Column pixTile(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: 2),
+        SettingsTiles(
+          border: 2, // bottom border
+          title: 'PIX (Brasil)',
+          subtitle: 'vrpedrinho@gmail.com',
+          lIcon: Stack(
+            alignment: Alignment.center,
+            children: [
+              Transform.scale(scale: 2, child: Icon(Icons.circle, color: Colors.green.shade300)),
+              Transform.scale(
+                scale: 1.1,
+                child: Icon(Icons.currency_exchange, color: Colors.green.shade800),
+              ),
+            ],
+          ),
+          tIcon: Icons.copy,
+          onPressed: () => _copyToClipboard(context, 'vrpedrinho@gmail.com'),
+        ),
+      ],
+    );
+  }
+
+  SliverToBoxAdapter developerTiles(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            const TileTitleText(title: 'Desenvolvedor'),
+            githubTile(context),
+            telegramTile(context),
+            emailTile(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  SettingsTiles githubTile(BuildContext context) {
+    return SettingsTiles(
+      border: 1, // top border
+      title: 'GitHub',
+      subtitle: 'Acesse o código fonte',
+      lIcon: Stack(
+        alignment: Alignment.center,
+        children: [
+          Transform.scale(scale: 2, child: Icon(Icons.circle, color: Colors.grey.shade100)),
+          Transform.scale(scale: 1.7, child: FaIcon(FontAwesomeIcons.github, color: Colors.black)),
+        ],
+      ),
+      tIcon: Icons.open_in_new,
+      onPressed: () => _launchUrl('https://github.com/vinaooo/byewall3'),
+    );
+  }
+
+  Column telegramTile(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: 2),
+        SettingsTiles(
+          border: 0, // no border
+          title: 'Telegram',
+          subtitle: '@vinaooo',
+          lIcon: Stack(
+            alignment: Alignment.center,
+            children: [
+              Transform.scale(scale: 2, child: Icon(Icons.circle, color: Colors.white)),
+              Transform.scale(scale: 2, child: Icon(Icons.telegram, color: Colors.blue.shade300)),
+            ],
+          ),
+          tIcon: Icons.open_in_new,
+          onPressed: () => _launchUrl('https://t.me/vinaooo'),
+        ),
+      ],
+    );
+  }
+
+  Column emailTile(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: 2),
+        SettingsTiles(
+          border: 2, // bottom border
+          title: 'Email',
+          subtitle: 'vrpedrinho@gmail.com',
+          lIcon: Stack(
+            alignment: Alignment.center,
+            children: [
+              Transform.scale(scale: 2, child: Icon(Icons.circle, color: Colors.red.shade300)),
+              Transform.scale(scale: 1.1, child: Icon(Icons.email, color: Colors.white)),
+            ],
+          ),
+          tIcon: Icons.open_in_new,
+          onPressed: () => _launchUrl('mailto:vrpedrinho@gmail.com'),
+        ),
+      ],
+    );
+  }
+
+  Stack leadingIcon({String color = '', IconData? icon}) {
+    final colorMap = {
+      'pink': [AppColors().pink, AppColors().darkPink],
+      'blue': [AppColors().blue, AppColors().darkBlue],
+      'green': [AppColors().green, AppColors().darkGreen],
+    };
+
+    final colors = colorMap[color] ?? [Colors.white, Colors.black];
+    final lightColor = colors[0];
+    final darkColor = colors[1];
+
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Transform.scale(scale: 2, child: Icon(Icons.circle, color: lightColor)),
+        Transform.scale(scale: 1.1, child: Icon(icon, color: darkColor)),
       ],
     );
   }
