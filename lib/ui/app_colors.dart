@@ -78,6 +78,19 @@ class AppColors {
         .withSaturation(_getSaturation(context))
         .toColor()
         .withAlpha((_getAlpha(context)).toInt());
+  } // Novo método para cores completamente opacas seguindo Material 3
+
+  static Color getSolidTileColor(BuildContext context) {
+    final bool isDarkTheme = _getIsDarkTheme(context);
+    final colorScheme = Theme.of(context).colorScheme;
+
+    if (isDarkTheme) {
+      // Para tema escuro: usa uma cor mais escura baseada no surface
+      return Color.alphaBlend(colorScheme.primary.withValues(alpha: 0.08), colorScheme.surface);
+    } else {
+      // Para tema claro: usa uma cor mais evidente baseada no surface
+      return Color.alphaBlend(colorScheme.primary.withValues(alpha: 0.12), colorScheme.surface);
+    }
   }
 
   static Color getDialogBoxColor(BuildContext context) {

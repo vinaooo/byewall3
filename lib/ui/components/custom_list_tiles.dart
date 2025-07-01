@@ -12,6 +12,10 @@ class SettingsTiles extends StatelessWidget {
   final Stack lIcon;
   final IconData? tIcon;
   final bool switchEnable;
+  final bool checkboxEnable;
+  final bool? checkboxValue;
+  final ValueChanged<bool?>? onCheckboxChanged;
+  final VoidCallback? onLongPress;
 
   const SettingsTiles({
     super.key,
@@ -22,6 +26,10 @@ class SettingsTiles extends StatelessWidget {
     required this.lIcon,
     this.tIcon,
     this.switchEnable = false,
+    this.checkboxEnable = false,
+    this.checkboxValue,
+    this.onCheckboxChanged,
+    this.onLongPress,
   });
 
   static const WidgetStateProperty<Icon> thumbIcon = WidgetStateProperty<Icon>.fromMap(
@@ -61,39 +69,49 @@ class SettingsTiles extends StatelessWidget {
       themeProvider.saveBlackBackground(value);
     }
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: _getBorderRadius(),
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        onTap: !switchEnable ? onPressed : null,
-        child: Container(
-          decoration: BoxDecoration(
-            color: AppColors.getTileColor(context),
-            borderRadius: _getBorderRadius(),
-          ),
+    return ClipRRect(
+      borderRadius: _getBorderRadius() ?? BorderRadius.zero,
+      child: Material(
+        color: AppColors.getSolidTileColor(context),
+        child: InkWell(
+          splashColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.08),
+          highlightColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.04),
+          onTap: !switchEnable && !checkboxEnable ? onPressed : null,
+          onLongPress: onLongPress,
           child: ListTile(
             enabled: _widgetEnabled(context, themeProvider),
             shape: _getShape(),
-            hoverColor: Colors.transparent,
+            hoverColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.04),
+            tileColor: AppColors.getSolidTileColor(context),
             title: Padding(
               padding: const EdgeInsets.only(left: 8.0),
-              child: LocalizedText(kText: title, style: Theme.of(context).textTheme.titleMedium),
+              child:
+                  checkboxEnable
+                      ? Text(title, style: Theme.of(context).textTheme.titleMedium)
+                      : LocalizedText(kText: title, style: Theme.of(context).textTheme.titleMedium),
             ),
             subtitle: Padding(
               padding: const EdgeInsets.only(left: 8.0),
-              child: LocalizedText(
-                kText: subtitle,
-                style: Theme.of(context) //
-                    .textTheme
-                    .labelSmall //
-                    ?.copyWith(fontWeight: FontWeight.normal),
-              ),
+              child:
+                  checkboxEnable
+                      ? Text(
+                        subtitle,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.normal),
+                      )
+                      : LocalizedText(
+                        kText: subtitle,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.normal),
+                      ),
             ),
             leading: Padding(padding: const EdgeInsets.only(left: 8.0), child: lIcon),
             trailing:
-                switchEnable
+                checkboxEnable
+                    ? Checkbox(value: checkboxValue, onChanged: onCheckboxChanged)
+                    : switchEnable
                     ? Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -118,9 +136,12 @@ class SettingsTiles extends StatelessWidget {
                               : null,
                     ),
             onTap:
-                switchEnable
+                checkboxEnable
+                    ? () => onCheckboxChanged?.call(!(checkboxValue ?? false))
+                    : switchEnable
                     ? () => toggleAndSaveBlackBackground(!themeProvider.useBlackBackground)
                     : onPressed,
+            onLongPress: onLongPress,
           ),
         ),
       ),

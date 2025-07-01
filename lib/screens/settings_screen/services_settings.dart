@@ -1,4 +1,5 @@
 import 'package:byewall3/ui/components/custom_sliverappbar.dart';
+import 'package:byewall3/ui/components/custom_list_tiles.dart';
 import 'package:flutter/material.dart';
 import 'package:byewall3/break_services/services_model.dart';
 import 'package:byewall3/break_services/services_helper.dart';
@@ -27,6 +28,37 @@ class ServiceSettingsViewState extends State<ServiceSettingsView> {
     );
   }
 
+  Stack _buildServiceIcon(BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Transform.scale(
+          scale: 2,
+          child: Icon(
+            Icons.circle,
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+          ),
+        ),
+        Transform.scale(
+          scale: 1.1,
+          child: Icon(Icons.web, color: Theme.of(context).colorScheme.primary),
+        ),
+      ],
+    );
+  }
+
+  int _getBorderType(int index, int totalServices) {
+    if (totalServices == 1) {
+      return 3; // all borders para item único
+    } else if (index == 0) {
+      return 1; // top border para primeiro item
+    } else if (index == totalServices - 1) {
+      return 2; // bottom border para último item
+    } else {
+      return 0; // no border para itens do meio
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final customSliverAppBar = CustomSliverAppBar(context);
@@ -45,126 +77,121 @@ class ServiceSettingsViewState extends State<ServiceSettingsView> {
                   controller: widget.controller,
                   slivers: [
                     customSliverAppBar.buildSliverAppBar('services'),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-                        if (index < services.length) {
-                          final service = services[index];
-                          return Padding(
-                            padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-                            child: Stack(
-                              children: [
-                                // Fundo vermelho que se estende do centro até a direita
-                                Positioned(
-                                  top: 0,
-                                  bottom: 0,
-                                  right: 0,
-                                  width: 120, // Largura fixa para cobrir área do slide
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).colorScheme.error,
-                                      borderRadius: const BorderRadius.only(
-                                        topRight: Radius.circular(20),
-                                        bottomRight: Radius.circular(20),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                // Slidable card principal
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: Slidable(
-                                    key: Key(service.key.toString()),
-                                    groupTag: 'services',
-                                    endActionPane: ActionPane(
-                                      extentRatio: 0.15,
-                                      motion: const ScrollMotion(),
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children:
+                              services.asMap().entries.map((entry) {
+                                final index = entry.key;
+                                final service = entry.value;
+                                final borderType = _getBorderType(index, services.length);
+
+                                return Column(
+                                  children: [
+                                    // Adiciona espaçamento antes do item (exceto para o primeiro)
+                                    if (index > 0) const SizedBox(height: 2),
+
+                                    Stack(
                                       children: [
-                                        Expanded(
+                                        // Fundo vermelho que se estende do centro até a direita
+                                        Positioned(
+                                          top: 0,
+                                          bottom: 0,
+                                          right: 0,
+                                          width: 120, // Largura fixa para cobrir área do slide
                                           child: Container(
                                             decoration: BoxDecoration(
                                               color: Theme.of(context).colorScheme.error,
-                                            ),
-                                            child: InkWell(
-                                              onTap: () {
-                                                ServicesHelper.removeService(service.key);
-                                              },
-                                              child: Center(
-                                                child: Icon(
-                                                  Icons.delete_forever_outlined,
-                                                  size: 32,
-                                                  color: Theme.of(context).colorScheme.onError,
+                                              borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(
+                                                  borderType == 1 || borderType == 3 ? 20 : 0,
+                                                ),
+                                                bottomRight: Radius.circular(
+                                                  borderType == 2 || borderType == 3 ? 20 : 0,
                                                 ),
                                               ),
+                                            ),
+                                          ),
+                                        ),
+                                        // Slidable com custom_list_tiles
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(
+                                              borderType == 1 || borderType == 3 ? 20 : 0,
+                                            ),
+                                            topRight: Radius.circular(
+                                              borderType == 1 || borderType == 3 ? 20 : 0,
+                                            ),
+                                            bottomLeft: Radius.circular(
+                                              borderType == 2 || borderType == 3 ? 20 : 0,
+                                            ),
+                                            bottomRight: Radius.circular(
+                                              borderType == 2 || borderType == 3 ? 20 : 0,
+                                            ),
+                                          ),
+                                          child: Slidable(
+                                            key: Key(service.key.toString()),
+                                            groupTag: 'services',
+                                            endActionPane: ActionPane(
+                                              extentRatio: 0.15,
+                                              motion: const ScrollMotion(),
+                                              children: [
+                                                Expanded(
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Theme.of(context).colorScheme.error,
+                                                    ),
+                                                    child: InkWell(
+                                                      onTap: () {
+                                                        ServicesHelper.removeService(service.key);
+                                                      },
+                                                      child: Center(
+                                                        child: Icon(
+                                                          Icons.delete_forever_outlined,
+                                                          size: 32,
+                                                          color:
+                                                              Theme.of(context).colorScheme.onError,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            child: SettingsTiles(
+                                              border: borderType,
+                                              title: service.serviceName,
+                                              subtitle: service.serviceUrl,
+                                              lIcon: _buildServiceIcon(context),
+                                              checkboxEnable: true,
+                                              checkboxValue: service.isEnable,
+                                              onCheckboxChanged: (value) {
+                                                setState(() {
+                                                  service.isEnable = value ?? false;
+                                                  service.save();
+                                                });
+                                              },
+                                              onPressed: () {
+                                                // Ação quando o tile é pressionado (opcional)
+                                              },
+                                              onLongPress: () {
+                                                openEditDialog(context, service);
+                                              },
                                             ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                    child: GestureDetector(
-                                      onLongPress: () {
-                                        openEditDialog(context, service);
-                                      },
-                                      child: Card(
-                                        elevation: 4,
-                                        margin: EdgeInsets.zero,
-                                        color: Theme.of(context).colorScheme.surface,
-                                        shadowColor: Theme.of(context).colorScheme.shadow,
-                                        surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(20),
-                                          side: BorderSide(
-                                            color: Theme.of(
-                                              context,
-                                            ).colorScheme.outline.withValues(alpha: 0.2),
-                                            width: 1,
-                                          ),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(12.0),
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      service.serviceName,
-                                                      style:
-                                                          Theme.of(context).textTheme.titleMedium,
-                                                    ),
-                                                    const SizedBox(height: 4),
-                                                    Text(
-                                                      service.serviceUrl,
-                                                      style: Theme.of(context).textTheme.labelSmall
-                                                          ?.copyWith(fontWeight: FontWeight.normal),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Checkbox(
-                                                value: service.isEnable,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    service.isEnable = value ?? false;
-                                                    service.save();
-                                                  });
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        } else {
-                          return const SizedBox(height: 120);
-                        }
-                      }, childCount: services.length + 1),
+                                  ],
+                                );
+                              }).toList(),
+                        ),
+                      ),
                     ),
+
+                    // Espaçamento final
+                    SliverToBoxAdapter(child: const SizedBox(height: 120)),
                   ],
                 ),
               ],
