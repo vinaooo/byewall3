@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart'; // Add this import
 import 'dart:io';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class AboutSettingsView extends StatelessWidget {
   final ScrollController controller;
@@ -23,65 +24,120 @@ class AboutSettingsView extends StatelessWidget {
       controller: controller,
       slivers: [
         customSliverAppBar.buildSliverAppBar('about'),
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // App Info Section
-                const Card(
-                  child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'ByeWall',
-                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 8),
-                        Text('Version 3.0.0', style: TextStyle(color: Colors.grey, fontSize: 16)),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-              ],
-            ),
-          ),
-        ),
 
-        // Developer Section with proper structure
+        // Developer Section
         developerTiles(context),
 
-        // Support Section using SettingsTiles
+        // Support Section
         supportTiles(context),
 
+        // Espaçamento antes do card de versão
+        // SliverToBoxAdapter(child: const SizedBox(height: 32)),
+
+        // Título da sessão de informações do app
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Device Info Button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: () => _showDeviceInfo(context),
-                    icon: const Icon(Icons.info_outline),
-                    label: const Text('Informações do Dispositivo'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: const TileTitleText(title: 'Informações do App'),
+          ),
+        ),
+
+        // Card de informações do app (versão) ao final da página
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: FutureBuilder<PackageInfo>(
+              future: PackageInfo.fromPlatform(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return SettingsTiles(
+                    border: 3,
+                    title: 'ByeWall',
+                    subtitle: 'Carregando versão...',
+                    lIcon: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Transform.scale(
+                          scale: 2,
+                          child: Icon(
+                            Icons.circle,
+                            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                          ),
+                        ),
+                        Transform.scale(
+                          scale: 1.1,
+                          child: Icon(
+                            Icons.info_outline,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                      ],
                     ),
+                    tIcon: Icons.chevron_right,
+                    onPressed: () => _showDeviceInfo(context),
+                  );
+                }
+                if (snapshot.hasError) {
+                  return SettingsTiles(
+                    border: 3,
+                    title: 'ByeWall',
+                    subtitle: 'Erro ao obter versão',
+                    lIcon: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Transform.scale(
+                          scale: 2,
+                          child: Icon(
+                            Icons.circle,
+                            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                          ),
+                        ),
+                        Transform.scale(
+                          scale: 1.1,
+                          child: Icon(
+                            Icons.info_outline,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    tIcon: Icons.chevron_right,
+                    onPressed: () => _showDeviceInfo(context),
+                  );
+                }
+                final version = snapshot.data?.version ?? 'desconhecida';
+                return SettingsTiles(
+                  border: 3,
+                  title: 'ByeWall',
+                  subtitle: 'Versão $version',
+                  lIcon: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Transform.scale(
+                        scale: 2,
+                        child: Icon(
+                          Icons.circle,
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                        ),
+                      ),
+                      Transform.scale(
+                        scale: 1.1,
+                        child: Icon(
+                          Icons.info_outline,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 90),
-              ],
+                  tIcon: Icons.chevron_right,
+                  onPressed: () => _showDeviceInfo(context),
+                );
+              },
             ),
           ),
         ),
+
+        SliverToBoxAdapter(child: const SizedBox(height: 90)),
       ],
     );
   }
@@ -160,6 +216,9 @@ class AboutSettingsView extends StatelessWidget {
   }
 
   SettingsTiles githubTile(BuildContext context) {
+    // Detecta se o tema atual é escuro
+    final bool isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+
     return SettingsTiles(
       border: 1, // top border
       title: 'GitHub',
@@ -167,8 +226,20 @@ class AboutSettingsView extends StatelessWidget {
       lIcon: Stack(
         alignment: Alignment.center,
         children: [
-          Transform.scale(scale: 2, child: Icon(Icons.circle, color: Colors.grey.shade100)),
-          Transform.scale(scale: 1.7, child: FaIcon(FontAwesomeIcons.github, color: Colors.black)),
+          Transform.scale(
+            scale: 1.9,
+            child: Icon(
+              Icons.circle,
+              color: isDarkTheme ? Colors.grey.shade800 : Colors.grey.shade100,
+            ),
+          ),
+          Transform.scale(
+            scale: 1.7,
+            child: FaIcon(
+              FontAwesomeIcons.github,
+              color: isDarkTheme ? Colors.white : Colors.black,
+            ),
+          ),
         ],
       ),
       tIcon: Icons.open_in_new,
@@ -249,12 +320,6 @@ class AboutSettingsView extends StatelessWidget {
 
   void _copyToClipboard(BuildContext context, String text) {
     Clipboard.setData(ClipboardData(text: text));
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('PIX copiado para a área de transferência!'),
-        duration: Duration(seconds: 2),
-      ),
-    );
   }
 
   void _showDeviceInfo(BuildContext context) async {
@@ -294,8 +359,11 @@ Identificador: ${iosInfo.identifierForVendor}
             content: SingleChildScrollView(child: Text(deviceInfoText)),
             actions: [
               TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Fechar')),
-              TextButton(
-                onPressed: () => _copyToClipboard(context, deviceInfoText),
+              FilledButton(
+                onPressed: () {
+                  _copyToClipboard(context, deviceInfoText);
+                  Navigator.of(context).pop(); // Fecha o diálogo após copiar
+                },
                 child: const Text('Copiar'),
               ),
             ],
