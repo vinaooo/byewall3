@@ -1,8 +1,22 @@
 import 'package:byewall3/ui/components/localized_text.dart';
 import 'package:flutter/material.dart';
 
+/// Um widget que exibe o título de uma tile com estilo personalizado.
+///
+/// Use este widget para títulos de seções em listas de configurações.
 class TileTitleText extends StatelessWidget {
+  /// O texto do título a ser exibido.
   final String title;
+
+  /// Cria um [TileTitleText].
+  ///
+  /// The text is already localized, so no need to pass a LocalizedString.
+  ///
+  /// Exemplo de uso:
+  /// ```dart
+  /// Text(TileTitleText(title: 'Configurações'))
+  /// ```
+  ///
   const TileTitleText({super.key, required this.title});
 
   @override

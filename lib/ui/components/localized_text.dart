@@ -18,3 +18,10 @@ class LocalizedText extends StatelessWidget {
     return Text(AppLocalizations.of(context)!.translate(kText), style: style);
   }
 }
+
+class LocalizedString {
+  static String of(BuildContext context, String text) {
+    String translated = text.toLowerCase();
+    return AppLocalizations.of(context)!.translate(translated);
+  }
+}

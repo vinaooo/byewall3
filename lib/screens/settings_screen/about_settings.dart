@@ -25,24 +25,15 @@ class AboutSettingsView extends StatelessWidget {
       slivers: [
         customSliverAppBar.buildSliverAppBar('about'),
 
-        // Developer Section
         developerTiles(context),
-
-        // Support Section
         supportTiles(context),
-
-        // Espaçamento antes do card de versão
-        // SliverToBoxAdapter(child: const SizedBox(height: 32)),
-
-        // Título da sessão de informações do app
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: const TileTitleText(title: 'Informações do App'),
+            child: TileTitleText(title: 'app_information'),
           ),
         ),
 
-        // Card de informações do app (versão) ao final da página
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -52,8 +43,8 @@ class AboutSettingsView extends StatelessWidget {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return SettingsTiles(
                     border: 3,
-                    title: 'ByeWall',
-                    subtitle: 'Carregando versão...',
+                    title: 'byewall',
+                    subtitle: 'loading_version',
                     lIcon: Stack(
                       alignment: Alignment.center,
                       children: [
@@ -80,8 +71,8 @@ class AboutSettingsView extends StatelessWidget {
                 if (snapshot.hasError) {
                   return SettingsTiles(
                     border: 3,
-                    title: 'ByeWall',
-                    subtitle: 'Erro ao obter versão',
+                    title: 'byewall',
+                    subtitle: 'error_getting_version',
                     lIcon: Stack(
                       alignment: Alignment.center,
                       children: [
@@ -105,11 +96,11 @@ class AboutSettingsView extends StatelessWidget {
                     onPressed: () => _showDeviceInfo(context),
                   );
                 }
-                final version = snapshot.data?.version ?? 'desconhecida';
+                final version = snapshot.data?.version ?? 'unknown';
                 return SettingsTiles(
                   border: 3,
-                  title: 'ByeWall',
-                  subtitle: 'Versão $version',
+                  title: 'byewall',
+                  subtitle: 'version  $version',
                   lIcon: Stack(
                     alignment: Alignment.center,
                     children: [
@@ -148,7 +139,7 @@ class AboutSettingsView extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            const TileTitleText(title: 'Apoie o Projeto'),
+            const TileTitleText(title: 'support_the_project'),
             buyMeCoffeeTile(context),
             pixTile(context),
           ],
@@ -158,15 +149,16 @@ class AboutSettingsView extends StatelessWidget {
   }
 
   SettingsTiles buyMeCoffeeTile(BuildContext context) {
+    final appColors = AppColors();
     return SettingsTiles(
       border: 1, // top border
-      title: 'Buy Me a Coffee',
-      subtitle: 'Apoie o desenvolvimento',
+      title: 'buy_me_a_coffee',
+      subtitle: 'support_development',
       lIcon: Stack(
         alignment: Alignment.center,
         children: [
-          Transform.scale(scale: 2, child: Icon(Icons.circle, color: Colors.orange.shade300)),
-          Transform.scale(scale: 1.1, child: Icon(Icons.coffee, color: Colors.orange.shade800)),
+          Transform.scale(scale: 2, child: Icon(Icons.circle, color: appColors.orangeLight)),
+          Transform.scale(scale: 1.1, child: Icon(Icons.coffee, color: appColors.orangeDark)),
         ],
       ),
       tIcon: Icons.open_in_new,
@@ -175,20 +167,21 @@ class AboutSettingsView extends StatelessWidget {
   }
 
   Column pixTile(BuildContext context) {
+    final appColors = AppColors();
     return Column(
       children: [
         const SizedBox(height: 2),
         SettingsTiles(
           border: 2, // bottom border
-          title: 'PIX (Brasil)',
+          title: 'pix_brazil',
           subtitle: 'vrpedrinho@gmail.com',
           lIcon: Stack(
             alignment: Alignment.center,
             children: [
-              Transform.scale(scale: 2, child: Icon(Icons.circle, color: Colors.green.shade300)),
+              Transform.scale(scale: 2, child: Icon(Icons.circle, color: appColors.pixLight)),
               Transform.scale(
                 scale: 1.1,
-                child: Icon(Icons.currency_exchange, color: Colors.green.shade800),
+                child: Icon(Icons.currency_exchange, color: appColors.pixDark),
               ),
             ],
           ),
@@ -205,7 +198,7 @@ class AboutSettingsView extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            const TileTitleText(title: 'Desenvolvedor'),
+            const TileTitleText(title: 'developer'),
             githubTile(context),
             telegramTile(context),
             emailTile(context),
@@ -217,28 +210,18 @@ class AboutSettingsView extends StatelessWidget {
 
   SettingsTiles githubTile(BuildContext context) {
     // Detecta se o tema atual é escuro
-    final bool isDarkTheme = Theme.of(context).brightness == Brightness.dark;
-
+    final appColors = AppColors();
     return SettingsTiles(
       border: 1, // top border
-      title: 'GitHub',
-      subtitle: 'Acesse o código fonte',
+      title: 'github',
+      subtitle: 'access_the_source_code',
       lIcon: Stack(
         alignment: Alignment.center,
         children: [
-          Transform.scale(
-            scale: 1.9,
-            child: Icon(
-              Icons.circle,
-              color: isDarkTheme ? Colors.grey.shade800 : Colors.grey.shade100,
-            ),
-          ),
+          Transform.scale(scale: 1.9, child: Icon(Icons.circle, color: appColors.githubLight)),
           Transform.scale(
             scale: 1.7,
-            child: FaIcon(
-              FontAwesomeIcons.github,
-              color: isDarkTheme ? Colors.white : Colors.black,
-            ),
+            child: FaIcon(FontAwesomeIcons.github, color: appColors.githubDark),
           ),
         ],
       ),
@@ -248,18 +231,19 @@ class AboutSettingsView extends StatelessWidget {
   }
 
   Column telegramTile(BuildContext context) {
+    final appColors = AppColors();
     return Column(
       children: [
         const SizedBox(height: 2),
         SettingsTiles(
           border: 0, // no border
-          title: 'Telegram',
+          title: 'telegram',
           subtitle: '@vinaooo',
           lIcon: Stack(
             alignment: Alignment.center,
             children: [
-              Transform.scale(scale: 2, child: Icon(Icons.circle, color: Colors.white)),
-              Transform.scale(scale: 2, child: Icon(Icons.telegram, color: Colors.blue.shade300)),
+              Transform.scale(scale: 2, child: Icon(Icons.circle, color: appColors.telegramLight)),
+              Transform.scale(scale: 2, child: Icon(Icons.telegram, color: appColors.telegramDark)),
             ],
           ),
           tIcon: Icons.open_in_new,
@@ -270,18 +254,19 @@ class AboutSettingsView extends StatelessWidget {
   }
 
   Column emailTile(BuildContext context) {
+    final appColors = AppColors();
     return Column(
       children: [
         const SizedBox(height: 2),
         SettingsTiles(
           border: 2, // bottom border
-          title: 'Email',
+          title: 'email',
           subtitle: 'vrpedrinho@gmail.com',
           lIcon: Stack(
             alignment: Alignment.center,
             children: [
-              Transform.scale(scale: 2, child: Icon(Icons.circle, color: Colors.red.shade300)),
-              Transform.scale(scale: 1.1, child: Icon(Icons.email, color: Colors.white)),
+              Transform.scale(scale: 2, child: Icon(Icons.circle, color: appColors.emailLight)),
+              Transform.scale(scale: 1.1, child: Icon(Icons.email, color: appColors.emailDark)),
             ],
           ),
           tIcon: Icons.open_in_new,
@@ -324,30 +309,30 @@ class AboutSettingsView extends StatelessWidget {
 
   void _showDeviceInfo(BuildContext context) async {
     final deviceInfo = DeviceInfoPlugin();
-    String deviceInfoText = 'Carregando informações...';
+    String deviceInfoText = 'Loading information...';
 
     try {
       if (Platform.isAndroid) {
         final androidInfo = await deviceInfo.androidInfo;
         deviceInfoText = '''
-Dispositivo: ${androidInfo.model}
-Marca: ${androidInfo.brand}
-Versão Android: ${androidInfo.version.release}
+Device: ${androidInfo.model}
+Brand: ${androidInfo.brand}
+Android Version: ${androidInfo.version.release}
 SDK: ${androidInfo.version.sdkInt}
-Arquitetura: ${androidInfo.supported64BitAbis.isNotEmpty ? '64-bit' : '32-bit'}
+Architecture: ${androidInfo.supported64BitAbis.isNotEmpty ? '64-bit' : '32-bit'}
 RAM: ${(androidInfo.systemFeatures.length / 1024 / 1024).toStringAsFixed(1)} MB
 ''';
       } else if (Platform.isIOS) {
         final iosInfo = await deviceInfo.iosInfo;
         deviceInfoText = '''
-Dispositivo: ${iosInfo.model}
-Nome: ${iosInfo.name}
-Versão iOS: ${iosInfo.systemVersion}
-Identificador: ${iosInfo.identifierForVendor}
+Device: ${iosInfo.model}
+Name: ${iosInfo.name}
+iOS Version: ${iosInfo.systemVersion}
+Identifier: ${iosInfo.identifierForVendor}
 ''';
       }
     } catch (e) {
-      deviceInfoText = 'Erro ao obter informações do dispositivo: $e';
+      deviceInfoText = 'Error getting device information: $e';
     }
 
     if (context.mounted) {
@@ -355,16 +340,16 @@ Identificador: ${iosInfo.identifierForVendor}
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Informações do Dispositivo'),
+            title: const Text('Device Information'),
             content: SingleChildScrollView(child: Text(deviceInfoText)),
             actions: [
-              TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Fechar')),
+              TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Close')),
               FilledButton(
                 onPressed: () {
                   _copyToClipboard(context, deviceInfoText);
-                  Navigator.of(context).pop(); // Fecha o diálogo após copiar
+                  Navigator.of(context).pop(); // Close dialog after copying
                 },
-                child: const Text('Copiar'),
+                child: const Text('Copy'),
               ),
             ],
           );
